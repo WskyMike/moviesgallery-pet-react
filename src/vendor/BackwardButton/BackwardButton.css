@@ -1,0 +1,15 @@
+.backward__button {
+  position: fixed;
+  bottom: 43vh;
+  left: 4vh;
+  font-size: 3rem;
+  z-index: 9;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.backward__button:hover {
+  transform: translateX(-5px);
+}

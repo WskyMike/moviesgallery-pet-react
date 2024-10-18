@@ -1,0 +1,20 @@
+.scroll-to-top__button {
+  position: fixed;
+  bottom: 35vh;
+  right: 4vh;
+  font-size: 3rem;
+  z-index: 9;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.scroll-to-top__button_hidden {
+  display: none;
+}
+
+.scroll-to-top__button:hover {
+  transform: translateY(-5px);
+}
+

@@ -1,0 +1,17 @@
+
+.carousel-container .react-multiple-carousel__arrow--left {
+  position: fixed;
+}
+
+.carousel-container .react-multiple-carousel__arrow--right {
+  position: fixed;
+}
+
+.custom-link-hover {
+  transition: opacity 0.3s ease; 
+  opacity: 1; 
+}
+
+.custom-link-hover:hover {
+  opacity: 0.7; 
+}

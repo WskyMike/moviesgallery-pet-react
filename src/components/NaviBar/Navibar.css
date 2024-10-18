@@ -1,0 +1,7 @@
+.custom-navibar {
+  backdrop-filter: blur(8px);
+}
+
+.navibar-icon {
+vertical-align: text-top !important;
+}

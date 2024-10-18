@@ -1,0 +1,52 @@
+@import url(./vendor/fonts/stem/fonts.css);
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+:root,
+#root {
+  font-family: Stem, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  text-align: center;
+
+  /* max-width: 1400px; */
+  margin: 0 auto;
+  /* height: 100%; */
+  color-scheme: normal;
+  color: #050c26;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* a {
+  font-weight: 400;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+} */
+
+/* body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #f5f6fe;
+} */
+
+h1 {
+  font-size: 3.2em;
+  /* line-height: 1.1; */
+}
+
+/* button:hover {
+  background-color: #1d20ee;
+}
+
+button:focus-visible {
+  outline: 1px auto -webkit-focus-ring-color;
+} */

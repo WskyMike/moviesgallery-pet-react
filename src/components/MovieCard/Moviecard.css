@@ -1,0 +1,94 @@
+.movie-card {
+  padding: 10px;
+  position: relative;
+  overflow: hidden;
+  padding: 10px;
+  text-align: center;
+}
+
+.movie-card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.movie-card h5 {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.movie-card p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.movie-poster {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+}
+
+.bookmark-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  transition: transform 0.3s ease-in-out;
+}
+
+.movie-info {
+  border-radius: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 5%;
+  color: white;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.movie-original-title {
+  margin: 0;
+  margin-top: 0.5rem;
+}
+
+.movie-details {
+  position: absolute;
+  bottom: 10px;
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.movie-rating,
+.movie-release-date {
+  font-size: 1rem;
+}
+
+.movie-card:hover .movie-poster  {
+  filter: brightness(0.3);
+  transform: scale(1.06);
+}
+
+.movie-card:hover .movie-info {
+  opacity: 1;
+}
+
+.movie-card:hover .bookmark-icon {
+  transform: scale(1.8);
+}
+
+.bookmark-icon:active {
+  opacity: 0.7;
+}
+

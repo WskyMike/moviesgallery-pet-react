@@ -1,0 +1,20 @@
+.scroll-to-end__button {
+  position: fixed;
+  bottom: 10vh;
+  right: 4vh;
+  font-size: 3rem;
+  z-index: 9;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.scroll-to-end__button_hidden {
+  display: none;
+}
+
+.scroll-to-end__button:hover {
+  transform: translateY(5px);
+}
+
