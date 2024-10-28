@@ -25,7 +25,7 @@ function ScrollToTopButton() {
   return (
     <button
       className={`scroll-to-top__button ${
-        !showButton ? "scroll-to-top__button_hidden" : ""
+        showButton ? "d-none d-xl-block" : "scroll-to-top__button_hidden"
       }`}
       onClick={handleClick}
     >

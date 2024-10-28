@@ -13,7 +13,7 @@ import { useLoading } from "../../contexts/LoadingContext";
 import { MovieCardByIdData } from "../../utils/MovieCardByIdApi";
 
 import { db } from "../../utils/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 
 function Bookmarks() {
   const { user } = useAuth();
@@ -26,16 +26,17 @@ function Bookmarks() {
       const fetchBookmarks = async () => {
         setBookmarksLoading(true);
         try {
-          const querySnapshot = await getDocs(
-            collection(db, "users", user.uid, "bookmarks")
+          const bookmarksQuery = query(
+            collection(db, "users", user.uid, "bookmarks"),
+            orderBy("timestamp", "asc")
           );
+          const querySnapshot = await getDocs(bookmarksQuery);
           const movieIds = querySnapshot.docs.map((doc) => doc.data().movieId);
-          // Делаем запрос к TMDB
+
           const movies = await Promise.all(
             movieIds.map((id) => MovieCardByIdData(id))
           );
           setBookmarkedMovies(movies);
-          setBookmarksLoading(false);
         } catch (error) {
           console.error("Error fetching bookmarks:", error);
         } finally {
@@ -57,7 +58,7 @@ function Bookmarks() {
           <Row className="pt-2 sticky-header">
             <h2 className="text-start display-5">Мои сохраненные фильмы</h2>
           </Row>
-          <Row className="mb-5 mt-4">
+          <Row className="mb-2 mb-md-5 mt-4">
             {bookmarksLoading ? (
               <Col className="text-center">
                 <div className="spinner-border text-primary m-5" role="status">
@@ -67,11 +68,11 @@ function Bookmarks() {
             ) : (
               bookmarkedMovies.map((movie) => (
                 <Col
-                  xs={12}
-                  sm={6}
+                  xs={6}
+                  sm={4}
                   md={4}
                   lg={3}
-                  className="mb-4"
+                  className="mb-4 px-1 px-sm-2"
                   key={movie.id}
                 >
                   <MovieCard movie={movie} isLoading={false} />

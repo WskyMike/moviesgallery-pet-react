@@ -48,7 +48,7 @@ function NaviBar() {
   return (
     <>
       <Navbar
-        expand="md"
+        expand="sm"
         className="custom-navibar bg-body-tertiary"
         data-bs-theme="light"
       >
@@ -57,12 +57,11 @@ function NaviBar() {
             Киногалерея &nbsp;
             <Icon.CameraReels className="navibar-icon" />
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" className="border-0" />
           <Navbar.Collapse
             id="responsive-navbar-nav"
-            className="justify-content-start ps-5"
+            className="justify-content-start ps-lg-5 my-4 my-sm-0"
           >
-            {/* Проверяем authLoading, чтобы вместо приветствия и кнопок отображать Loading... */}
             {authLoading ? (
               <div
                 className="spinner-border spinner-border-sm text-dark"
@@ -78,12 +77,12 @@ function NaviBar() {
                   </span>
                 )} */}
 
-                <Nav className="me-auto">
+                <Nav className="me-auto row-gap-2">
                   {user && (
                     <>
                       <Nav.Link
                         href="/my"
-                        className="text-primary icon-link icon-link-hover"
+                        className="text-primary icon-link icon-link-hover justify-content-center" 
                         style={{
                           "--bs-icon-link-transform":
                             "translate3d(0, -.125rem, 0)",
@@ -94,7 +93,7 @@ function NaviBar() {
                       </Nav.Link>
                       <Nav.Link
                         onClick={handleOpenProfileModal}
-                        className="text-primary icon-link icon-link-hover"
+                        className="text-primary icon-link icon-link-hover justify-content-center"
                         style={{
                           "--bs-icon-link-transform":
                             "translate3d(0, -.125rem, 0)",
@@ -107,13 +106,12 @@ function NaviBar() {
                   )}
                 </Nav>
 
-                {/* Если пользователь авторизован, показываем кнопку "Выйти" */}
                 {user ? (
-                  <Button variant="outline-primary" onClick={handleSignOut}>
+                  <Button className="mt-4 mt-sm-0" variant="outline-primary" onClick={handleSignOut}>
                     Выйти
                   </Button>
                 ) : (
-                  <>
+                  <div className="">
                     <Button
                       type="button"
                       variant="outline-primary"
@@ -129,7 +127,7 @@ function NaviBar() {
                     >
                       Войти
                     </Button>
-                  </>
+                  </div>
                 )}
               </>
             )}

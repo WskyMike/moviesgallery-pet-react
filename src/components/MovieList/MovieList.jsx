@@ -8,6 +8,7 @@ import ScrollToTopButton from "../../vendor/ScrollToTopButton/ToTopButton";
 import ScrollToEndButton from "../../vendor/ScrollToEndButton/ScrollToEndButton";
 import BackwardButton from "../../vendor/BackwardButton/BackwardButton";
 import "./MovieList.css";
+import { useToast } from "../../contexts/ToastProvider";
 
 import { popularApi } from "../../utils/PopularApi";
 import { topRatedApi } from "../../utils/TopRatedApi";
@@ -16,6 +17,7 @@ import { popularRusApi } from "../../utils/PopularRusApi";
 
 function MovieList() {
   const { category } = useParams(); // Получаем параметр из URL
+  const { triggerToast } = useToast();
 
   // Категории на заголовки
   const titleMap = useMemo(
@@ -86,13 +88,27 @@ function MovieList() {
 
   async function fetchMovies(page) {
     try {
-      const { movies, totalPages } = await currentApi(page);
-      setMovies((prevMovies) => [...prevMovies, ...movies]);
+      const { movies: newMovies, totalPages } = await currentApi(page);
+
+      // Фильтрация дубликатов по id
+      const filteredMovies = newMovies.filter(
+        (newMovie) =>
+          !movies.some((existingMovie) => existingMovie.id === newMovie.id)
+      );
+
+      setMovies((prevMovies) => [...prevMovies, ...filteredMovies]);
       setTotalPages(totalPages);
+      setPage(page);
       setLoading(false);
       setIsLoadingMore(false);
     } catch (error) {
       console.error("Ошибка при получении данных:", error);
+      triggerToast(
+        "Ошибка при получении данных. Попробуйте немного позже.",
+        "danger-subtle",
+        "danger-emphasis",
+        "top-center"
+      );
       setLoading(false);
       setIsLoadingMore(false);
     }
@@ -108,14 +124,14 @@ function MovieList() {
   // Загружаем фильмы при изменении страницы
   useEffect(() => {
     if (!savedMovies.length || page > savedPage) {
-      fetchMovies(page); // Загружаем данные с новой страницы
+      fetchMovies(page);
     }
   }, [page]);
 
   // Функция загрузки следующей страницы
   const loadMoreMovies = () => {
     setIsLoadingMore(true);
-    setPage((prevPage) => prevPage + 1);
+    fetchMovies(page + 1);
   };
 
   return (
@@ -130,20 +146,28 @@ function MovieList() {
             <h2 className="text-start display-5">{title}</h2>
           </Row>
           <Row className="mb-5 mt-4">
-            {movies.map((movie, index) => (
-              <Col
-                key={`${movie.id}-${index}`}
-                xs={12}
-                sm={6}
-                md={4}
-                lg={3}
-                className="mb-4"
-              >
-                <MovieCard movie={movie} />
+            {loading ? (
+              <Col className="text-center">
+                <div className="spinner-border text-primary m-5" role="status">
+                  <span className="visually-hidden">Загрузка...</span>
+                </div>
               </Col>
-            ))}
+            ) : (
+              movies.map((movie, index) => (
+                <Col
+                  key={`${movie.id}-${index}`}
+                  xs={6}
+                  sm={4}
+                  md={4}
+                  lg={3}
+                  className="mb-4 px-1 px-sm-2"
+                >
+                  <MovieCard movie={movie} />
+                </Col>
+              ))
+            )}
           </Row>
-          <div className="d-grid gap-2 pb-5 col-6 mx-auto text-nowrap">
+          <div className="d-grid gap-2 pb-5 col-12 col-sm-6 mx-auto text-nowrap">
             {!loading && (
               <>
                 {page < totalPages && (
@@ -161,7 +185,7 @@ function MovieList() {
                         aria-hidden="true"
                       ></span>
                     )}
-                    {isLoadingMore ? "Загружаю..." : "Загрузить ещё?"}
+                    {isLoadingMore ? "Загружаю..." : "Показать ещё"}
                   </Button>
                 )}
                 {page >= totalPages && (

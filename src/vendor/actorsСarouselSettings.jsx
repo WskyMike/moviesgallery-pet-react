@@ -1,14 +1,12 @@
 import "./carouselSettings.css"
 
-const carouselSettings = {
+const actorsСarouselSettings = {
   additionalTransfrom: 0,
   arrows: false,
-  // autoPlay: true,
-  // autoPlaySpeed: 20000,
   className: "carousel",
   dotListClass: "",
   focusOnSelect: false,
-  infinite: true,
+  infinite: false,
   itemClass: "",
   keyBoardControl: true,
   minimumTouchDrag: 80,
@@ -19,23 +17,28 @@ const carouselSettings = {
   responsive: {
     largeDesktop: {
       breakpoint: { max: 3000, min: 1200 },
-      items: 5,
+      items: 8,
+      slidesToSlide: 8,
     },
     smallDesktop: {
       breakpoint: { max: 1199, min: 768 },
-      items: 4,
+      items: 6,
+      slidesToSlide: 6,
     },
     tablet: {
       breakpoint: { max: 767, min: 576 },
-      items: 3,
+      items: 6,
+      slidesToSlide: 6,
     },
     mobile: {
-      breakpoint: { max: 576, min: 0 },
-      items: 2,
+      breakpoint: { max: 575, min: 316 },
+      items: 3,
+      slidesToSlide: 3,
     },
     smallMobile: {
-      breakpoint: { max: 380, min: 0 },
-      items: 1,
+      breakpoint: { max: 315, min: 0 },
+      items: 3,
+      slidesToSlide: 3,
     },
   },
   rewind: false,
@@ -43,8 +46,7 @@ const carouselSettings = {
   rtl: false,
   showDots: false,
   sliderClass: "",
-  slidesToSlide: 5,
   swipeable: true,
 };
 
-export default carouselSettings;
+export default actorsСarouselSettings;

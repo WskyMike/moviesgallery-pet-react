@@ -1,71 +1,83 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
-import { Row, Col, Card } from "react-bootstrap";
+import { useEffect, useState, useRef } from "react";
+import Carousel from "react-multi-carousel";
+import actorsСarouselSettings from "../../vendor/actorsСarouselSettings";
+import ActorsCard from "../ActorsCard/ActorsCard";
+import "react-multi-carousel/lib/styles.css";
+import {
+  CustomLeftArrowThin,
+  CustomRightArrowThin,
+} from "../../vendor/customArrows";
 import { useParams } from "react-router-dom";
 import { creditsMovieData } from "../../utils/CreditsMovieApi";
 
-import "./ActorsCarousel.css"
-
 function ActorsCarousel() {
   const { id } = useParams(); // Получаем ID фильма из URL
-  const [credits, setCredits] = useState({
-    actors: [],
-  });
+  const [actors, setActors] = useState([]);
   const [error, setError] = useState(null);
   const [loadingCredits, setLoadingCredits] = useState(true);
+  const carouselRef = useRef(null);
 
-  async function fetchCredits() {
+  async function fetchActors() {
     try {
       const data = await creditsMovieData(id);
-      setCredits(data);
+      // Фильтрация дубликатов по id
+      const uniqueActors = data.actors.filter(
+        (actor, index, self) =>
+          index === self.findIndex((a) => a.id === actor.id)
+      );
+
+      setActors(uniqueActors || []);
       setLoadingCredits(false);
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      console.error("Ошибка при загрузке актеров:", error);
+      setError(error.message);
       setLoadingCredits(false);
     }
   }
 
   useEffect(() => {
-    fetchCredits();
-  }, [id]); // Повторный запрос при изменении ID
+    fetchActors();
+  }, [id]);
+
+  const goToPrevious = () => {
+    if (carouselRef.current) {
+      carouselRef.current.previous();
+    }
+  };
+
+  const goToNext = () => {
+    if (carouselRef.current) {
+      carouselRef.current.next();
+    }
+  };
 
   if (error) {
     return <div className="m-5">Ошибка: {error}</div>;
   }
 
   return (
-    <Row>
-      <h3 className="text-start fw-bold fs-5 mb-3">Актеры</h3>
-      <Row xl={8} className="g-2 justify-content-start">
-        {loadingCredits ? (
+    <>
+      {loadingCredits ? (
+        <div className="d-flex justify-content-center align-items-center">
           <div className="spinner-border text-dark m-5" role="status">
             <span className="visually-hidden">Загрузка...</span>
           </div>
-        ) : credits.actors.length > 0 ? (
-          credits.actors.map((actor, idx) => (
-            <Col key={idx} className="actor-card-col">
-              <Card className="h-100">
-                <Card.Img
-                  variant="top"
-                  src={actor.profile_path}
-                  alt={actor.name}
-                />
-                <Card.Body className="text-start p-2 d-flex flex-column justify-content-between">
-                  <Card.Title className="text-semibold fs-6">
-                    {actor.name}
-                  </Card.Title>
-                  <Card.Text className="lh-1">
-                    <small>{actor.character}</small>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))
-        ) : (
-          <p>Нет информации об актерах</p>
-        )}
-      </Row>
-    </Row>
+        </div>
+      ) : actors.length > 0 ? (
+        <div className="d-flex align-items-center px-0">
+          <CustomLeftArrowThin onClick={goToPrevious} />
+          <Carousel {...actorsСarouselSettings} ref={carouselRef}>
+            {actors.map((actor) => (
+              <ActorsCard key={actor.id} actor={actor} />
+            ))}
+          </Carousel>
+          <CustomRightArrowThin onClick={goToNext} />
+        </div>
+      ) : (
+        <p className="text-center">Нет информации об актерах</p>
+      )}
+    </>
   );
 }
 

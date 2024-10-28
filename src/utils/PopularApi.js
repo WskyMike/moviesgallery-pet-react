@@ -13,6 +13,7 @@ export async function popularApi(page = 1) {
   try {
     const response = await fetch(
       `https://try.readme.io/https://api.themoviedb.org/3/movie/popular?language=ru-RU&page=${page}&region=RU`,
+      // `https://moviedataproxy.tw1.ru/3/movie/popular?language=ru-RU&page=${page}&region=RU`,
       options
     );
     if (!response.ok) {

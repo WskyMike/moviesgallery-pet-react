@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Carousel from "react-multi-carousel";
+import * as Icon from "react-bootstrap-icons";
 import "react-multi-carousel/lib/styles.css";
-import carouselSettings from "../../vendor/carouselSettings";
+import movieCarouselSettings from "../../vendor/movieСarouselSettings";
 import { CustomLeftArrow, CustomRightArrow } from "../../vendor/customArrows";
 import MovieCard from "../MovieCard/Moviecard";
 import "./MovieCarousel.css";
@@ -16,7 +17,11 @@ function MovieCarousel({ fetchMoviesApi, title, category }) {
 
   async function fetchMovies() {
     try {
-      const { movies = [] } = await fetchMoviesApi();
+      const { movies = [], totalPages } = await fetchMoviesApi();
+      // Сохраняем фильмы и общее количество страниц в sessionStorage
+      sessionStorage.setItem(`${category}Movies`, JSON.stringify(movies));
+      sessionStorage.setItem(`${category}TotalPages`, totalPages.toString());
+
       setMovies(movies);
       setLoading(false);
     } catch (error) {
@@ -26,8 +31,17 @@ function MovieCarousel({ fetchMoviesApi, title, category }) {
   }
 
   useEffect(() => {
-    fetchMovies();
-  }, [fetchMoviesApi]);
+    const savedMovies = JSON.parse(
+      sessionStorage.getItem(`${category}Movies`) || "[]"
+    );
+
+    if (savedMovies.length) {
+      setMovies(savedMovies);
+      setLoading(false);
+    } else {
+      fetchMovies();
+    }
+  }, [fetchMoviesApi, category]);
 
   // Функции для управления каруселью через реф
   const goToPrevious = () => {
@@ -46,7 +60,7 @@ function MovieCarousel({ fetchMoviesApi, title, category }) {
   const placeholderMovies = Array.from({ length: 5 }, (_, index) => ({
     id: index,
     title: (
-      <div className="spinner-border text-light" role="status">
+      <div className="spinner-border text-light spinner_touch" role="status">
         <span className="visually-hidden">Загрузка...</span>
       </div>
     ),
@@ -56,28 +70,31 @@ function MovieCarousel({ fetchMoviesApi, title, category }) {
   }));
 
   return (
-    <div className="py-4 mx-5">
-      <div className="d-flex justify-content-center align-items-center my-4 mx-3">
-        <Link
-          to={`/list/${category}`}
-          className="link-underline link-underline-opacity-0 custom-link-hover text-dark"
-        >
-          <h2 className="text-start fw-semibold my-0">{title}</h2>
-        </Link>
-        <p className="ms-auto fw-normal fs-5 text-primary my-0">
-          <Link
-            to={`/list/${category}`}
-            className="link-underline link-underline-opacity-0 custom-link-hover"
-          >
-            Смотреть ещё
-          </Link>
-        </p>
-      </div>
+    <div className="py-4 mx-0 mx-lg-5">
+      <Link
+        to={`/list/${category}`}
+        className="link-underline link-underline-opacity-0 custom-link-hover text-dark"
+      >
+        <div className="d-flex justify-content-start justify-content-md-center align-items-center my-4 mx-0 mx-md-3">
+          <h2 className="text-start fw-semibold my-0 fs-sm-custom-5">
+            {title}
+          </h2>
+          <p className="ms-auto fw-normal fs-5 text-primary my-0">
+            {/* Текстовое отображение для экранов MD и выше */}
+            <span className="d-none d-md-block">Смотреть ещё</span>
+
+            {/* Иконка для экранов меньше SM */}
+            <span className="d-block d-md-none">
+              <Icon.ChevronRight aria-hidden="true" className="text-black" />
+            </span>
+          </p>
+        </div>
+      </Link>
 
       <div className="d-flex align-items-center">
         <CustomLeftArrow onClick={goToPrevious} />
 
-        <Carousel {...carouselSettings} ref={carouselRef}>
+        <Carousel {...movieCarouselSettings} ref={carouselRef}>
           {(loading ? placeholderMovies : movies).map((movie) => (
             <MovieCard key={movie.id} movie={movie} isLoading={loading} />
           ))}
