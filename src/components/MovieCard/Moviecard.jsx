@@ -1,18 +1,16 @@
 /* eslint-disable react/prop-types */
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 import * as Icon from "react-bootstrap-icons";
+import { Col, Row } from "react-bootstrap";
 import "./Moviecard.css";
 import placeholder from "../../images/mesh-gradient.webp";
 
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastProvider";
 
-
-// Firebase
-import { db } from "../../utils/firebase";
-import { doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
-
+import { toggleBookmark, checkBookmarkStatus } from "../../utils/BookmarkUtils";
 
 function MovieCard({ movie, isLoading }) {
   const navigate = useNavigate();
@@ -26,66 +24,28 @@ function MovieCard({ movie, isLoading }) {
   // Проверяем, есть ли фильм в закладках
   useEffect(() => {
     if (user && movie.id) {
-      const fetchBookmarkStatus = async () => {
-        try {
-          const docRef = doc(
-            db,
-            "users",
-            user.uid,
-            "bookmarks",
-            String(movie.id)
-          );
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            setIsBookmarked(true);
-          } else {
-            setIsBookmarked(false);
-          }
-        } catch (error) {
-          console.error("Error fetching bookmark status:", error);
-          triggerToast(
-            `Error fetching bookmark(${error.message})`,
-            "danger-subtle",
-            "danger-emphasis"
-          );
-        }
-      };
-      fetchBookmarkStatus();
+      checkBookmarkStatus({
+        userId: user.uid,
+        movieId: movie.id,
+        setIsBookmarked,
+        triggerToast,
+      });
     }
   }, [user, movie.id, triggerToast]);
 
   // Сохраняем или удаляем закладку
-  const handleBookmarkClick = async (e) => {
-    e.stopPropagation(); 
-    if (!authLoading && user) {
-      const docRef = doc(db, "users", user.uid, "bookmarks", String(movie.id)); 
-      try {
-        if (isBookmarked) {
-          await deleteDoc(docRef); 
-          setIsBookmarked(false);
-          triggerToast(
-            "Удалили фильм",
-            "info-subtle",
-            "info-emphasis",
-            "top-center"
-          );        } else {
-          await setDoc(docRef, { movieId: movie.id });
-          setIsBookmarked(true);
-          triggerToast(
-            "Сохранили фильм",
-            "info-subtle",
-            "info-emphasis",
-            "top-center"
-          );        }
-      } catch (error) {
-        console.error("Error updating bookmark:", error);
-        triggerToast(
-          `Error updating bookmark(${error.message})`,
-          "danger-subtle",
-          "danger-emphasis"
-        );
-      }
-    }
+  const handleBookmarkClick = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    toggleBookmark({
+      userId: user.uid,
+      movieId: movie.id,
+      isBookmarked,
+      setIsBookmarked,
+      triggerToast,
+      preventPropagation: true,
+      event: e,
+    });
   };
 
   const handleClick = () => {
@@ -118,64 +78,93 @@ function MovieCard({ movie, isLoading }) {
   };
 
   return (
-    <div
-      className="movie-card"
-      role={!isLoading ? "button" : undefined}
-      onClick={handleClick}
+    <a
+      href={!isLoading ? `/movie/${movie.id}` : undefined}
+      tabIndex={!isLoading ? 0 : -1} // фокусируемая только если !isLoading
+      role={!isLoading ? "link" : undefined}
+      className="text-decoration-none text-black"
     >
-      {imageLoaded && !isLoading && !authLoading && user && (
-        <div
-          className="bookmark-icon"
-          onClick={handleBookmarkClick}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          {isBookmarked ? (
-            <Icon.BookmarkStarFill
-              className="text-warning"
-              width="24"
-              height="24"
-            />
-          ) : isHovered ? (
-            <Icon.BookmarkStar
-              className="text-warning"
-              width="24"
-              height="24"
-            />
-          ) : (
-            <Icon.Bookmark className="text-warning" width="24" height="24" />
-          )}
-        </div>
-      )}
-
-      <img
-        src={
-          isLoading || !imageLoaded || imageError ? placeholder : movie.poster
-        }
-        alt={movie.title || movie.name}
-        className="movie-poster"
-        onLoad={() => setImageLoaded(true)}
-        onError={() => setImageError(true)}
-      />
-
-      <div className="movie-info">
-        <h3 className="fs-4 movie-title">{movie.title || movie.name}</h3>
-        <h4 className="fs-6 fw-light movie-original-title">
-          {movie.original_title || movie.original_name}
-        </h4>
-        <div className="movie-details">
-          <span
-            className="fs-2 movie-rating"
-            style={{ color: getRatingColor(movie.rating) }}
+      <div
+        className="movie-card"
+        onClick={!isLoading ? handleClick : undefined}
+      >
+        {imageLoaded && !isLoading && !authLoading && user && (
+          <div
+            className="bookmark-icon"
+            onClick={handleBookmarkClick}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
-            {movie.rating}
-          </span>
-          <span className="fw-light movie-release-date">
-            {movie.release_date || movie.first_air_date}
-          </span>
+            {isBookmarked ? (
+              <Icon.BookmarkStarFill
+                className="text-warning"
+                width="24"
+                height="24"
+              />
+            ) : isHovered ? (
+              <Icon.BookmarkStar
+                className="text-warning"
+                width="24"
+                height="24"
+              />
+            ) : (
+              <Icon.Bookmark className="text-warning" width="24" height="24" />
+            )}
+          </div>
+        )}
+
+        {!isLoading && movie.rating && (
+          <div className="movie-rating_touch border-0">
+            <span>{movie.rating}</span>
+          </div>
+        )}
+
+        <img
+          src={
+            isLoading || !imageLoaded || imageError ? placeholder : movie.poster
+          }
+          alt={movie.title || movie.name}
+          className="movie-poster"
+          onLoad={() => setImageLoaded(true)}
+          onError={() => setImageError(true)}
+        />
+
+        <div className="movie-info">
+          <h3 className="fs-4 movie-title">{movie.title || movie.name}</h3>
+          <h4 className="fs-6 fw-light movie-original-title">
+            {movie.original_title || movie.original_name}
+          </h4>
+          <div className="movie-details">
+            <span
+              className="fs-2 movie-rating"
+              style={{ color: getRatingColor(movie.rating) }}
+            >
+              {movie.rating}
+            </span>
+            <span className="fw-light movie-release-date">
+              {movie.release_date || movie.first_air_date}
+            </span>
+          </div>
+        </div>
+        <div className="movie-info_touch flex-row">
+          <Col xs={11} className="d-flex flex-column text-start pe-1">
+            <Row>
+              <small className="movie-info-title fw-bold">
+                {movie.title ||
+                  movie.name ||
+                  movie.original_title ||
+                  movie.original_name}
+              </small>
+            </Row>
+            <Row>
+              <small className="text-secondary">
+                {movie.release_date || movie.first_air_date}
+              </small>
+            </Row>
+          </Col>
         </div>
       </div>
-    </div>
+    </a>
   );
 }
 

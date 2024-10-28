@@ -10,7 +10,7 @@ function BackwardButton() {
 
   return (
     <button
-      className={`backward__button`}
+      className={`backward__button d-none d-xl-block`}
       onClick={handleClick} 
     >
       <Icon.ArrowLeftShort />

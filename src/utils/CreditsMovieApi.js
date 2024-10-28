@@ -20,8 +20,7 @@ export async function creditsMovieData(movieId) {
     }
 
     const creditsData = await response.json();
-    const selectedItems = transformCreditsData(creditsData); 
-    // console.log(selectedItems);
+    const selectedItems = await transformCreditsData(creditsData); 
     return selectedItems;
   } catch (error) {
     console.error("Ошибка при выполнении запроса movieDetailsData", error);

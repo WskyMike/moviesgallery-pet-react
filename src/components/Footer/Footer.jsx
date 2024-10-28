@@ -10,16 +10,16 @@ function Footer() {
   if (movieDetailsLoading || bookmarksLoading || authLoading) return null;
 
   return (
-    <footer className="navbar-fixed-bottom">
+    <footer className="navbar-fixed-bottom mx-0 mx-md-5 mt-4 mt-md-0">
       <Container
-        fluid="xl"
+        fluid
         className="text-start mt-4 pb-2 fw-light fs-6 text-secondary"
       >
-        <Row>
-          <Col md={2}>
+        <Row className="d-flex justify-content-between flex-nowrap">
+          <Col className="d-flex">
             <small>Михаил Соснин &copy; 2024</small>
           </Col>
-          <Col md={10}>
+          <Col className="d-flex justify-content-start">
             <small>
               Данныe API&nbsp;
               <a

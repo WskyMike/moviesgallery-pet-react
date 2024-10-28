@@ -1,9 +1,14 @@
 .movie-card {
-  padding: 10px;
   position: relative;
   overflow: hidden;
-  padding: 10px;
   text-align: center;
+  padding: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .movie-card {
+    padding: 10px;
+  }
 }
 
 .movie-card img {
@@ -75,20 +80,79 @@
   font-size: 1rem;
 }
 
-.movie-card:hover .movie-poster  {
+.movie-card:hover .movie-poster {
   filter: brightness(0.3);
   transform: scale(1.06);
-}
-
-.movie-card:hover .movie-info {
-  opacity: 1;
-}
-
-.movie-card:hover .bookmark-icon {
-  transform: scale(1.8);
 }
 
 .bookmark-icon:active {
   opacity: 0.7;
 }
 
+.movie-info-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.movie-rating_touch {
+  background-color: #f05723; 
+  color: white; 
+  font-size: .8rem; 
+  border-radius: 5px; 
+  padding: .15rem; 
+  position: absolute;
+  top: .8rem;
+  left: .7rem;
+  display: none;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.movie-rating_touch span {
+  display: inline-block;
+  padding: 0 5px;
+}
+
+/* Убираем эффекты при разрешении ниже 768px */
+@media (max-width: 767px) {
+  .movie-card:hover .movie-poster,
+  .movie-card:hover .movie-info,
+  .movie-card:hover .bookmark-icon {
+    transform: none;
+    filter: none;
+    /* opacity: 1; */
+  }
+  
+  /* Показываем иконку рейтинга и описание снизу изображения */
+  .movie-info_touch {
+    display: flex;
+  }
+
+  .movie-rating_touch {
+    display: inline-block;
+  }
+}
+
+/* На больших экранах, начиная с 768px, показываем hover эффекты */
+@media (min-width: 768px) {
+  .movie-card:hover .movie-poster {
+    filter: brightness(0.3);
+    transform: scale(1.05);
+  }
+
+  .movie-card:hover .movie-info {
+    opacity: 1;
+  }
+
+  .movie-card:hover .bookmark-icon {
+    transform: scale(1.8);
+  }
+
+  .movie-info_touch {
+    display: none !important;
+  }
+
+  .movie-rating_touch {
+    display: none !important;
+  }
+}

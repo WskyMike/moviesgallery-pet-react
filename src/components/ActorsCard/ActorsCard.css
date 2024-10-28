@@ -1,0 +1,24 @@
+.actors-card__title {
+  font-size: 0.9rem !important;
+  word-break: keep-all;
+}
+.actors-card__text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+@media (max-width: 992px) {
+  .actors-card__title {
+    font-size: 0.8rem !important;
+  }
+
+  .actors-card__text {
+    font-size: 0.8rem !important;
+    word-break: keep-all;
+  }
+}

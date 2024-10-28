@@ -25,7 +25,7 @@ function ScrollToEndButton() {
   return (
     <button
       className={`scroll-to-end__button ${
-        !showButton ? "scroll-to-end__button_hidden" : ""
+        showButton ? "d-none d-xl-block" : "scroll-to-end__button_hidden"
       }`}
       onClick={handleClick}
     >

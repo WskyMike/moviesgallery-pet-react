@@ -11,7 +11,7 @@ import { popularRusApi } from "../../utils/PopularRusApi";
 function MainPage() {
   return (
     <>
-      <Container fluid="xxl">
+      <Container fluid>
         <SearchForm />
         <MovieCarousel
           title="Популярные фильмы"

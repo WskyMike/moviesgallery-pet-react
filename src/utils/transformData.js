@@ -7,7 +7,7 @@ countries.registerLocale(ruLocale);
 
 function getPosterPath(poster_path) {
   return poster_path
-    ? `http://movieapiproxy.tw1.ru/t/p/w500${poster_path}`
+    ? `https://movieapiproxy.tw1.ru/t/p/w500${poster_path}`
     : stub_poster;
 }
 
@@ -116,7 +116,7 @@ export function transformMovieDetailsData(item) {
       : "Нет информации",
     tagline: item.tagline,
     poster: getPosterPath(item.poster_path),
-    // backdrop: `http://movieapiproxy.tw1.ru/t/p/w1280${item.backdrop_path}`,
+    // backdrop: `https://movieapiproxy.tw1.ru/t/p/w1280${item.backdrop_path}`,
     rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : "-",
   };
 }

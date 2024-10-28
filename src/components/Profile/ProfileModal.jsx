@@ -23,6 +23,7 @@ function ProfileModal({ show, onHide }) {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -43,6 +44,7 @@ function ProfileModal({ show, onHide }) {
   useEffect(() => {
     const currentUser = auth.currentUser;
     if (currentUser) {
+      reset();
       setUser(currentUser);
       setValue("email", currentUser.email);
       setValue("name", currentUser.displayName || "");
@@ -51,11 +53,12 @@ function ProfileModal({ show, onHide }) {
       );
       setEmailVerified(currentUser.emailVerified);
     }
-  }, [show, setValue, auth]);
+  }, [show, setValue, auth, reset]);
 
   // Проверка статуса верификации почты пользователя
   useEffect(() => {
     let interval;
+    let timeout;
 
     if (isVerifying) {
       interval = setInterval(() => {
@@ -63,6 +66,8 @@ function ProfileModal({ show, onHide }) {
           if (auth.currentUser.emailVerified) {
             setEmailVerified(true);
             setIsVerifying(false);
+            clearInterval(interval);
+            clearTimeout(timeout);
             triggerToast(
               "Ваш email успешно подтвержден!",
               "success-subtle",
@@ -72,14 +77,18 @@ function ProfileModal({ show, onHide }) {
           }
         });
       }, 5000);
+
+      timeout = setTimeout(() => {
+        setIsVerifying(false);
+        clearInterval(interval);
+      }, 180000); // 3 минуты
     }
-    // Останавливаем проверку при закрытии модалки
-    if (!show) {
+
+    return () => {
       clearInterval(interval);
-      setIsVerifying(false);
-    }
-    return () => clearInterval(interval);
-  }, [isVerifying, auth, show, triggerToast]);
+      clearTimeout(timeout);
+    };
+  }, [isVerifying, auth, triggerToast]);
 
   // Следим за изменениями в аутентификации
   useEffect(() => {
