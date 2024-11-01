@@ -4,7 +4,7 @@ import './customArrows.css'
 
 const CustomLeftArrow = ({ onClick }) => {
   return (
-    <button onClick={onClick} className="custom-arrow custom-arrow--left d-none d-md-block">
+    <button onClick={onClick} className="custom-arrow custom-arrow--left d-none d-lg-block">
       <Icon.ChevronLeft />
     </button>
   );
@@ -12,7 +12,7 @@ const CustomLeftArrow = ({ onClick }) => {
 
 const CustomRightArrow = ({ onClick }) => {
   return (
-    <button onClick={onClick} className="custom-arrow custom-arrow--right d-none d-md-block">
+    <button onClick={onClick} className="custom-arrow custom-arrow--right d-none d-lg-block">
       <Icon.ChevronRight />
     </button>
   );

@@ -145,7 +145,7 @@ function MovieDetailsPage() {
           {/* Мобильная версия */}
           {isMobile ? (
             <div className="d-flex align-items-center justify-content-center flex-column">
-              <Col xs={8} className="mb-4">
+              <Col xs={8} sm={6} className="mb-4">
                 {movie?.poster ? (
                   <img
                     src={movie.poster}

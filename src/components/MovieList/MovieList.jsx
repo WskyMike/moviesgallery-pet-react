@@ -158,9 +158,9 @@ function MovieList() {
                   key={`${movie.id}-${index}`}
                   xs={6}
                   sm={4}
-                  md={4}
+                  md={3}
                   lg={3}
-                  className="mb-4 px-1 px-sm-2"
+                  className="mb-4 px-1 px-lg-2"
                 >
                   <MovieCard movie={movie} />
                 </Col>

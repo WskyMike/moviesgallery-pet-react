@@ -2,87 +2,34 @@
   position: relative;
   overflow: hidden;
   text-align: center;
-  padding: 0.25rem;
+  padding: 0 0.25rem 0 0.25rem;
 }
 
 @media (min-width: 768px) {
   .movie-card {
-    padding: 10px;
+    padding: 0 10px;
   }
-}
-
-.movie-card img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-
-.movie-card h5 {
-  margin: 10px 0;
-  font-size: 16px;
-}
-
-.movie-card p {
-  margin: 5px 0;
-  font-size: 14px;
-  color: #666;
 }
 
 .movie-poster {
   max-width: 100%;
   height: auto;
   border-radius: 10px;
-  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.poster-container {
+  position: relative;
+  transition: transform 0.3s ease-in-out;
+  transform-origin: bottom;
 }
 
 .bookmark-icon {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 1.3rem;
+  right: 1rem;
   z-index: 1;
   transition: transform 0.3s ease-in-out;
-}
-
-.movie-info {
-  border-radius: 10px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 5%;
-  color: white;
-  display: flex;
-  box-sizing: border-box;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.movie-original-title {
-  margin: 0;
-  margin-top: 0.5rem;
-}
-
-.movie-details {
-  position: absolute;
-  bottom: 10px;
-  width: 90%;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.movie-rating,
-.movie-release-date {
-  font-size: 1rem;
-}
-
-.movie-card:hover .movie-poster {
-  filter: brightness(0.3);
-  transform: scale(1.06);
 }
 
 .bookmark-icon:active {
@@ -95,64 +42,41 @@
   white-space: nowrap;
 }
 
-.movie-rating_touch {
-  background-color: #f05723; 
-  color: white; 
-  font-size: .8rem; 
-  border-radius: 5px; 
-  padding: .15rem; 
+.movie-rating {
+  background-color: #f05723;
+  color: white;
+  font-size: 1rem;
+  border-radius: 5px;
+  padding: 0.15rem;
   position: absolute;
-  top: .8rem;
-  left: .7rem;
-  display: none;
+  top: 0.5rem;
+  left: 0.5rem;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  transition: transform 0.3s ease-in-out;
 }
 
-.movie-rating_touch span {
-  display: inline-block;
+.movie-rating span {
   padding: 0 5px;
 }
 
-/* Убираем эффекты при разрешении ниже 768px */
-@media (max-width: 767px) {
-  .movie-card:hover .movie-poster,
-  .movie-card:hover .movie-info,
-  .movie-card:hover .bookmark-icon {
-    transform: none;
-    filter: none;
-    /* opacity: 1; */
-  }
-  
-  /* Показываем иконку рейтинга и описание снизу изображения */
-  .movie-info_touch {
-    display: flex;
-  }
-
-  .movie-rating_touch {
-    display: inline-block;
-  }
+.movie-info {
+  display: flex;
+  flex-direction: row;
 }
 
-/* На больших экранах, начиная с 768px, показываем hover эффекты */
-@media (min-width: 768px) {
-  .movie-card:hover .movie-poster {
-    filter: brightness(0.3);
-    transform: scale(1.05);
-  }
+.movie-card:hover .poster-container {
+  transform: scale(1.03);
+}
 
-  .movie-card:hover .movie-info {
-    opacity: 1;
-  }
+.movie-card:hover .bookmark-icon {
+  transform: scale(1.8);
+}
 
+/* Убираем эффекты на экранах ниже 1024px */
+@media (max-width: 1023px) {
+  .movie-card:hover .poster-container,
   .movie-card:hover .bookmark-icon {
-    transform: scale(1.8);
-  }
-
-  .movie-info_touch {
-    display: none !important;
-  }
-
-  .movie-rating_touch {
-    display: none !important;
+    transform: none;
   }
 }
