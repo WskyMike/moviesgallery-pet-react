@@ -64,19 +64,6 @@ function MovieCard({ movie, isLoading }) {
     return () => clearInterval(interval);
   }, [isHovered]);
 
-  const getRatingColor = (rating) => {
-    if (rating >= 1 && rating < 4) {
-      return "#FF6B6B";
-    } else if (rating >= 4 && rating < 5.5) {
-      return "#FFA94D";
-    } else if (rating >= 5.5 && rating < 7) {
-      return "#FFD93D";
-    } else if (rating >= 7 && rating <= 10) {
-      return "#69DB7C";
-    }
-    return "#FFFFFF";
-  };
-
   return (
     <a
       href={!isLoading ? `/movie/${movie.id}` : undefined}
@@ -85,7 +72,7 @@ function MovieCard({ movie, isLoading }) {
       className="text-decoration-none text-black"
     >
       <div
-        className="movie-card"
+        className="movie-card pt-3"
         onClick={!isLoading ? handleClick : undefined}
       >
         {imageLoaded && !isLoading && !authLoading && user && (
@@ -113,41 +100,26 @@ function MovieCard({ movie, isLoading }) {
           </div>
         )}
 
-        {!isLoading && movie.rating && (
-          <div className="movie-rating_touch border-0">
-            <span>{movie.rating}</span>
-          </div>
-        )}
-
-        <img
-          src={
-            isLoading || !imageLoaded || imageError ? placeholder : movie.poster
-          }
-          alt={movie.title || movie.name}
-          className="movie-poster"
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageError(true)}
-        />
-
-        <div className="movie-info">
-          <h3 className="fs-4 movie-title">{movie.title || movie.name}</h3>
-          <h4 className="fs-6 fw-light movie-original-title">
-            {movie.original_title || movie.original_name}
-          </h4>
-          <div className="movie-details">
-            <span
-              className="fs-2 movie-rating"
-              style={{ color: getRatingColor(movie.rating) }}
-            >
-              {movie.rating}
-            </span>
-            <span className="fw-light movie-release-date">
-              {movie.release_date || movie.first_air_date}
-            </span>
-          </div>
+        <div className="poster-container">
+          {!isLoading && movie.rating && (
+            <div className="movie-rating border-0">
+              <span>{movie.rating}</span>
+            </div>
+          )}
+          <img
+            src={
+              isLoading || !imageLoaded || imageError
+                ? placeholder
+                : movie.poster
+            }
+            alt={movie.title || movie.name}
+            className="movie-poster"
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageError(true)}
+          />
         </div>
-        <div className="movie-info_touch flex-row">
-          <Col xs={11} className="d-flex flex-column text-start pe-1">
+        <div className="movie-info flex-row">
+          <Col xs={11} className="d-flex flex-column text-start pe-1 pt-1">
             <Row>
               <small className="movie-info-title fw-bold">
                 {movie.title ||

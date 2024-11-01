@@ -80,11 +80,11 @@ function MovieCarousel({ fetchMoviesApi, title, category }) {
             {title}
           </h2>
           <p className="ms-auto fw-normal fs-5 text-primary my-0">
-            {/* Текстовое отображение для экранов MD и выше */}
-            <span className="d-none d-md-block">Смотреть ещё</span>
+            {/* Текстовое отображение для экранов LG и выше */}
+            <span className="d-none d-lg-block">Смотреть ещё</span>
 
             {/* Иконка для экранов меньше SM */}
-            <span className="d-block d-md-none">
+            <span className="d-block d-lg-none">
               <Icon.ChevronRight aria-hidden="true" className="text-black" />
             </span>
           </p>
