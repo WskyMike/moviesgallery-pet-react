@@ -15,11 +15,21 @@ function Footer() {
         fluid
         className="text-start mt-4 pb-2 fw-light fs-6 text-secondary"
       >
-        <Row className="d-flex justify-content-between flex-nowrap">
-          <Col className="d-flex">
-            <small>Михаил Соснин &copy; 2024</small>
+        <Row className="d-flex flex-nowrap">
+          <Col xs={6} sm={4} lg={3} xl={2} className="d-flex">
+            <small>
+              <a
+                className="text-secondary link-offset-2"
+                href="https://mikewsky.tw1.ru/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Михаил Соснин
+              </a>
+              &nbsp;&copy; 2024
+            </small>
           </Col>
-          <Col className="d-flex justify-content-start">
+          <Col xs={6} sm={8} lg={9} xl={10} className="d-flex justify-content-start">
             <small>
               Данныe API&nbsp;
               <a
