@@ -75,65 +75,70 @@ function MovieCard({ movie, isLoading }) {
         className="movie-card pt-3"
         onClick={!isLoading ? handleClick : undefined}
       >
-        {imageLoaded && !isLoading && !authLoading && user && (
-          <div
-            className="bookmark-icon"
-            onClick={handleBookmarkClick}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            {isBookmarked ? (
-              <Icon.BookmarkStarFill
-                className="text-warning"
-                width="24"
-                height="24"
-              />
-            ) : isHovered ? (
-              <Icon.BookmarkStar
-                className="text-warning"
-                width="24"
-                height="24"
-              />
-            ) : (
-              <Icon.Bookmark className="text-warning" width="24" height="24" />
+        <div className="movie-content d-flex flex-column justify-content-end h-100">
+          <div className="poster-container">
+            {imageLoaded && !isLoading && !authLoading && user && (
+              <div
+                className="bookmark-icon"
+                onClick={handleBookmarkClick}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                {isBookmarked ? (
+                  <Icon.BookmarkStarFill
+                    className="text-warning"
+                    width="24"
+                    height="24"
+                  />
+                ) : isHovered ? (
+                  <Icon.BookmarkStar
+                    className="text-warning"
+                    width="24"
+                    height="24"
+                  />
+                ) : (
+                  <Icon.Bookmark
+                    className="text-warning"
+                    width="24"
+                    height="24"
+                  />
+                )}
+              </div>
             )}
+            {!isLoading && movie.rating && (
+              <div className="movie-rating border-0">
+                <span>{movie.rating}</span>
+              </div>
+            )}
+            <img
+              src={
+                isLoading || !imageLoaded || imageError
+                  ? placeholder
+                  : movie.poster
+              }
+              alt={movie.title || movie.name}
+              className="movie-poster"
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
+            />
           </div>
-        )}
-
-        <div className="poster-container">
-          {!isLoading && movie.rating && (
-            <div className="movie-rating border-0">
-              <span>{movie.rating}</span>
-            </div>
-          )}
-          <img
-            src={
-              isLoading || !imageLoaded || imageError
-                ? placeholder
-                : movie.poster
-            }
-            alt={movie.title || movie.name}
-            className="movie-poster"
-            onLoad={() => setImageLoaded(true)}
-            onError={() => setImageError(true)}
-          />
-        </div>
-        <div className="movie-info flex-row">
-          <Col xs={11} className="d-flex flex-column text-start pe-1 pt-1">
-            <Row>
-              <small className="movie-info-title fw-bold">
-                {movie.title ||
-                  movie.name ||
-                  movie.original_title ||
-                  movie.original_name}
-              </small>
-            </Row>
-            <Row>
-              <small className="text-secondary">
-                {movie.release_date || movie.first_air_date}
-              </small>
-            </Row>
-          </Col>
+          <div className="movie-info flex-row">
+            <Col xs={11} className="d-flex flex-column text-start pe-1 pt-1">
+              <Row>
+                <small className="movie-info-title fw-bold">
+                  {movie.title ||
+                    movie.name ||
+                    movie.original_title ||
+                    movie.original_name}
+                </small>
+              </Row>
+              <Row>
+                <small className="text-secondary">
+                  {movie.release_date || movie.first_air_date}
+                </small>
+              </Row>
+            </Col>
+          </div>
         </div>
       </div>
     </a>
