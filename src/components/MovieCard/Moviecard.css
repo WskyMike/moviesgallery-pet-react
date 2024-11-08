@@ -3,6 +3,7 @@
   overflow: hidden;
   text-align: center;
   padding: 0 0.25rem 0 0.25rem;
+  height: 100%
 }
 
 @media (min-width: 768px) {
@@ -26,8 +27,8 @@
 
 .bookmark-icon {
   position: absolute;
-  top: 1.3rem;
-  right: 1rem;
+  top: 0.5rem;
+  right: 0.5rem;
   z-index: 1;
   transition: transform 0.3s ease-in-out;
 }
@@ -70,7 +71,7 @@
 }
 
 .movie-card:hover .bookmark-icon {
-  transform: scale(1.8);
+  transform: scale(1.6);
 }
 
 /* Убираем эффекты на экранах ниже 1024px */
