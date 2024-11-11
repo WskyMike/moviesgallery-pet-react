@@ -11,7 +11,14 @@ export const LoadingProvider = ({ children }) => {
   const [bookmarksLoading, setBookmarksLoading] = useState(false);
 
   return (
-    <LoadingContext.Provider value={{ movieDetailsLoading, setMovieDetailsLoading, bookmarksLoading, setBookmarksLoading }}>
+    <LoadingContext.Provider
+      value={{
+        movieDetailsLoading,
+        setMovieDetailsLoading,
+        bookmarksLoading,
+        setBookmarksLoading,
+      }}
+    >
       {children}
     </LoadingContext.Provider>
   );

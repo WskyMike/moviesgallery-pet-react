@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Container, Navbar, Button, Nav } from "react-bootstrap";
-import * as Icon from "react-bootstrap-icons";
+import { CameraReels, PersonFill, BookmarkStarFill } from 'react-bootstrap-icons';
 import "./Navibar.css";
 import AuthModal from "../Auth/AuthModal";
 import ProfileModal from "../Profile/ProfileModal";
@@ -55,7 +55,7 @@ function NaviBar() {
         <Container fluid>
           <Navbar.Brand href="/" className="fs-2 me-5">
             Киногалерея &nbsp;
-            <Icon.CameraReels className="navibar-icon" />
+            <CameraReels className="navibar-icon" />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" className="border-0" />
           <Navbar.Collapse
@@ -88,7 +88,7 @@ function NaviBar() {
                             "translate3d(0, -.125rem, 0)",
                         }}
                       >
-                        <Icon.BookmarkStarFill aria-hidden="true" />
+                        <BookmarkStarFill aria-hidden="true" />
                         Мои фильмы
                       </Nav.Link>
                       <Nav.Link
@@ -99,7 +99,7 @@ function NaviBar() {
                             "translate3d(0, -.125rem, 0)",
                         }}
                       >
-                        <Icon.PersonFill aria-hidden="true" />
+                        <PersonFill aria-hidden="true" />
                         Аккаунт
                       </Nav.Link>
                     </>

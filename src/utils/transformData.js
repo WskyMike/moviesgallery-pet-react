@@ -1,14 +1,11 @@
 import countries from "i18n-iso-countries";
 import ruLocale from "i18n-iso-countries/langs/ru.json";
 import find from "lang-codes";
-import stub_poster from "../images/mesh-gradient.webp";
 
 countries.registerLocale(ruLocale);
 
 function getPosterPath(poster_path) {
-  return poster_path
-    ? `https://movieapiproxy.tw1.ru/t/p/w500${poster_path}`
-    : stub_poster;
+  return `https://movieapiproxy.tw1.ru/t/p/w500${poster_path}`
 }
 
 export async function transformSingleMovieData(item) {

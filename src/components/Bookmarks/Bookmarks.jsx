@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import MovieCard from "../MovieCard/Moviecard";
-// import placeholder from "../../images/mesh-gradient.webp";
 import SearchForm from "../SearchForm/SearchForm";
 import ScrollToTopButton from "../../vendor/ScrollToTopButton/ToTopButton";
 import ScrollToEndButton from "../../vendor/ScrollToEndButton/ScrollToEndButton";

@@ -2,7 +2,11 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import * as Icon from "react-bootstrap-icons";
+import {
+  Bookmark,
+  BookmarkStar,
+  BookmarkStarFill,
+} from "react-bootstrap-icons";
 import { Col, Row } from "react-bootstrap";
 import "./Moviecard.css";
 import placeholder from "../../images/mesh-gradient.webp";
@@ -12,7 +16,7 @@ import { useToast } from "../../contexts/ToastProvider";
 
 import { toggleBookmark, checkBookmarkStatus } from "../../utils/BookmarkUtils";
 
-function MovieCard({ movie, isLoading }) {
+function MovieCard({ movie, isLoading, onImageLoaded }) {
   const navigate = useNavigate();
   const { triggerToast } = useToast();
   const [isHovered, setIsHovered] = useState(false);
@@ -20,6 +24,12 @@ function MovieCard({ movie, isLoading }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    if (imageLoaded && onImageLoaded) {
+      onImageLoaded();
+    }
+  }, [imageLoaded]);
 
   // Проверяем, есть ли фильм в закладках
   useEffect(() => {
@@ -85,23 +95,19 @@ function MovieCard({ movie, isLoading }) {
                 onMouseLeave={() => setIsHovered(false)}
               >
                 {isBookmarked ? (
-                  <Icon.BookmarkStarFill
+                  <BookmarkStarFill
                     className="text-warning"
                     width="24"
                     height="24"
                   />
                 ) : isHovered ? (
-                  <Icon.BookmarkStar
+                  <BookmarkStar
                     className="text-warning"
                     width="24"
                     height="24"
                   />
                 ) : (
-                  <Icon.Bookmark
-                    className="text-warning"
-                    width="24"
-                    height="24"
-                  />
+                  <Bookmark className="text-warning" width="24" height="24" />
                 )}
               </div>
             )}
@@ -118,7 +124,9 @@ function MovieCard({ movie, isLoading }) {
               }
               alt={movie.title || movie.name}
               className="movie-poster"
-              onLoad={() => setImageLoaded(true)}
+              onLoad={() => {
+                if (!isLoading) setImageLoaded(true);
+              }}
               onError={() => setImageError(true)}
             />
           </div>

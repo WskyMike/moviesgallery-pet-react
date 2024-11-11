@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import * as Icon from "react-bootstrap-icons";
+import { ArrowDown } from 'react-bootstrap-icons';
 import "./ScrollToEndButton.css";
 
 function ScrollToEndButton() {
@@ -29,7 +29,7 @@ function ScrollToEndButton() {
       }`}
       onClick={handleClick}
     >
-      <Icon.ArrowDown />
+      <ArrowDown />
     </button>
   );
 }
