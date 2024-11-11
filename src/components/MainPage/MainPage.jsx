@@ -41,10 +41,7 @@ function MainPage() {
   // Последовательная загрузка каждой карусели
   useEffect(() => {
     if (currentCarousel < carousels.length) {
-      const timeout = setTimeout(() => {
-        setCurrentCarousel((prev) => prev + 1);
-      }, 1500);
-      return () => clearTimeout(timeout);
+      setCurrentCarousel((prev) => prev + 1);
     }
   }, [currentCarousel, carousels.length]);
 
