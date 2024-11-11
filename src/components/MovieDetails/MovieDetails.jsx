@@ -14,7 +14,7 @@ import { videosData } from "../../utils/VideosApi";
 import ActorsCarousel from "../ActorsCarousel/ActorsCarousel";
 import useMobileLayout from "../../hooks/useMobileLayout";
 import "./MovieDetails.css";
-import * as Icon from "react-bootstrap-icons";
+import { Bookmark, BookmarkStar, BookmarkStarFill } from 'react-bootstrap-icons';
 
 function MovieDetailsPage() {
   const { triggerToast } = useToast();
@@ -198,19 +198,19 @@ function MovieDetailsPage() {
                     onMouseLeave={() => setIsHovered(false)}
                   >
                     {isBookmarked ? (
-                      <Icon.BookmarkStarFill
+                      <BookmarkStarFill
                         className="me-2"
                         width="18"
                         height="18"
                       />
                     ) : isHovered ? (
-                      <Icon.BookmarkStar
+                      <BookmarkStar
                         className="me-2"
                         width="18"
                         height="18"
                       />
                     ) : (
-                      <Icon.Bookmark className="me-2" width="18" height="18" />
+                      <Bookmark className="me-2" width="18" height="18" />
                     )}
                     Буду смотреть
                   </button>
@@ -518,19 +518,19 @@ function MovieDetailsPage() {
                         onMouseLeave={() => setIsHovered(false)}
                       >
                         {isBookmarked ? (
-                          <Icon.BookmarkStarFill
+                          <BookmarkStarFill
                             className="me-2"
                             width="26"
                             height="26"
                           />
                         ) : isHovered ? (
-                          <Icon.BookmarkStar
+                          <BookmarkStar
                             className="me-2"
                             width="26"
                             height="26"
                           />
                         ) : (
-                          <Icon.Bookmark
+                          <Bookmark
                             className="me-2"
                             width="26"
                             height="26"

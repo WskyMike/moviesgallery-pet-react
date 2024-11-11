@@ -1,4 +1,4 @@
-import * as Icon from "react-bootstrap-icons";
+import { ArrowLeftShort } from 'react-bootstrap-icons';
 import { useNavigate } from "react-router-dom"; 
 import "./BackwardButton.css";
 
@@ -13,7 +13,7 @@ function BackwardButton() {
       className={`backward__button d-none d-xl-block`}
       onClick={handleClick} 
     >
-      <Icon.ArrowLeftShort />
+      <ArrowLeftShort />
     </button>
   );
 }

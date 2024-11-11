@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import * as Icon from "react-bootstrap-icons";
+import { ArrowUp } from 'react-bootstrap-icons';
 import "./ToTopButton.css";
 
 function ScrollToTopButton() {
@@ -29,7 +29,7 @@ function ScrollToTopButton() {
       }`}
       onClick={handleClick}
     >
-      <Icon.ArrowUp />
+      <ArrowUp />
     </button>
   );
 }

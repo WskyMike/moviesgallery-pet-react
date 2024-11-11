@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import SearchForm from "../SearchForm/SearchForm";
@@ -11,8 +11,6 @@ import { popularRusApi } from "../../utils/PopularRusApi";
 
 function MainPage() {
   const [currentCarousel, setCurrentCarousel] = useState(0);
-
-  console.log(currentCarousel);
 
   // Массив подборок фильмов (каруселей)
   const carousels = [
@@ -39,11 +37,9 @@ function MainPage() {
   ];
 
   // Последовательная загрузка каждой карусели
-  useEffect(() => {
-    if (currentCarousel < carousels.length) {
-      setCurrentCarousel((prev) => prev + 1);
-    }
-  }, [currentCarousel, carousels.length]);
+  const handleCarouselLoadComplete = () => {
+    setCurrentCarousel((prev) => prev + 1);
+  };
 
   return (
     <Container fluid>
@@ -54,6 +50,7 @@ function MainPage() {
           title={carousel.title}
           fetchMoviesApi={carousel.fetchMoviesApi}
           category={carousel.category}
+          onCarouselLoaded={handleCarouselLoadComplete}
         />
       ))}
     </Container>

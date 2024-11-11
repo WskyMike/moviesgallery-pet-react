@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
-import * as Icon from "react-bootstrap-icons";
+import { ChevronLeft, ChevronRight, ChevronCompactLeft, ChevronCompactRight } from 'react-bootstrap-icons';
 import './customArrows.css'
 
 const CustomLeftArrow = ({ onClick }) => {
   return (
     <button onClick={onClick} className="custom-arrow custom-arrow--left d-none d-lg-block">
-      <Icon.ChevronLeft />
+      <ChevronLeft />
     </button>
   );
 };
@@ -13,7 +13,7 @@ const CustomLeftArrow = ({ onClick }) => {
 const CustomRightArrow = ({ onClick }) => {
   return (
     <button onClick={onClick} className="custom-arrow custom-arrow--right d-none d-lg-block">
-      <Icon.ChevronRight />
+      <ChevronRight />
     </button>
   );
 };
@@ -21,7 +21,7 @@ const CustomRightArrow = ({ onClick }) => {
 const CustomLeftArrowThin = ({ onClick }) => {
   return (
     <button onClick={onClick} className="custom-arrow custom-arrow--left d-none d-md-block px-0">
-      <Icon.ChevronCompactLeft />
+      <ChevronCompactLeft />
     </button>
   );
 };
@@ -29,7 +29,7 @@ const CustomLeftArrowThin = ({ onClick }) => {
 const CustomRightArrowThin = ({ onClick }) => {
   return (
     <button onClick={onClick} className="custom-arrow custom-arrow--right d-none d-md-block px-0">
-      <Icon.ChevronCompactRight />
+      <ChevronCompactRight />
     </button>
   );
 };
