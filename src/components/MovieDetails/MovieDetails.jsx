@@ -14,7 +14,11 @@ import { videosData } from "../../utils/VideosApi";
 import ActorsCarousel from "../ActorsCarousel/ActorsCarousel";
 import useMobileLayout from "../../hooks/useMobileLayout";
 import "./MovieDetails.css";
-import { Bookmark, BookmarkStar, BookmarkStarFill } from 'react-bootstrap-icons';
+import {
+  Bookmark,
+  BookmarkStar,
+  BookmarkStarFill,
+} from "react-bootstrap-icons";
 
 function MovieDetailsPage() {
   const { triggerToast } = useToast();
@@ -34,16 +38,15 @@ function MovieDetailsPage() {
 
   // Фильм
   async function fetchMovieDetails() {
+    // setMovieDetailsLoading(true); 
     try {
-      setMovieDetailsLoading(true);
       const data = await movieDetailsData(id);
-      setMovie(data);
-      setMovieDetailsLoading(false);
       // Устанавливаем переменную CSS для фонового изображения
       // document.documentElement.style.setProperty(
       //   "--backdrop-url",
       //   `url(${data.backdrop})`
       // );
+      setMovie(data);
     } catch (err) {
       setError(err.message);
       triggerToast(
@@ -51,6 +54,7 @@ function MovieDetailsPage() {
         "danger-subtle",
         "danger-emphasis"
       );
+    } finally {
       setMovieDetailsLoading(false);
     }
   }
@@ -120,8 +124,8 @@ function MovieDetailsPage() {
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     setMovieDetailsLoading(true);
+    window.scrollTo(0, 0);
     fetchMovieDetails();
     fetchCredits();
     fetchVideos();
@@ -204,11 +208,7 @@ function MovieDetailsPage() {
                         height="18"
                       />
                     ) : isHovered ? (
-                      <BookmarkStar
-                        className="me-2"
-                        width="18"
-                        height="18"
-                      />
+                      <BookmarkStar className="me-2" width="18" height="18" />
                     ) : (
                       <Bookmark className="me-2" width="18" height="18" />
                     )}
@@ -530,11 +530,7 @@ function MovieDetailsPage() {
                             height="26"
                           />
                         ) : (
-                          <Bookmark
-                            className="me-2"
-                            width="26"
-                            height="26"
-                          />
+                          <Bookmark className="me-2" width="26" height="26" />
                         )}
                         Буду смотреть
                       </button>

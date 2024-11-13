@@ -7,7 +7,7 @@ export const useLoading = () => useContext(LoadingContext);
 
 // Обновляем состояние в MovieDetails !!!
 export const LoadingProvider = ({ children }) => {
-  const [movieDetailsLoading, setMovieDetailsLoading] = useState(false);
+  const [movieDetailsLoading, setMovieDetailsLoading] = useState(true);
   const [bookmarksLoading, setBookmarksLoading] = useState(false);
 
   return (
