@@ -38,7 +38,6 @@ function MovieDetailsPage() {
 
   // Фильм
   async function fetchMovieDetails() {
-    // setMovieDetailsLoading(true); 
     try {
       const data = await movieDetailsData(id);
       // Устанавливаем переменную CSS для фонового изображения

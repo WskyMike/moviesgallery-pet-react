@@ -9,6 +9,7 @@ export const useLoading = () => useContext(LoadingContext);
 export const LoadingProvider = ({ children }) => {
   const [movieDetailsLoading, setMovieDetailsLoading] = useState(true);
   const [bookmarksLoading, setBookmarksLoading] = useState(false);
+  const [mainPageLoading, setMainPageLoading] = useState(true);
 
   return (
     <LoadingContext.Provider
@@ -17,6 +18,8 @@ export const LoadingProvider = ({ children }) => {
         setMovieDetailsLoading,
         bookmarksLoading,
         setBookmarksLoading,
+        mainPageLoading,
+        setMainPageLoading,
       }}
     >
       {children}

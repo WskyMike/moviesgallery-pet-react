@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useLoading } from "../../contexts/LoadingContext";
 import SearchForm from "../SearchForm/SearchForm";
 import MovieCarousel from "../MovieCarousel/MovieCarousel";
 import { popularApi } from "../../utils/PopularApi";
@@ -11,6 +12,7 @@ import { popularRusApi } from "../../utils/PopularRusApi";
 
 function MainPage() {
   const [currentCarousel, setCurrentCarousel] = useState(0);
+  const { setMainPageLoading } = useLoading();
 
   // Массив подборок фильмов (каруселей)
   const carousels = [
@@ -40,6 +42,15 @@ function MainPage() {
   const handleCarouselLoadComplete = () => {
     setCurrentCarousel((prev) => prev + 1);
   };
+
+  // Отслеживаем загрузку для футера
+  useEffect(() => {
+    if (currentCarousel >= carousels.length) {
+      setMainPageLoading(false);
+    }
+  }, [currentCarousel, carousels.length]);
+
+  // console.debug(mainPageLoading)
 
   return (
     <Container fluid>
