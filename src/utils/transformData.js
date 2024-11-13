@@ -53,7 +53,7 @@ export async function transformMovieData(data) {
   return { movies, totalPages };
 }
 
-export function transformMovieDetailsData(item) {
+export async function transformMovieDetailsData(item) {
   return {
     genres: item.genres.map((genre) => genre.name),
     id: item.id,

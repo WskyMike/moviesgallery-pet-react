@@ -23,7 +23,12 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
   const { user, authLoading } = useAuth();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [currentSrc, setCurrentSrc] = useState(placeholder);
+
+  // Обновляем `currentSrc` при смене `isLoading`
+  useEffect(() => {
+    setCurrentSrc(isLoading ? placeholder : movie.poster);
+  }, [isLoading, movie.poster]);
 
   useEffect(() => {
     if (imageLoaded && onImageLoaded) {
@@ -111,38 +116,38 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
                 )}
               </div>
             )}
-            {!isLoading && movie.rating && (
+            {!isLoading && imageLoaded && movie.rating && (
               <div className="movie-rating border-0">
                 <span>{movie.rating}</span>
               </div>
             )}
             <img
-              src={
-                isLoading || !imageLoaded || imageError
-                  ? placeholder
-                  : movie.poster
-              }
+              src={currentSrc}
               alt={movie.title || movie.name}
               className="movie-poster"
               onLoad={() => {
-                if (!isLoading) setImageLoaded(true);
+                if (currentSrc === movie.poster) {
+                  setImageLoaded(true);
+                }
               }}
-              onError={() => setImageError(true)}
+              onError={() => setCurrentSrc(placeholder)}
             />
           </div>
           <div className="movie-info flex-row">
             <Col xs={11} className="d-flex flex-column text-start pe-1 pt-1">
               <Row>
                 <small className="movie-info-title fw-bold">
-                  {movie.title ||
-                    movie.name ||
-                    movie.original_title ||
-                    movie.original_name}
+                  {(!isLoading &&
+                    (movie.title ||
+                      movie.name ||
+                      movie.original_title ||
+                      movie.original_name)) ||
+                    ""}
                 </small>
               </Row>
               <Row>
                 <small className="text-secondary">
-                  {movie.release_date || movie.first_air_date}
+                  {movie.release_date || movie.first_air_date || "Загрузка..."}
                 </small>
               </Row>
             </Col>
