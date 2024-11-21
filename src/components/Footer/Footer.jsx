@@ -1,4 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
+import { BiLogoGithub } from "react-icons/bi";
 
 import { useLoading } from "../../contexts/LoadingContext";
 import { useAuth } from "../../contexts/AuthContext";
@@ -42,7 +43,7 @@ function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                GitHub
+                GitHub <BiLogoGithub className="fs-5" />
               </a>
             </small>
           </Col>

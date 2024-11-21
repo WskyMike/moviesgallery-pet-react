@@ -19,6 +19,7 @@ import {
   BookmarkStar,
   BookmarkStarFill,
 } from "react-bootstrap-icons";
+import { VscQuote } from "react-icons/vsc";
 
 function MovieDetailsPage() {
   const { triggerToast } = useToast();
@@ -181,7 +182,7 @@ function MovieDetailsPage() {
                   </small>
                 </div>
               </Row>
-              <Row className="mb-5 align-items-center w-100">
+              <Row className="mb-5 mt-3 align-items-center w-100">
                 <Col xs={6} className="text-center">
                   <div className="text-secondary">Рейтинг TMDB:</div>
                   <div className="fw-bold display-5">
@@ -216,16 +217,20 @@ function MovieDetailsPage() {
                 </Col>
               </Row>
               <Row className="mb-5">
-                <h3 className="text-start fw-bold fs-5 mb-4">О фильме</h3>
                 <Row className="pe-0">
-                  <figure>
-                    {movie?.tagline && (
-                      <figcaption className="fst-italic text-end blockquote-footer">
-                        {movie.tagline}
-                      </figcaption>
-                    )}
-                  </figure>
+                  {movie?.tagline && (
+                    <figure className="mb-4">
+                      <VscQuote className="d-flex fs-4" />
+                      <blockquote
+                        className="fst-italic text-start text-secondary blockquote mt-1 ps-4"
+                        style={{ fontSize: "0.9rem" }}
+                      >
+                        <p>{movie.tagline}</p>
+                      </blockquote>
+                    </figure>
+                  )}
                 </Row>
+                <h3 className="text-start fw-bold fs-5 mb-4">О фильме</h3>
                 <Row className="text-start fs-6 text-secondary pe-0">
                   <Col xs={6}>
                     <p>
@@ -380,18 +385,23 @@ function MovieDetailsPage() {
                       {movie?.original_title}
                     </h2>
                   </Row>
+
                   <Row>
                     <Col md={8}>
-                      <h3 className="text-start fw-bold fs-5 mb-4">О фильме</h3>
                       <Row>
-                        <figure>
-                          {movie?.tagline && (
-                            <figcaption className="fst-italic text-start blockquote-footer">
-                              {movie.tagline}
-                            </figcaption>
-                          )}
-                        </figure>
+                        {movie?.tagline && (
+                          <figure>
+                            <VscQuote className="d-flex fs-4" />
+                            <blockquote
+                              className="fst-italic text-start text-secondary blockquote mt-1 ps-4"
+                              style={{ fontSize: "0.9rem" }}
+                            >
+                              <p>{movie.tagline}</p>
+                            </blockquote>
+                          </figure>
+                        )}
                       </Row>
+                      <h3 className="text-start fw-bold fs-5 mb-4">О фильме</h3>
                       <Row className="text-start fs-6 text-secondary">
                         <Col md={5}>
                           <p>
