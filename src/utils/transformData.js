@@ -5,7 +5,7 @@ import find from "lang-codes";
 countries.registerLocale(ruLocale);
 
 function getPosterPath(poster_path) {
-  return `https://movieapiproxy.tw1.ru/t/p/w500${poster_path}`
+  return `https://movieapiproxy.tw1.ru/t/p/w500${poster_path}`;
 }
 
 export async function transformSingleMovieData(item) {
@@ -111,7 +111,7 @@ export async function transformMovieDetailsData(item) {
     production_companies: item.production_companies
       ? item.production_companies.map((company) => company.name).join(", ")
       : "Нет информации",
-    tagline: item.tagline,
+    tagline: item.tagline ? item.tagline.replace(/['"«»„“”]/g, "") : null,
     poster: getPosterPath(item.poster_path),
     // backdrop: `https://movieapiproxy.tw1.ru/t/p/w1280${item.backdrop_path}`,
     rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : "-",
