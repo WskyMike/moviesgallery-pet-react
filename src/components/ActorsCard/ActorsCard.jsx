@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Card } from "react-bootstrap";
 
-import "./ActorsCard.css"
+import "./ActorsCard.css";
 
 function ActorsCard({ actor }) {
   return (
@@ -14,9 +14,19 @@ function ActorsCard({ actor }) {
       />
       <Card.Body className="p-2 text-start d-flex flex-column justify-content-between bg-light rounded-bottom">
         <Card.Title className="actors-card__title">{actor.name}</Card.Title>
-        <Card.Text className="text-secondary lh-1 actors-card__text">
-          <small>{actor.character}</small>
-        </Card.Text>
+        <div>
+          <Card.Text className="text-secondary lh-1 actors-card__text mb-2">
+            <small>{actor?.character}</small>
+          </Card.Text>
+          {actor?.episode_count && (
+            <Card.Text
+              className="text-secondary lh-1 actors-card__text"
+              style={{ fontSize: "0.8rem" }}
+            >
+              <small>{actor.episode_count}</small>
+            </Card.Text>
+          )}
+        </div>
       </Card.Body>
     </Card>
   );

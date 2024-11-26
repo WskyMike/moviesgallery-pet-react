@@ -8,12 +8,11 @@ import { useToast } from "../../contexts/ToastProvider";
 
 import { toggleBookmark, checkBookmarkStatus } from "../../utils/BookmarkUtils";
 
-import { movieDetailsData } from "../../utils/MovieDetailApi";
-import { creditsMovieData } from "../../utils/CreditsMovieApi";
-import { videosData } from "../../utils/VideosApi";
+import { tvDetailsData } from "../../utils/TvDetailApi";
+import { tvVideosData } from "../../utils/TvVideosApi";
 import ActorsCarousel from "../ActorsCarousel/ActorsCarousel";
 import useMobileLayout from "../../hooks/useMobileLayout";
-import "./MovieDetails.css";
+import "./TvDetails.css";
 import {
   Bookmark,
   BookmarkStar,
@@ -21,14 +20,11 @@ import {
 } from "react-bootstrap-icons";
 import { VscQuote } from "react-icons/vsc";
 
-function MovieDetailsPage() {
+function TvDetailsPage() {
   const { triggerToast } = useToast();
   const { id } = useParams(); // Получаем ID фильма из URL
   const [movie, setMovie] = useState(null);
   const { movieDetailsLoading, setMovieDetailsLoading } = useLoading();
-  const [credits, setCredits] = useState({
-    directors: "",
-  });
   const [videoKeys, setVideoKeys] = useState([]);
   const [error, setError] = useState(null);
   const [loadingTrailer, setLoadingTrailer] = useState(true);
@@ -38,17 +34,13 @@ function MovieDetailsPage() {
   const isMobile = useMobileLayout();
 
   // Фильм
-  async function fetchMovieDetails() {
+  async function fetchTvDetails() {
     try {
-      const data = await movieDetailsData(id);
-      // Устанавливаем переменную CSS для фонового изображения
-      // document.documentElement.style.setProperty(
-      //   "--backdrop-url",
-      //   `url(${data.backdrop})`
-      // );
+      const data = await tvDetailsData(id);
       setMovie(data);
     } catch (err) {
       setError(err.message);
+      console.error(err);
       triggerToast(
         `Ошибка запроса данных (${err.message})`,
         "danger-subtle",
@@ -59,38 +51,23 @@ function MovieDetailsPage() {
     }
   }
 
-  // Актеры
-  async function fetchCredits() {
-    try {
-      const data = await creditsMovieData(id);
-      setCredits(data);
-    } catch (err) {
-      setError(err.message);
-      triggerToast(
-        `Ошибка запроса данных (${err.message})`,
-        "danger-subtle",
-        "danger-emphasis"
-      );
-    }
-  }
-
   // Трейлер
   async function fetchVideos() {
     try {
-      const keys = await videosData(id);
+      const keys = await tvVideosData(id);
       setVideoKeys(keys);
       setLoadingTrailer(false);
     } catch (err) {
       setError(err.message);
       triggerToast(
-        `Ошибка запроса данных (${err.message})`,
+        `Ошибка запроса данных для видео (${err.message})`,
         "danger-subtle",
         "danger-emphasis"
       );
     }
   }
 
-  // Проверка, есть ли фильм в закладках
+  // Проверка, есть ли сериал в закладках
   useEffect(() => {
     if (user && id && movie?.media_type) {
       checkBookmarkStatus({
@@ -103,7 +80,7 @@ function MovieDetailsPage() {
     }
   }, [user, id, movie?.media_type, triggerToast]);
 
-  // Добавление или удаление фильма из закладок
+  // Добавление или удаление сериала из закладок
   const handleBookmarkClick = () => {
     if (authLoading || !user) {
       triggerToast(
@@ -128,8 +105,7 @@ function MovieDetailsPage() {
   useEffect(() => {
     setMovieDetailsLoading(true);
     window.scrollTo(0, 0);
-    fetchMovieDetails();
-    fetchCredits();
+    fetchTvDetails();
     fetchVideos();
   }, [id]);
 
@@ -155,7 +131,7 @@ function MovieDetailsPage() {
                 {movie?.poster ? (
                   <img
                     src={movie.poster}
-                    alt={movie.title || movie.name}
+                    alt={movie.name}
                     className="img-fluid rounded-3"
                   />
                 ) : (
@@ -163,24 +139,30 @@ function MovieDetailsPage() {
                 )}
               </Col>
               <Row className="mb-2">
-                <h1 className="mb-1 fs-2 text-center fw-bold">
-                  {movie?.title}
-                </h1>
+                <h1 className="mb-1 fs-2 text-center fw-bold">{movie?.name}</h1>
                 <h2 className="fs-4 text-center fw-light">
-                  <small>{movie?.original_title}</small>
+                  <small>{movie?.original_name}</small>
                 </h2>
               </Row>
               <Row className="mb-5 mx-2">
                 <div>
                   <small className="text-secondary">
-                    {movie?.release_year || "-"},&nbsp;
+                    {movie?.first_air_year || null} -{" "}
+                    {movie?.status === "Завершился" ||
+                    movie?.status === "Отменён"
+                      ? movie?.last_air_year
+                      : "н.в."}
+                    &nbsp;
+                    <br />
                     {movie?.genres.join(", ") || "-"}
                   </small>
                 </div>
                 <div>
                   <small className="text-secondary">
-                    {movie?.production_countries || "-"},&nbsp;
-                    {movie?.runtime || "-"}{" "}
+                    {movie?.production_countries}
+                    {movie?.episode_run_time
+                      ? `, ${movie.episode_run_time}`
+                      : ""}
                   </small>
                 </div>
               </Row>
@@ -232,8 +214,32 @@ function MovieDetailsPage() {
                     </figure>
                   )}
                 </Row>
-                <h3 className="text-start fw-bold fs-5 mb-4">О фильме</h3>
+                <h3 className="text-start fw-bold fs-5 mb-4">О сериале</h3>
                 <Row className="text-start fs-6 text-secondary pe-0">
+                  <Col xs={6}>
+                    <p>
+                      <small>Статус</small>
+                    </p>
+                  </Col>
+                  <Col sx={6}>
+                    <p className="text-end">
+                      <small
+                        className={`badge fw-normal ${
+                          {
+                            Продолжается: "text-bg-success",
+                            Завершился: "text-bg-danger",
+                            "В производстве": "text-bg-warning",
+                            Запланирован: "text-bg-info",
+                            Отменён: "text-bg-secondary",
+                            "Пилотный выпуск": "text-bg-primary",
+                          }[movie?.status] || "text-bg-secondary"
+                        }`}
+                        style={{ fontSize: "0.875em" }}
+                      >
+                        {movie?.status || "Неизвестен"}
+                      </small>
+                    </p>
+                  </Col>
                   <Col xs={6}>
                     <p>
                       <small>Оригинальный язык</small>
@@ -248,24 +254,36 @@ function MovieDetailsPage() {
                 <Row className="text-start fs-6 text-secondary pe-0">
                   <Col xs={6}>
                     <p>
-                      <small>Дата выхода</small>
+                      <small>Первый эпизод</small>
                     </p>
                   </Col>
                   <Col xs={6}>
                     <p className="text-black text-end">
-                      <small>{movie?.release_date || "-"}</small>
+                      <small>{movie?.first_air_date || "-"}</small>
                     </p>
                   </Col>
                 </Row>
                 <Row className="text-start fs-6 text-secondary pe-0">
                   <Col xs={6}>
                     <p>
-                      <small>Режиссер</small>
+                      <small>Последний эпизод</small>
                     </p>
                   </Col>
                   <Col xs={6}>
                     <p className="text-black text-end">
-                      <small>{credits?.directors || "-"}</small>{" "}
+                      <small>{movie?.last_air_date || "-"}</small>
+                    </p>
+                  </Col>
+                </Row>
+                <Row className="text-start fs-6 text-secondary">
+                  <Col xs={6}>
+                    <p>
+                      <small>Создатель</small>
+                    </p>
+                  </Col>
+                  <Col xs={6}>
+                    <p className="text-black text-end">
+                      <small>{movie?.creator || "-"}</small>{" "}
                     </p>
                   </Col>
                 </Row>
@@ -281,35 +299,10 @@ function MovieDetailsPage() {
                     </p>
                   </Col>
                 </Row>
-                <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6}>
-                    <p>
-                      <small>Бюджет</small>
-                    </p>
-                  </Col>
-                  <Col xs={6}>
-                    <p className="text-black text-end">
-                      <small>{movie?.budget || "-"}</small>
-                    </p>
-                  </Col>
-                </Row>
-                <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6}>
-                    <p>
-                      <small>Сборы в мире</small>
-                    </p>
-                  </Col>
-                  <Col xs={6}>
-                    <p className="text-black text-end">
-                      <small>{movie?.revenue || "-"}</small>
-                    </p>
-                  </Col>
-                </Row>
                 <Row className="m-0">
                   <hr className="my-4"></hr>
                   <small className="text-start p-0">
-                    {movie?.overview ||
-                      "Нет обзора, переведённого на русский язык."}
+                    {movie?.overview || "Простите, но описания не нашлось."}
                   </small>
                 </Row>
               </Row>
@@ -343,7 +336,7 @@ function MovieDetailsPage() {
                   {movie?.poster ? (
                     <img
                       src={movie.poster}
-                      alt={movie.title || movie.name}
+                      alt={movie.name || movie.name}
                       className="img-fluid rounded-3"
                     />
                   ) : (
@@ -379,13 +372,19 @@ function MovieDetailsPage() {
                 <Col lg={8} className="px-5 px-lg-4">
                   <Row className="mb-5">
                     <h1 className="fs-2 text-md-start text-center fw-bold">
-                      {movie?.title}
+                      {movie?.name}
                       <small className="fw-light">
-                        &nbsp;({movie?.release_year || "-"})
+                        &nbsp;(
+                        {movie?.first_air_year || null} -{" "}
+                        {movie?.status === "Завершился" ||
+                        movie?.status === "Отменён"
+                          ? movie?.last_air_year
+                          : "..."}
+                        )
                       </small>
                     </h1>
                     <h2 className="fs-5 text-md-start text-center text-secondary">
-                      {movie?.original_title}
+                      {movie?.original_name}
                     </h2>
                   </Row>
 
@@ -404,7 +403,35 @@ function MovieDetailsPage() {
                           </figure>
                         )}
                       </Row>
-                      <h3 className="text-start fw-bold fs-5 mb-4">О фильме</h3>
+                      <h3 className="text-start fw-bold fs-5 mb-4">
+                        О сериале
+                      </h3>
+                      <Row className="text-start fs-6 text-secondary">
+                        <Col md={5}>
+                          <p>
+                            <small>Статус</small>
+                          </p>
+                        </Col>
+                        <Col md={7}>
+                          <p>
+                            <small
+                              className={`badge fw-normal ${
+                                {
+                                  Продолжается: "text-bg-success",
+                                  Завершился: "text-bg-danger",
+                                  "В производстве": "text-bg-warning",
+                                  Запланирован: "text-bg-info",
+                                  Отменён: "text-bg-secondary",
+                                  "Пилотный выпуск": "text-bg-primary",
+                                }[movie?.status] || "text-bg-secondary"
+                              }`}
+                              style={{ fontSize: "0.875em" }}
+                            >
+                              {movie?.status || "Неизвестен"}
+                            </small>{" "}
+                          </p>
+                        </Col>
+                      </Row>
                       <Row className="text-start fs-6 text-secondary">
                         <Col md={5}>
                           <p>
@@ -414,18 +441,6 @@ function MovieDetailsPage() {
                         <Col md={7}>
                           <p className="text-black">
                             <small>{movie?.genres.join(", ") || "-"}</small>
-                          </p>
-                        </Col>
-                      </Row>
-                      <Row className="text-start fs-6 text-secondary">
-                        <Col md={5}>
-                          <p>
-                            <small>Продолжительность</small>
-                          </p>
-                        </Col>
-                        <Col md={7}>
-                          <p className="text-black">
-                            <small>{movie?.runtime || "-"}</small>
                           </p>
                         </Col>
                       </Row>
@@ -456,24 +471,36 @@ function MovieDetailsPage() {
                       <Row className="text-start fs-6 text-secondary">
                         <Col md={5}>
                           <p>
-                            <small>Дата выхода</small>
+                            <small>Первый эпизод</small>
                           </p>
                         </Col>
                         <Col md={7}>
                           <p className="text-black">
-                            <small>{movie?.release_date || "-"}</small>
+                            <small>{movie?.first_air_date || "-"}</small>
                           </p>
                         </Col>
                       </Row>
                       <Row className="text-start fs-6 text-secondary">
                         <Col md={5}>
                           <p>
-                            <small>Режиссер</small>
+                            <small>Последний эпизод</small>
                           </p>
                         </Col>
                         <Col md={7}>
                           <p className="text-black">
-                            <small>{credits?.directors || "-"}</small>{" "}
+                            <small>{movie?.last_air_date || "-"}</small>
+                          </p>
+                        </Col>
+                      </Row>
+                      <Row className="text-start fs-6 text-secondary">
+                        <Col md={5}>
+                          <p>
+                            <small>Создатель</small>
+                          </p>
+                        </Col>
+                        <Col md={7}>
+                          <p className="text-black">
+                            <small>{movie?.creator || "-"}</small>{" "}
                           </p>
                         </Col>
                       </Row>
@@ -486,30 +513,6 @@ function MovieDetailsPage() {
                         <Col md={7}>
                           <p className="text-black">
                             <small>{movie?.production_companies || "-"}</small>
-                          </p>
-                        </Col>
-                      </Row>
-                      <Row className="text-start fs-6 text-secondary">
-                        <Col md={5}>
-                          <p>
-                            <small>Бюджет</small>
-                          </p>
-                        </Col>
-                        <Col md={7}>
-                          <p className="text-black">
-                            <small>{movie?.budget || "-"}</small>
-                          </p>
-                        </Col>
-                      </Row>
-                      <Row className="text-start fs-6 text-secondary">
-                        <Col md={5}>
-                          <p>
-                            <small>Сборы в мире</small>
-                          </p>
-                        </Col>
-                        <Col md={7}>
-                          <p className="text-black">
-                            <small>{movie?.revenue || "-"}</small>
                           </p>
                         </Col>
                       </Row>
@@ -551,8 +554,7 @@ function MovieDetailsPage() {
                   <Row>
                     <hr className="my-4"></hr>
                     <p className="text-start">
-                      {movie?.overview ||
-                        "Нет обзора, переведённого на русский язык."}
+                      {movie?.overview || "Простите, но описания не нашлось."}
                     </p>
                   </Row>
                 </Col>
@@ -569,4 +571,4 @@ function MovieDetailsPage() {
   );
 }
 
-export default MovieDetailsPage;
+export default TvDetailsPage;

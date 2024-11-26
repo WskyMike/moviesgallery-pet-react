@@ -14,6 +14,7 @@ import { popularApi } from "../../utils/PopularApi";
 import { topRatedApi } from "../../utils/TopRatedApi";
 import { nowPlayingApi } from "../../utils/NowPlayingApi";
 import { popularRusApi } from "../../utils/PopularRusApi";
+import { popularTvApi } from "../../utils/PopularTvApi";
 
 function MovieList() {
   const { category } = useParams(); // Получаем параметр из URL
@@ -26,6 +27,7 @@ function MovieList() {
       topRated: "Лучшие фильмы",
       nowPlaying: "Сейчас в кино",
       popularRus: "Популярные российские фильмы",
+      popularTv: "Лучшие сериалы",
     }),
     []
   );
@@ -39,6 +41,7 @@ function MovieList() {
       topRated: topRatedApi,
       nowPlaying: nowPlayingApi,
       popularRus: popularRusApi,
+      popularTv: popularTvApi,
     }),
     []
   );
@@ -67,6 +70,11 @@ function MovieList() {
         moviesKey: "popularRusMovies",
         pageKey: "popularRusPage",
         totalPagesKey: "popularRusTotalPages",
+      },
+      popularTv: {
+        moviesKey: "popularTvMovies",
+        pageKey: "popularTvPage",
+        totalPagesKey: "popularTvTotalPages",
       },
     }),
     []

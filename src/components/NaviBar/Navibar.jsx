@@ -89,7 +89,7 @@ function NaviBar() {
                         }}
                       >
                         <BookmarkStarFill aria-hidden="true" />
-                        Мои фильмы
+                        Мои закладки
                       </Nav.Link>
                       <Nav.Link
                         onClick={handleOpenProfileModal}

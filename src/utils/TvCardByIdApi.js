@@ -1,6 +1,6 @@
-import { transformMoviesCreditsData } from "./transformCreditsData";
+import { transformSingleTvData } from "./transformData";
 
-export async function creditsMovieData(movieId) {
+export async function TvCardByIdData(movieId) {
   const options = {
     method: "GET",
     headers: {
@@ -12,18 +12,18 @@ export async function creditsMovieData(movieId) {
 
   try {
     const response = await fetch(
-      `https://try.readme.io/https://api.themoviedb.org/3/movie/${movieId}/credits?language=ru-RU`,
+      `https://try.readme.io/https://api.themoviedb.org/3/tv/${movieId}?language=ru-RU`,
       options
     );
     if (!response.ok) {
       throw new Error(`Ошибка API. Status: ${response.status}`);
     }
 
-    const creditsData = await response.json();
-    const selectedItems = await transformMoviesCreditsData(creditsData); 
+    const selectedItems = await transformSingleTvData(await response.json());
+    // console.log(selectedItems);
     return selectedItems;
   } catch (error) {
-    console.error("Ошибка при выполнении запроса creditsMovieData", error);
+    console.error("Ошибка при выполнении запроса transformMovieData", error);
     throw error;
   }
 }

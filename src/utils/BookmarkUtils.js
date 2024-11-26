@@ -3,7 +3,8 @@ import { db } from "./firebase";
 
 export const toggleBookmark = async ({
   userId,
-  movieId,
+  itemId,
+  mediaType,
   isBookmarked,
   setIsBookmarked,
   triggerToast,
@@ -12,23 +13,24 @@ export const toggleBookmark = async ({
 }) => {
   if (preventPropagation && event) event.stopPropagation();
 
-  const docRef = doc(db, "users", userId, "bookmarks", String(movieId));
+  const docKey = `${mediaType}_${itemId}`;
+  const docRef = doc(db, "users", userId, "bookmarks", docKey);
 
   try {
     if (isBookmarked) {
       await deleteDoc(docRef);
       setIsBookmarked(false);
       triggerToast(
-        "Удалили фильм",
+        `Удалили ${mediaType === "movie" ? "фильм" : "сериал"}`,
         "info-subtle",
         "info-emphasis",
         "top-center"
       );
     } else {
-      await setDoc(docRef, { movieId, timestamp: Timestamp.now() });
+      await setDoc(docRef, { itemId, mediaType, timestamp: Timestamp.now() });
       setIsBookmarked(true);
       triggerToast(
-        "Сохранили фильм",
+        `Сохранили ${mediaType === "movie" ? "фильм" : "сериал"}`,
         "info-subtle",
         "info-emphasis",
         "top-center"
@@ -48,12 +50,15 @@ export const toggleBookmark = async ({
 // Универсальная функция для проверки наличия фильма в закладках
 export const checkBookmarkStatus = async ({
   userId,
-  movieId,
+  itemId,
+  mediaType,
   setIsBookmarked,
   triggerToast,
 }) => {
+  const docKey = `${mediaType}_${itemId}`;
+  const docRef = doc(db, "users", userId, "bookmarks", docKey);
+
   try {
-    const docRef = doc(db, "users", userId, "bookmarks", String(movieId));
     const docSnap = await getDoc(docRef);
     setIsBookmarked(docSnap.exists());
   } catch (error) {

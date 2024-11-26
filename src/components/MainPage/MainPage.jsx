@@ -8,7 +8,7 @@ import { popularApi } from "../../utils/PopularApi";
 import { topRatedApi } from "../../utils/TopRatedApi";
 import { nowPlayingApi } from "../../utils/NowPlayingApi";
 import { popularRusApi } from "../../utils/PopularRusApi";
-// import { popularTvApi } from "../../utils/PopularTvApi";
+import { popularTvApi } from "../../utils/PopularTvApi";
 
 function MainPage() {
   const [currentCarousel, setCurrentCarousel] = useState(0);
@@ -27,14 +27,19 @@ function MainPage() {
       category: "nowPlaying",
     },
     {
-      title: "Лучшие фильмы",
-      fetchMoviesApi: topRatedApi,
-      category: "topRated",
-    },
-    {
       title: "Популярные российские фильмы",
       fetchMoviesApi: popularRusApi,
       category: "popularRus",
+    },
+    {
+      title: "Лучшие сериалы",
+      fetchMoviesApi: popularTvApi,
+      category: "popularTv",
+    },
+    {
+      title: "Лучшие фильмы",
+      fetchMoviesApi: topRatedApi,
+      category: "topRated",
     },
   ];
 
