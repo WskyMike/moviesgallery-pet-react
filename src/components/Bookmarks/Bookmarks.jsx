@@ -10,6 +10,7 @@ import BackwardButton from "../../vendor/BackwardButton/BackwardButton";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLoading } from "../../contexts/LoadingContext";
 import { MovieCardByIdData } from "../../utils/MovieCardByIdApi";
+import { TvCardByIdData } from "../../utils/TvCardByIdApi"
 
 import { db } from "../../utils/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
@@ -30,18 +31,30 @@ function Bookmarks() {
             orderBy("timestamp", "asc")
           );
           const querySnapshot = await getDocs(bookmarksQuery);
-          const movieIds = querySnapshot.docs.map((doc) => doc.data().movieId);
 
-          const movies = await Promise.all(
-            movieIds.map((id) => MovieCardByIdData(id))
+          // Формируем запросы для фильмов и сериалов
+          const bookmarks = querySnapshot.docs.map((doc) => ({
+            id: doc.data().itemId,
+            mediaType: doc.data().mediaType,
+          }));
+
+          const items = await Promise.all(
+            bookmarks.map(
+              (bookmark) =>
+                bookmark.mediaType === "movie"
+                  ? MovieCardByIdData(bookmark.id) // Запрос к API фильмов
+                  : TvCardByIdData(bookmark.id) // Запрос к API сериалов
+            )
           );
-          setBookmarkedMovies(movies);
+
+          setBookmarkedMovies(items);
         } catch (error) {
           console.error("Error fetching bookmarks:", error);
         } finally {
           setBookmarksLoading(false);
         }
       };
+
       fetchBookmarks();
     }
   }, [user, setBookmarksLoading]);
@@ -55,7 +68,7 @@ function Bookmarks() {
         <SearchForm />
         <Container fluid="xl">
           <Row className="pt-2 sticky-header">
-            <h2 className="text-start display-5">Мои сохраненные фильмы</h2>
+            <h2 className="text-start display-5">Буду смотреть</h2>
           </Row>
           <Row className="mb-2 mb-md-5 mt-4">
             {bookmarksLoading ? (

@@ -8,11 +8,14 @@ import {
   CustomLeftArrowThin,
   CustomRightArrowThin,
 } from "../../vendor/customArrows";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
+
 import { creditsMovieData } from "../../utils/CreditsMovieApi";
+import { creditsTvData } from "../../utils/CreditsTvApi";
 
 function ActorsCarousel() {
   const { id } = useParams(); // Получаем ID фильма из URL
+  const location = useLocation(); // Получаем текущий путь
   const [actors, setActors] = useState([]);
   const [error, setError] = useState(null);
   const [loadingCredits, setLoadingCredits] = useState(true);
@@ -20,7 +23,11 @@ function ActorsCarousel() {
 
   async function fetchActors() {
     try {
-      const data = await creditsMovieData(id);
+      const fetchCredits = location.pathname.startsWith("/movie/")
+        ? creditsMovieData
+        : creditsTvData;
+
+      const data = await fetchCredits(id);
       // Фильтрация дубликатов по id
       const uniqueActors = data.actors.filter(
         (actor, index, self) =>
@@ -38,7 +45,7 @@ function ActorsCarousel() {
 
   useEffect(() => {
     fetchActors();
-  }, [id]);
+  }, [id, location.pathname]);
 
   const goToPrevious = () => {
     if (carouselRef.current) {

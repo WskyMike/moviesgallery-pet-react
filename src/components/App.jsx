@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import NaviBar from "./NaviBar/Navibar";
 import MovieDetails from "./MovieDetails/MovieDetails";
+import TvDetails from "./TvDetails/TvDetails";
 import MovieList from "./MovieList/MovieList";
 import MainPage from "./MainPage/MainPage";
 import Footer from "./Footer/Footer";
@@ -24,6 +25,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<MainPage />} />
                 <Route path="/movie/:id" element={<MovieDetails />} />
+                <Route path="/tv/:id" element={<TvDetails />} />
                 <Route path="/list/:category" element={<MovieList />} />
                 <Route path="*" element={<Navigate to="/" />} />
                 <Route

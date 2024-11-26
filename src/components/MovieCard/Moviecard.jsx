@@ -38,15 +38,16 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
 
   // Проверяем, есть ли фильм в закладках
   useEffect(() => {
-    if (user && movie.id) {
+    if (user && movie?.id && movie?.media_type) {
       checkBookmarkStatus({
         userId: user.uid,
-        movieId: movie.id,
+        itemId: movie.id,
+        mediaType: movie.media_type,
         setIsBookmarked,
         triggerToast,
       });
     }
-  }, [user, movie.id, triggerToast]);
+  }, [user, movie?.id, movie?.media_type, triggerToast]);
 
   // Сохраняем или удаляем закладку
   const handleBookmarkClick = (e) => {
@@ -54,7 +55,8 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
     e.preventDefault();
     toggleBookmark({
       userId: user.uid,
-      movieId: movie.id,
+      itemId: movie.id,
+      mediaType: movie.media_type,
       isBookmarked,
       setIsBookmarked,
       triggerToast,
@@ -65,7 +67,9 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
 
   const handleClick = () => {
     if (!isLoading) {
-      navigate(`/movie/${movie.id}`);
+      const path =
+        movie.media_type === "tv" ? `/tv/${movie.id}` : `/movie/${movie.id}`;
+      navigate(path);
     }
   };
 
@@ -81,7 +85,11 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
 
   return (
     <a
-      href={!isLoading ? `/movie/${movie.id}` : undefined}
+      href={
+        !isLoading
+          ? `/${movie.media_type === "tv" ? "tv" : "movie"}/${movie.id}`
+          : undefined
+      }
       tabIndex={!isLoading ? 0 : -1} // фокусируемая только если !isLoading
       role={!isLoading ? "link" : undefined}
       className="text-decoration-none text-black"

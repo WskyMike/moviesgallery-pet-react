@@ -1,4 +1,4 @@
-import { transformMovieData } from "../utils/transformData";
+import { transformTvData } from "../utils/transformData";
 
 export async function popularTvApi(page = 1) {
   const options = {
@@ -12,19 +12,19 @@ export async function popularTvApi(page = 1) {
 
   try {
     const response = await fetch(
-      `https://try.readme.io/https://api.themoviedb.org/3/tv/top_rated?language=ru-RU&page=${page}`,
+      `https://try.readme.io/https://api.themoviedb.org/3/discover/tv?language=ru-RU&page=${page}&watch_region=RU&sort_by=vote_count.desc`,
       options
     );
     if (!response.ok) {
       throw new Error(`Ошибка API. Status: ${response.status}`);
     }
-    const { movies, totalPages } = await transformMovieData(
+    const { movies, totalPages } = await transformTvData(
       await response.json()
     );
-    // console.log({ movies, totalPages });
+    // console.debug({ movies, totalPages });
     return { movies, totalPages };
   } catch (error) {
-    console.error("Ошибка при выполнении запроса popularApi", error);
+    console.error("Ошибка при выполнении запроса popularTvApi", error);
     return { movies: [], totalPages: 0 };
   }
 }

@@ -20,7 +20,7 @@ export async function movieDetailsData(movieId) {
     }
 
     const selectedItems = transformMovieDetailsData(await response.json());
-    // console.log(selectedItems);
+    // console.debug(selectedItems);
     return selectedItems;
   } catch (error) {
     console.error("Ошибка при выполнении запроса movieDetailsData", error);
