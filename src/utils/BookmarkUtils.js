@@ -22,18 +22,18 @@ export const toggleBookmark = async ({
       setIsBookmarked(false);
       triggerToast(
         `Удалили ${mediaType === "movie" ? "фильм" : "сериал"}`,
-        "info-subtle",
-        "info-emphasis",
-        "top-center"
+        // "info-subtle",
+        // "info-emphasis",
+        // "top-center"
       );
     } else {
       await setDoc(docRef, { itemId, mediaType, timestamp: Timestamp.now() });
       setIsBookmarked(true);
       triggerToast(
         `Сохранили ${mediaType === "movie" ? "фильм" : "сериал"}`,
-        "info-subtle",
-        "info-emphasis",
-        "top-center"
+        // "info-subtle",
+        // "info-emphasis",
+        // "top-center"
       );
     }
   } catch (error) {
