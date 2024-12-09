@@ -37,6 +37,19 @@ function MovieDetailsPage() {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const isMobile = useMobileLayout();
 
+  useEffect(() => {
+    // Устанавливаем title в зависимости от названия фильма
+    document.title = movie?.title
+      ? movie.original_title && movie.title !== movie.original_title
+        ? `${movie.title} • ${movie.original_title}`
+        : movie.title
+      : "Киногалерея";
+
+    return () => {
+      document.title = "Киногалерея";
+    };
+  }, [movie]);
+
   // Фильм
   async function fetchMovieDetails() {
     try {
@@ -108,9 +121,6 @@ function MovieDetailsPage() {
     if (authLoading || !user) {
       triggerToast(
         "Необходимо войти в аккаунт",
-        "info-subtle",
-        "info-emphasis",
-        "top-center"
       );
       return;
     }
@@ -477,6 +487,7 @@ function MovieDetailsPage() {
                           </p>
                         </Col>
                       </Row>
+
                       <Row className="text-start fs-6 text-secondary">
                         <Col md={5}>
                           <p>
@@ -489,6 +500,7 @@ function MovieDetailsPage() {
                           </p>
                         </Col>
                       </Row>
+                      
                       <Row className="text-start fs-6 text-secondary">
                         <Col md={5}>
                           <p>

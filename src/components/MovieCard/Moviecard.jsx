@@ -124,7 +124,7 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
                 )}
               </div>
             )}
-            {!isLoading && imageLoaded && movie.rating && (
+            {!isLoading && imageLoaded && movie?.rating && (
               <div className="movie-rating border-0">
                 <span>{movie.rating}</span>
               </div>

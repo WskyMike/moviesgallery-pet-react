@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Container, Row, Col } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Container, Row, Col, Card } from "react-bootstrap";
+import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useAuth } from "../../contexts/AuthContext";
@@ -20,6 +20,8 @@ import {
 } from "react-bootstrap-icons";
 import { VscQuote } from "react-icons/vsc";
 
+import { BsCalendar3, BsCheck2Square } from "react-icons/bs";
+
 function TvDetailsPage() {
   const { triggerToast } = useToast();
   const { id } = useParams(); // Получаем ID фильма из URL
@@ -32,6 +34,19 @@ function TvDetailsPage() {
   const { user, authLoading } = useAuth();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const isMobile = useMobileLayout();
+
+  useEffect(() => {
+    // Устанавливаем title в зависимости от названия фильма
+    document.title = movie?.name
+      ? movie.original_name && movie.name !== movie.original_name
+        ? `${movie.name} • ${movie.original_name}`
+        : movie.name
+      : "Киногалерея";
+
+    return () => {
+      document.title = "Киногалерея";
+    };
+  }, [movie]);
 
   // Фильм
   async function fetchTvDetails() {
@@ -83,12 +98,7 @@ function TvDetailsPage() {
   // Добавление или удаление сериала из закладок
   const handleBookmarkClick = () => {
     if (authLoading || !user) {
-      triggerToast(
-        "Необходимо войти в аккаунт",
-        "info-subtle",
-        "info-emphasis",
-        "top-center"
-      );
+      triggerToast("Необходимо войти в аккаунт");
       return;
     }
 
@@ -306,6 +316,61 @@ function TvDetailsPage() {
                   </small>
                 </Row>
               </Row>
+              {/* Карточка сезон */}
+              <Row className="text-start mx-0 mb-5">
+                <h3 className=" fw-bold fs-5 mb-4 mt-3 px-0">Текущий сезон</h3>
+                <Card className="border-0 bg-light text-start px-0">
+                  <Col className="d-flex">
+                    <Card.Body className="d-flex flex-column justify-content-start">
+                      <Card.Title className="fw-semibold">
+                        {movie?.last_production_season.name}{" "}
+                      </Card.Title>
+                      <Card.Text className="mb-2">
+                        {movie?.last_production_season.vote_average > 0 && (
+                          <span
+                            className="badge fw-semibold text-bg-secondary"
+                            style={{ fontSize: "0.875em" }}
+                          >
+                            {movie.last_production_season.vote_average}
+                          </span>
+                        )}
+                        <small className="text-muted">
+                          {" "}
+                          {movie?.last_production_season.episode_count} эпизодов
+                        </small>
+                      </Card.Text>
+                      <Card.Body className="px-0">
+                        {" "}
+                        <Card.Text style={{ fontSize: "0.875em" }}>
+                          <BsCheck2Square />
+                          &ensp;Последний эпизод сезона вышел&ensp;
+                          <nobr>{movie?.last_episode_to_air}</nobr>
+                        </Card.Text>
+                        <Card.Text style={{ fontSize: "0.875em" }}>
+                          <BsCalendar3 />
+                          &ensp;
+                          {movie?.next_episode_to_air ? (
+                            <>
+                              Следующий эпизод планируется{" "}
+                              <nobr>{movie?.next_episode_to_air}</nobr>
+                            </>
+                          ) : (
+                            "Новые эпизоды не планируются."
+                          )}
+                        </Card.Text>
+                      </Card.Body>
+                      <Card.Text className="fs-5 text-center mt-3 text-primary">
+                        <Link
+                          to={`/tv/${id}/seasons`}
+                          className="text-decoration-none"
+                        >
+                          Все сезоны
+                        </Link>
+                      </Card.Text>
+                    </Card.Body>
+                  </Col>
+                </Card>
+              </Row>
               <Row className="mb-5 mt-4 w-100">
                 <h3 className="text-start fw-bold fs-5 ps-0 mb-4">Трейлер</h3>
                 {loadingTrailer ? (
@@ -336,7 +401,7 @@ function TvDetailsPage() {
                   {movie?.poster ? (
                     <img
                       src={movie.poster}
-                      alt={movie.name || movie.name}
+                      alt={movie.name}
                       className="img-fluid rounded-3"
                     />
                   ) : (
@@ -553,10 +618,66 @@ function TvDetailsPage() {
                   </Row>
                   <Row>
                     <hr className="my-4"></hr>
-                    <p className="text-start">
+                    <p className="text-start mb-5">
                       {movie?.overview || "Простите, но описания не нашлось."}
                     </p>
                   </Row>
+                  {/* Карточка сезон */}
+                  <h3 className="text-start fw-bold fs-5 mb-4 mt-5">
+                    Текущий сезон
+                  </h3>
+                  <Card className="border-0 text-start">
+                    <Row>
+                      <Col md={3}>
+                        <Card.Img
+                          src={movie?.last_production_season.season_poster_path}
+                          alt="Card image"
+                          className="img-fluid"
+                        />
+                      </Col>
+                      <Col md={9} className="d-flex">
+                        <Card.Body className="d-flex flex-column justify-content-end rounded bg-body-tertiary ps-5">
+                          <Card.Title className="fw-semibold">
+                            {movie?.last_production_season.name}
+                          </Card.Title>
+                          <Card.Text className="mb-4">
+                            {movie?.last_production_season.vote_average > 0 && (
+                              <span
+                                className="badge fw-semibold text-bg-secondary"
+                                style={{ fontSize: "0.875em" }}
+                              >
+                                {movie.last_production_season.vote_average}
+                              </span>
+                            )}
+                            <small className="text-muted">
+                              {" "}
+                              {movie?.last_production_season.episode_count}{" "}
+                              эпизодов
+                            </small>
+                          </Card.Text>
+                          <Card.Text style={{ fontSize: "1rem" }}>
+                            <BsCheck2Square />
+                            &ensp; Последний эпизод сезона вышел{" "}
+                            {movie?.last_episode_to_air}
+                          </Card.Text>
+                          <Card.Text>
+                            <BsCalendar3 /> &ensp;
+                            {movie?.next_episode_to_air
+                              ? `Следующий эпизод планируется ${movie?.next_episode_to_air}`
+                              : "Новые эпизоды не планируются."}
+                          </Card.Text>
+                          <Card.Text className="mt-auto fs-5 text-primary">
+                            <Link
+                              to={`/tv/${id}/seasons`}
+                              className="text-decoration-none"
+                            >
+                              Все сезоны
+                            </Link>
+                          </Card.Text>
+                        </Card.Body>
+                      </Col>
+                    </Row>
+                  </Card>
                 </Col>
               </Row>
             </div>

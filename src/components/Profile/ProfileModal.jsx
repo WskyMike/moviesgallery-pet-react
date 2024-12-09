@@ -205,9 +205,6 @@ function ProfileModal({ show, onHide }) {
       onHide();
       triggerToast(
         "Вы вышли из аккаунта.",
-        "info-subtle",
-        "info-emphasis",
-        "top-center"
       );
     } catch (error) {
       console.error("Ошибка при выходе из аккаунта:", error);

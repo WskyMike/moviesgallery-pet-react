@@ -29,9 +29,6 @@ function NaviBar() {
       .then(() => {
         triggerToast(
           "Вы вышли из аккаунта.",
-          "info-subtle",
-          "info-emphasis",
-          "top-center"
         );
       })
       .catch((error) => {

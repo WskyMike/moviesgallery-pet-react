@@ -10,12 +10,12 @@ export const ToastProvider = ({ children }) => {
   const [toastConfig, setToastConfig] = useState({
     message: "",
     variant: "primary",
-    position: "bottom-end",
+    position: "top-center",
     text: "white",
     show: false,
   });
 
-  const triggerToast = (message, variant = "primary", text = "white", position = "bottom-end") => {
+  const triggerToast = (message, variant = "primary", text = "white", position = "top-center") => {
     setToastConfig({ message, variant, show: true, text, position });
   };
 

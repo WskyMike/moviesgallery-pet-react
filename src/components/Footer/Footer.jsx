@@ -24,8 +24,8 @@ function Footer() {
         fluid
         className="text-start mt-4 pb-2 fw-light fs-6 text-secondary"
       >
-        <Row className="d-flex flex-nowrap">
-          <Col xs={6} sm={4} lg={3} xl={2} className="d-flex">
+        <Row className="gap-sm-3 justify-content-start">
+          <Col className="d-inline-flex" xs="auto">
             <small>
               <a
                 className="text-secondary link-offset-2"
@@ -36,7 +36,10 @@ function Footer() {
                 Михаил Соснин
               </a>
               &nbsp;&copy; 2024
-              <br></br>
+            </small>
+          </Col>
+          <Col className="d-inline-flex" xs="auto">
+            <small>
               <a
                 className="text-secondary link-offset-2"
                 href="https://github.com/WskyMike/moviesgallery-pet-react"
@@ -47,13 +50,7 @@ function Footer() {
               </a>
             </small>
           </Col>
-          <Col
-            xs={6}
-            sm={8}
-            lg={9}
-            xl={10}
-            className="d-flex justify-content-start"
-          >
+          <Col className="d-inline-flex" xs={12} sm="auto">
             <small>
               Данныe API&nbsp;
               <a

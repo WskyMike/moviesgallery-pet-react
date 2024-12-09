@@ -4,8 +4,12 @@ import find from "lang-codes";
 
 countries.registerLocale(ruLocale);
 
+import fallbackSrc from "../images/mesh-gradient.webp";
+
 function getPosterPath(poster_path) {
-  return `https://movieapiproxy.tw1.ru/t/p/w500${poster_path}`;
+  return poster_path
+    ? `https://movieapiproxy.tw1.ru/t/p/w500${poster_path}`
+    : fallbackSrc;
 }
 
 export async function transformSingleMovieData(item) {
@@ -107,7 +111,7 @@ export async function transformMovieDetailsData(item) {
     release_date: item.release_date
       ? new Date(item.release_date).toLocaleDateString("ru-RU", {
           day: "2-digit",
-          month: "2-digit",
+          month: "long",
           year: "numeric",
         })
       : "-",
@@ -155,6 +159,12 @@ export async function transformTvDetailsData(item) {
     Pilot: "Пилотный выпуск",
   };
 
+  const lastProductionSeason = item.seasons
+    ?.filter(
+      (season) => season.air_date && new Date(season.air_date) <= new Date()
+    ) // Только сезоны с прошедшей датой выхода
+    .at(-1); // Берем последний такой сезон
+
   return {
     name: item.name || null,
     original_name: item.name !== item.original_name ? item.original_name : null,
@@ -185,14 +195,14 @@ export async function transformTvDetailsData(item) {
     first_air_date: item.first_air_date
       ? new Date(item.first_air_date).toLocaleDateString("ru-RU", {
           day: "2-digit",
-          month: "2-digit",
+          month: "long",
           year: "numeric",
         })
       : "-",
     last_air_date: item.last_air_date
       ? new Date(item.last_air_date).toLocaleDateString("ru-RU", {
           day: "2-digit",
-          month: "2-digit",
+          month: "long",
           year: "numeric",
         })
       : "-",
@@ -201,12 +211,70 @@ export async function transformTvDetailsData(item) {
       : null,
     production_companies: item.production_companies
       ? item.production_companies.map((company) => company.name).join(", ")
-      : "Нет информации",
+      : "-",
     poster: getPosterPath(item.poster_path),
     // backdrop: `https://movieapiproxy.tw1.ru/t/p/w1280${item.backdrop_path}`,
     rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : "-",
-    creator:
-      item.created_by[0]?.name || item.created_by[0]?.original_name || "-",
+    creator: item.created_by?.length
+      ? item.created_by
+          .map((creator) => creator.name || creator.original_name)
+          .join(", ")
+      : "-",
     tagline: item.tagline ? item.tagline.replace(/['"«»„“”]/g, "") : null,
+    // Последний сезон
+    last_production_season: lastProductionSeason
+      ? {
+          name: lastProductionSeason.name,
+          air_date: lastProductionSeason.air_date
+            ? new Date(lastProductionSeason.air_date).toLocaleDateString(
+                "ru-RU",
+                {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                }
+              )
+            : "-",
+          episode_count: lastProductionSeason.episode_count,
+          season_poster_path: getPosterPath(lastProductionSeason.poster_path),
+          vote_average: lastProductionSeason.vote_average,
+        }
+      : null,
+    last_episode_to_air: item.last_episode_to_air?.air_date
+      ? new Date(item.last_episode_to_air.air_date).toLocaleDateString(
+          "ru-RU",
+          {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          }
+        )
+      : "-",
+    next_episode_to_air: item.next_episode_to_air?.air_date
+      ? new Date(item.next_episode_to_air.air_date).toLocaleDateString(
+          "ru-RU",
+          {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          }
+        )
+      : null,
+  };
+}
+
+export async function transformTvSeasonsData(data) {
+  return {
+    series_name: data.name || "-",
+    // series_original_name: data.original_name || null,
+    seasons: data.seasons.map((season) => ({
+      air_date: season.air_date || null,
+      episode_count: season.episode_count || "Неизвестно сколько",
+      name: season.name || `Сезон ${season.season_number}`,
+      overview: season.overview || "Описание отсутствует",
+      poster: getPosterPath(season.poster_path),
+      season_number: season.season_number,
+      vote_average: season.vote_average || "-",
+    })),
   };
 }

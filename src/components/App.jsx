@@ -9,6 +9,7 @@ import MainPage from "./MainPage/MainPage";
 import Footer from "./Footer/Footer";
 import Bookmarks from "./Bookmarks/Bookmarks";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
+import Seasons from "./Seasons/Seasons"
 
 import { LoadingProvider } from "../contexts/LoadingContext";
 import { AuthProvider } from "../contexts/AuthContext";
@@ -26,6 +27,7 @@ function App() {
                 <Route path="/" element={<MainPage />} />
                 <Route path="/movie/:id" element={<MovieDetails />} />
                 <Route path="/tv/:id" element={<TvDetails />} />
+                <Route path="/tv/:id/seasons" element={<Seasons />} />
                 <Route path="/list/:category" element={<MovieList />} />
                 <Route path="*" element={<Navigate to="/" />} />
                 <Route
