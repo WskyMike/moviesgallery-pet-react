@@ -630,7 +630,7 @@ function TvDetailsPage() {
                     <Row>
                       <Col md={3}>
                         <Card.Img
-                          src={movie?.last_production_season.season_poster_path}
+                          src={movie?.last_production_season?.season_poster_path}
                           alt="Card image"
                           className="img-fluid"
                         />
@@ -638,20 +638,20 @@ function TvDetailsPage() {
                       <Col md={9} className="d-flex">
                         <Card.Body className="d-flex flex-column justify-content-end rounded bg-body-tertiary ps-5">
                           <Card.Title className="fw-semibold">
-                            {movie?.last_production_season.name}
+                            {movie?.last_production_season?.name}
                           </Card.Title>
                           <Card.Text className="mb-4">
-                            {movie?.last_production_season.vote_average > 0 && (
+                            {movie?.last_production_season?.vote_average > 0 && (
                               <span
                                 className="badge fw-semibold text-bg-secondary"
                                 style={{ fontSize: "0.875em" }}
                               >
-                                {movie.last_production_season.vote_average}
+                                {movie.last_production_season?.vote_average}
                               </span>
                             )}
                             <small className="text-muted">
                               {" "}
-                              {movie?.last_production_season.episode_count}{" "}
+                              {movie?.last_production_season?.episode_count}{" "}
                               эпизодов
                             </small>
                           </Card.Text>
