@@ -1,12 +1,24 @@
 import { Form, FormControl, Button, Row, Col } from "react-bootstrap";
-
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSearch } from "../../contexts/SearchContext";
 
 function SearchForm() {
+  const { triggerSearch } = useSearch(); // в контекст
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
   const handleSearch = (event) => {
     event.preventDefault();
-    // Логика обработки поиска
-    console.log("Поиск выполнен");
+    if (!searchQuery.trim()) return;
+
+    setIsLoading(true);
+    sessionStorage.setItem("searchQuery", searchQuery);
+    triggerSearch(); // Триггер обновления в SearchResults
+    navigate("/search");
+    setSearchQuery("");
+    setIsLoading(false);
   };
 
   // Функция для проверки ширины экрана и добавления классов
@@ -40,12 +52,20 @@ function SearchForm() {
         <Form className="d-flex gap-2 my-5" onSubmit={handleSearch}>
           <FormControl
             type="search"
-            placeholder="Поиск в разработке . . ."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Ищите фильмы и сериалы..."
             className="me-2 fw-light search-form__form-control"
             aria-label="Search"
             style={{ flexGrow: 1 }}
+            disabled={isLoading}
           />
-          <Button variant="secondary" type="submit" className="search-form__btn">
+          <Button
+            variant="secondary"
+            type="submit"
+            className="search-form__btn"
+            disabled={isLoading}
+          >
             Искать
           </Button>
         </Form>
