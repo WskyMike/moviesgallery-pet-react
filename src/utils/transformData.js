@@ -56,6 +56,7 @@ export async function transformMovieData(data) {
         : null,
       poster: getPosterPath(item.poster_path),
       rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : "",
+      original_language: item.original_language || "",
     }))
   );
 

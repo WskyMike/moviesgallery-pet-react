@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, NavDropdown } from "react-bootstrap";
 import MovieCard from "../MovieCard/Moviecard";
 import SearchForm from "../SearchForm/SearchForm";
 import ScrollToTopButton from "../../vendor/ScrollToTopButton/ToTopButton";
@@ -15,10 +15,12 @@ import { topRatedApi } from "../../utils/TopRatedApi";
 import { nowPlayingApi } from "../../utils/NowPlayingApi";
 import { popularRusApi } from "../../utils/PopularRusApi";
 import { popularTvApi } from "../../utils/PopularTvApi";
+import { MovieGenresApi } from "../../utils/MovieGenresApi";
 
 function MovieList() {
   const { category } = useParams(); // Получаем параметр из URL
   const { triggerToast } = useToast();
+  const [genres, setGenres] = useState([]); // Список жанров
 
   // Категории на заголовки
   const titleMap = useMemo(
@@ -93,18 +95,15 @@ function MovieList() {
   const [loading, setLoading] = useState(!savedMovies.length);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [totalPages, setTotalPages] = useState(savedTotalPages) || 0;
+  const [selectedGenre, setSelectedGenre] = useState(""); //Выбранный жанр
 
-  async function fetchMovies(page) {
+  async function fetchMovies(page, genre = selectedGenre, isReset = false) {
     try {
-      const { movies: newMovies, totalPages } = await currentApi(page);
+      const { movies: newMovies, totalPages } = await currentApi(page, genre);
 
-      // Фильтрация дубликатов по id
-      const filteredMovies = newMovies.filter(
-        (newMovie) =>
-          !movies.some((existingMovie) => existingMovie.id === newMovie.id)
-      );
+      const updatedMovies = isReset ? newMovies : [...movies, ...newMovies];
 
-      setMovies((prevMovies) => [...prevMovies, ...filteredMovies]);
+      setMovies(updatedMovies);
       setTotalPages(totalPages);
       setPage(page);
       setLoading(false);
@@ -122,6 +121,15 @@ function MovieList() {
     }
   }
 
+  // Обработчик для изменения состояния жанра
+  const handleGenreChange = (genreId) => {
+    setLoading(true);
+    setSelectedGenre(genreId);
+    setMovies([]);
+    setPage(1);
+    fetchMovies(1, genreId, true);
+  };
+
   // Сохраняем состояние в sessionStorage при каждом изменении списка фильмов или страницы
   useEffect(() => {
     sessionStorage.setItem(moviesKey, JSON.stringify(movies));
@@ -129,18 +137,41 @@ function MovieList() {
     sessionStorage.setItem(totalPagesKey, totalPages.toString());
   }, [movies, page, totalPages]);
 
-  // Загружаем фильмы при изменении страницы
+  // Проверим наличе данных в storage
   useEffect(() => {
-    if (!savedMovies.length || page > savedPage) {
-      fetchMovies(page);
+    if (!savedMovies.length) {
+      setLoading(true);
+      fetchMovies(1, selectedGenre, true);
     }
-  }, [page]);
+  }, []);
 
   // Функция загрузки следующей страницы
   const loadMoreMovies = () => {
     setIsLoadingMore(true);
-    fetchMovies(page + 1);
+    fetchMovies(page + 1, selectedGenre);
   };
+
+  // Загружаем жанры
+  useEffect(() => {
+    async function fetchGenres() {
+      try {
+        const data = await MovieGenresApi();
+
+        // Преобразуем название жанра каждого объекта в массиве в верхний регистр
+        const updatedGenres = data.genres.map((genre) => ({
+          ...genre,
+          name: genre.name.charAt(0).toUpperCase() + genre.name.slice(1),
+        }));
+
+        setGenres(updatedGenres);
+      } catch (error) {
+        console.error("Ошибка загрузки жанров:", error);
+      }
+    }
+    fetchGenres();
+  }, []);
+
+  console.debug(movies);
 
   return (
     <>
@@ -150,8 +181,45 @@ function MovieList() {
         <BackwardButton />
         <SearchForm />
         <Container fluid="xl">
-          <Row className="pt-2 sticky-header">
-            <h2 className="text-start display-5">{title}</h2>
+          <Row className="pt-2 pb-2 pb-md-0 sticky-header d-flex align-items-center justify-content-between">
+            <Col xs="auto">
+              <h2 className="text-start display-5">{title}</h2>
+            </Col>
+            {category !== "popularTv" && (
+              <Col xs="auto">
+                <NavDropdown
+                  id="nav-dropdown"
+                  title={
+                    selectedGenre
+                      ? genres.find((g) => g.id === selectedGenre)?.name +
+                          " " || "Фильтр по жанру "
+                      : "Фильтр по жанру "
+                  }
+                  variant="light"
+                  className="movie-list__dropdown-button"
+                >
+                  <div className="movie-list__custom-scroll">
+                    <NavDropdown.Item
+                      onClick={() => handleGenreChange("")}
+                      key="all"
+                      href="#/all"
+                    >
+                      Все
+                    </NavDropdown.Item>
+                    {genres.map((genre) => (
+                      <NavDropdown.Item
+                        onClick={() => handleGenreChange(genre.id)}
+                        className="fw-light"
+                        key={genre.id}
+                        href={`#/genre-${genre.id}`}
+                      >
+                        {genre.name}
+                      </NavDropdown.Item>
+                    ))}
+                  </div>
+                </NavDropdown>
+              </Col>
+            )}
           </Row>
           <Row className="mb-5 mt-4">
             {loading ? (

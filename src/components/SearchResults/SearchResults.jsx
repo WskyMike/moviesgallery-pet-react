@@ -28,13 +28,21 @@ function SearchResults() {
 
     setIsLoading(true);
     try {
-      const data = await SearchApi(query);
-      const filtered = data.result.filter(
+      // Запрашиваем только 2 страницы (временно)
+      const [dataPage1, dataPage2] = await Promise.all([
+        SearchApi(query, 1),
+        SearchApi(query, 2),
+      ]);
+
+      const combinedResults = [...dataPage1.result, ...dataPage2.result];
+
+      const filtered = combinedResults.filter(
         (item) => item.media_type?.toLowerCase() === selectedCategory
       );
+
       setFilteredResults(filtered);
-      setMovieCount(data.movieCount || 0);
-      setTvCount(data.tvCount || 0);
+      setMovieCount(dataPage1.movieCount + dataPage2.movieCount);
+      setTvCount(dataPage1.tvCount + dataPage2.tvCount);
     } catch (error) {
       console.error("Ошибка загрузки данных:", error);
       setFilteredResults([]);
@@ -130,7 +138,10 @@ function SearchResults() {
                           <Card.Text className="mb-2 mb-md-3 d-none d-md-block">
                             <span
                               className="badge fw-semibold"
-                              style={{ fontSize: "0.875em", backgroundColor: "#f05723" }}
+                              style={{
+                                fontSize: "0.875em",
+                                backgroundColor: "#f05723",
+                              }}
                             >
                               {item.rating || null}
                             </span>
