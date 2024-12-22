@@ -27,6 +27,7 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
     try {
       const { movies = [], totalPages } = await fetchMoviesApi();
       // Сохраняем фильмы и общее количество страниц в sessionStorage
+      sessionStorage.setItem(`${category}Carousel`, JSON.stringify(movies));
       sessionStorage.setItem(`${category}Movies`, JSON.stringify(movies));
       sessionStorage.setItem(`${category}TotalPages`, totalPages.toString());
 
@@ -40,7 +41,7 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
 
   useEffect(() => {
     const savedMovies = JSON.parse(
-      sessionStorage.getItem(`${category}Movies`) || "[]"
+      sessionStorage.getItem(`${category}Carousel`) || "[]"
     );
 
     if (savedMovies.length) {

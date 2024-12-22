@@ -4,3 +4,13 @@
   z-index: 1000;
   background-color: white;
 }
+
+.movie-list__custom-scroll {
+  max-height: 20rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.movie-list__dropdown-button {
+  font-weight: 300;
+}

@@ -1,6 +1,6 @@
 import { transformMovieData } from "../utils/transformData";
 
-export async function popularRusApi(page = 1) {
+export async function popularRusApi(page = 1, genre = "", carousel = false) {
   const options = {
     method: "GET",
     headers: {
@@ -10,11 +10,12 @@ export async function popularRusApi(page = 1) {
     },
   };
 
+  const URL = carousel
+    ? `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&region=RU&sort_by=popularity.desc&with_original_language=ru`
+    : `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&region=RU&sort_by=popularity.desc&with_original_language=ru&with_genres=${genre}`;
+
   try {
-    const response = await fetch(
-      `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&region=RU&sort_by=popularity.desc&with_original_language=ru`,
-      options
-    );
+    const response = await fetch(URL, options);
     if (!response.ok) {
       throw new Error(`Ошибка API. Status: ${response.status}`);
     }
