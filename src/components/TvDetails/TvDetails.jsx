@@ -630,7 +630,9 @@ function TvDetailsPage() {
                     <Row>
                       <Col md={3}>
                         <Card.Img
-                          src={movie?.last_production_season?.season_poster_path}
+                          src={
+                            movie?.last_production_season?.season_poster_path
+                          }
                           alt="Card image"
                           className="img-fluid"
                         />
@@ -641,7 +643,8 @@ function TvDetailsPage() {
                             {movie?.last_production_season?.name}
                           </Card.Title>
                           <Card.Text className="mb-4">
-                            {movie?.last_production_season?.vote_average > 0 && (
+                            {movie?.last_production_season?.vote_average >
+                              0 && (
                               <span
                                 className="badge fw-semibold text-bg-secondary"
                                 style={{ fontSize: "0.875em" }}
@@ -651,16 +654,18 @@ function TvDetailsPage() {
                             )}
                             <small className="text-muted">
                               {" "}
-                              {movie?.last_production_season?.episode_count}{" "}
+                              {
+                                movie?.last_production_season?.episode_count
+                              }{" "}
                               эпизодов
                             </small>
                           </Card.Text>
-                          <Card.Text style={{ fontSize: "1rem" }}>
+                          <Card.Text style={{ fontSize: "0.875rem" }}>
                             <BsCheck2Square />
                             &ensp; Последний эпизод сезона вышел{" "}
                             {movie?.last_episode_to_air}
                           </Card.Text>
-                          <Card.Text>
+                          <Card.Text style={{ fontSize: "0.875rem" }}>
                             <BsCalendar3 /> &ensp;
                             {movie?.next_episode_to_air
                               ? `Следующий эпизод планируется ${movie?.next_episode_to_air}`

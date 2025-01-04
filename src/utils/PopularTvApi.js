@@ -1,6 +1,11 @@
 import { transformTvData } from "../utils/transformData";
 
-export async function popularTvApi(page = 1) {
+export async function popularTvApi(
+  page = 1,
+  genre = "",
+  carousel = false,
+  lang = ""
+) {
   const options = {
     method: "GET",
     headers: {
@@ -10,17 +15,16 @@ export async function popularTvApi(page = 1) {
     },
   };
 
+  const URL = carousel
+    ? `https://try.readme.io/https://api.themoviedb.org/3/discover/tv?language=ru-RU&page=${page}&watch_region=RU&sort_by=vote_count.desc`
+    : `https://try.readme.io/https://api.themoviedb.org/3/discover/tv?language=ru-RU&page=${page}&watch_region=RU&sort_by=vote_count.desc&with_genres=${genre}&with_original_language=${lang}`;
+
   try {
-    const response = await fetch(
-      `https://try.readme.io/https://api.themoviedb.org/3/discover/tv?language=ru-RU&page=${page}&watch_region=RU&sort_by=vote_count.desc`,
-      options
-    );
+    const response = await fetch(URL, options);
     if (!response.ok) {
       throw new Error(`Ошибка API. Status: ${response.status}`);
     }
-    const { movies, totalPages } = await transformTvData(
-      await response.json()
-    );
+    const { movies, totalPages } = await transformTvData(await response.json());
     // console.debug({ movies, totalPages });
     return { movies, totalPages };
   } catch (error) {
