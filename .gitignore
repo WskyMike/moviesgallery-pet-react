@@ -35,3 +35,4 @@ dist-ssr/
 # Other files
 *.local
 notes.jsx
+vite.config.js

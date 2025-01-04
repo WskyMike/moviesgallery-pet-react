@@ -1,5 +1,6 @@
 import { transformMovieData } from "../utils/transformData";
 
+// Диапазон дат показа
 function calculateDateRange() {
   const now = new Date();
   const startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 дней назад
@@ -13,7 +14,7 @@ function calculateDateRange() {
   };
 }
 
-export async function nowPlayingApi(page = 1, genre = "", carousel = false) {
+export async function nowPlayingApi(page = 1, genre = "", carousel = false, lang = "") {
   const { gte, lte } = calculateDateRange();
   const options = {
     method: "GET",
@@ -26,7 +27,7 @@ export async function nowPlayingApi(page = 1, genre = "", carousel = false) {
 
   const URL = carousel
     ? `https://try.readme.io/https://api.themoviedb.org/3/movie/now_playing?language=ru-RU&page=${page}&region=RU`
-    : `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&region=RU&release_date.gte=${gte}&release_date.lte=${lte}&sort_by=rimary_release_date.desc&with_release_type=3&with_genres=${genre}`;
+    : `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&region=RU&release_date.gte=${gte}&release_date.lte=${lte}&with_release_type=3&with_genres=${genre}&with_original_language=${lang}`;
 
   try {
     const response = await fetch(URL, options);

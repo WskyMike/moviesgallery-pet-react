@@ -1,7 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Row, Col, Button, NavDropdown } from "react-bootstrap";
+import {
+  Container,
+  Form,
+  Row,
+  Col,
+  Button,
+  NavDropdown,
+} from "react-bootstrap";
 import MovieCard from "../MovieCard/Moviecard";
 import SearchForm from "../SearchForm/SearchForm";
 import ScrollToTopButton from "../../vendor/ScrollToTopButton/ToTopButton";
@@ -96,10 +103,23 @@ function MovieList() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [totalPages, setTotalPages] = useState(savedTotalPages) || 0;
   const [selectedGenre, setSelectedGenre] = useState(""); //Выбранный жанр
+  const [showRussianOnly, setShowRussianOnly] = useState(
+    JSON.parse(sessionStorage.getItem("showRussianOnly")) || false
+  );
 
-  async function fetchMovies(page, genre = selectedGenre, isReset = false) {
+  async function fetchMovies(
+    page,
+    genre = selectedGenre,
+    isReset = false,
+    lang = showRussianOnly ? "ru" : ""
+  ) {
     try {
-      const { movies: newMovies, totalPages } = await currentApi(page, genre);
+      const { movies: newMovies, totalPages } = await currentApi(
+        page,
+        genre,
+        false,
+        lang
+      );
 
       const updatedMovies = isReset ? newMovies : [...movies, ...newMovies];
 
@@ -130,12 +150,23 @@ function MovieList() {
     fetchMovies(1, genreId, true);
   };
 
-  // Сохраняем состояние в sessionStorage при каждом изменении списка фильмов или страницы
+  // Обработчик переключателя
+  const handleSwitchChange = (e) => {
+    const isRussian = e.target.checked;
+    setShowRussianOnly(isRussian);
+    setLoading(true);
+    setMovies([]);
+    setPage(1);
+    fetchMovies(1, selectedGenre, true, isRussian ? "ru" : "");
+  };
+
+  // Сохраняем состояния в sessionStorage при каждом изменении зависимостей
   useEffect(() => {
     sessionStorage.setItem(moviesKey, JSON.stringify(movies));
     sessionStorage.setItem(pageKey, page.toString());
     sessionStorage.setItem(totalPagesKey, totalPages.toString());
-  }, [movies, page, totalPages]);
+    sessionStorage.setItem("showRussianOnly", JSON.stringify(showRussianOnly));
+  }, [movies, page, totalPages, showRussianOnly]);
 
   // Проверим наличе данных в storage
   useEffect(() => {
@@ -171,8 +202,6 @@ function MovieList() {
     fetchGenres();
   }, []);
 
-  console.debug(movies);
-
   return (
     <>
       <Container fluid="xxl">
@@ -185,41 +214,55 @@ function MovieList() {
             <Col xs="auto">
               <h2 className="text-start display-5">{title}</h2>
             </Col>
-            {category !== "popularTv" && (
-              <Col xs="auto">
-                <NavDropdown
-                  id="nav-dropdown"
-                  title={
-                    selectedGenre
-                      ? genres.find((g) => g.id === selectedGenre)?.name +
-                          " " || "Фильтр по жанру "
-                      : "Фильтр по жанру "
-                  }
-                  variant="light"
+            {(category === "nowPlaying" ||
+              category === "topRated" ||
+              category === "popularTv") && (
+              <Col xs="auto" className="ms-md-auto">
+                <Form.Check
+                  reverse
+                  type="switch"
                   className="movie-list__dropdown-button"
-                >
-                  <div className="movie-list__custom-scroll">
-                    <NavDropdown.Item
-                      onClick={() => handleGenreChange("")}
-                      key="all"
-                      href="#/all"
-                    >
-                      Все
-                    </NavDropdown.Item>
-                    {genres.map((genre) => (
-                      <NavDropdown.Item
-                        onClick={() => handleGenreChange(genre.id)}
-                        className="fw-light"
-                        key={genre.id}
-                        href={`#/genre-${genre.id}`}
-                      >
-                        {genre.name}
-                      </NavDropdown.Item>
-                    ))}
-                  </div>
-                </NavDropdown>
+                  id="russian-movies-switch"
+                  label="Только российские"
+                  checked={showRussianOnly}
+                  onChange={handleSwitchChange}
+                />
               </Col>
             )}
+
+            <Col xs="auto" className="ms-md-3">
+              <NavDropdown
+                id="nav-dropdown"
+                title={
+                  selectedGenre
+                    ? genres.find((g) => g.id === selectedGenre)?.name + " " ||
+                      "Фильтр по жанру "
+                    : "Фильтр по жанру "
+                }
+                variant="light"
+                className="movie-list__dropdown-button"
+              >
+                <div className="movie-list__custom-scroll">
+                  <NavDropdown.Item
+                    onClick={() => handleGenreChange("")}
+                    key="all"
+                    href="#/all"
+                  >
+                    Все
+                  </NavDropdown.Item>
+                  {genres.map((genre) => (
+                    <NavDropdown.Item
+                      onClick={() => handleGenreChange(genre.id)}
+                      className="fw-light"
+                      key={genre.id}
+                      href={`#/genre-${genre.id}`}
+                    >
+                      {genre.name}
+                    </NavDropdown.Item>
+                  ))}
+                </div>
+              </NavDropdown>
+            </Col>
           </Row>
           <Row className="mb-5 mt-4">
             {loading ? (
