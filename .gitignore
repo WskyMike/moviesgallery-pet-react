@@ -36,3 +36,4 @@ dist-ssr/
 *.local
 notes.jsx
 vite.config.js
+stats.html

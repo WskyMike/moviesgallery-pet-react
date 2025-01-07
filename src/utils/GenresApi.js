@@ -1,4 +1,4 @@
-export async function MovieGenresApi() {
+export async function GenresApi(isTvSeries = false) {
   const options = {
     method: "GET",
     headers: {
@@ -8,9 +8,13 @@ export async function MovieGenresApi() {
     },
   };
 
+  const URL = isTvSeries
+    ? `https://try.readme.io/https://api.themoviedb.org/3/genre/tv/list?language=ru`
+    : `https://try.readme.io/https://api.themoviedb.org/3/genre/movie/list?language=ru`;
+
   try {
     const response = await fetch(
-      `https://try.readme.io/https://api.themoviedb.org/3/genre/movie/list?language=ru`,
+      URL,
       options
     );
     if (!response.ok) {
