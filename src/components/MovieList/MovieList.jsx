@@ -22,7 +22,7 @@ import { topRatedApi } from "../../utils/TopRatedApi";
 import { nowPlayingApi } from "../../utils/NowPlayingApi";
 import { popularRusApi } from "../../utils/PopularRusApi";
 import { popularTvApi } from "../../utils/PopularTvApi";
-import { MovieGenresApi } from "../../utils/MovieGenresApi";
+import { GenresApi } from "../../utils/GenresApi";
 
 function MovieList() {
   const { category } = useParams(); // Получаем параметр из URL
@@ -186,7 +186,8 @@ function MovieList() {
   useEffect(() => {
     async function fetchGenres() {
       try {
-        const data = await MovieGenresApi();
+        const isTvSeries = category === "popularTv";
+        const data = await GenresApi(isTvSeries);
 
         // Преобразуем название жанра каждого объекта в массиве в верхний регистр
         const updatedGenres = data.genres.map((genre) => ({
@@ -200,7 +201,7 @@ function MovieList() {
       }
     }
     fetchGenres();
-  }, []);
+  }, [category]);
 
   return (
     <>
