@@ -8,6 +8,7 @@ import ScrollToEndButton from "../../vendor/ScrollToEndButton/ScrollToEndButton"
 import BackwardButton from "../../vendor/BackwardButton/BackwardButton";
 import SearchForm from "../SearchForm/SearchForm";
 import { SearchApi } from "../../utils/SearchApi";
+import { GenresApi } from "../../utils/GenresApi";
 import "./SearchResult.css";
 
 function SearchResults() {
@@ -17,6 +18,28 @@ function SearchResults() {
   const [filteredResults, setFilteredResults] = useState([]);
   const [movieCount, setMovieCount] = useState(0);
   const [tvCount, setTvCount] = useState(0);
+  const [genres, setGenres] = useState([]); // Список жанров
+
+  // Загружаем жанры
+  useEffect(() => {
+    async function fetchGenres() {
+      try {
+        const isTvSeries = selectedCategory === "tv";
+        const data = await GenresApi(isTvSeries);
+
+        // Преобразуем название жанра каждого объекта в массиве в верхний регистр
+        const updatedGenres = data.genres.map((genre) => ({
+          ...genre,
+          name: genre.name.charAt(0).toUpperCase() + genre.name.slice(1),
+        }));
+
+        setGenres(updatedGenres);
+      } catch (error) {
+        console.error("Ошибка загрузки жанров:", error);
+      }
+    }
+    fetchGenres();
+  }, [selectedCategory]);
 
   const handleStorageChange = async () => {
     const query = sessionStorage.getItem("searchQuery");
@@ -54,6 +77,13 @@ function SearchResults() {
   useEffect(() => {
     handleStorageChange();
   }, [selectedCategory, searchTrigger]);
+
+  function getMovieGenres(genreIds, genres) {
+    return genreIds
+      .map((genreId) => genres.find((genre) => genre.id === genreId)?.name)
+      .filter(Boolean)
+      .join(", ");
+  }
 
   return (
     <Container fluid="xxl">
@@ -125,7 +155,7 @@ function SearchResults() {
                         </div>
                       </Col>
                       <Col xs={8} sm={10} className="d-flex">
-                        <Card.Body className="d-flex flex-column ps-1 p-0 p-md-2">
+                        <Card.Body className="d-flex flex-column ps-1 p-0 pt-1 p-md-2">
                           <Card.Title className="fw-semibold mb-md-0 search-results__card-title">
                             {item.title}&nbsp;
                             <span className="mb-4 mb-md-5 fw-light">
@@ -134,6 +164,14 @@ function SearchResults() {
                             <h2 className="text-secondary search-results__card-subtitle">
                               {item.original_title}
                             </h2>
+                            <span
+                              className="text-secondary fw-light d-block d-md-none mb-2"
+                              style={{
+                                fontSize: "0.8em",
+                              }}
+                            >
+                              {getMovieGenres(item.genres, genres)}
+                            </span>
                           </Card.Title>
                           <Card.Text className="mb-2 mb-md-3 d-none d-md-block">
                             <span
@@ -146,6 +184,15 @@ function SearchResults() {
                               {item.rating || null}
                             </span>
                             &emsp;
+                            <span
+                              className="text-secondary"
+                              style={{
+                                fontSize: "0.8em",
+                                verticalAlign: "bottom",
+                              }}
+                            >
+                              {getMovieGenres(item.genres, genres)}
+                            </span>
                           </Card.Text>
                           <Card.Text
                             className="search-results__text-clamp lh-sm"

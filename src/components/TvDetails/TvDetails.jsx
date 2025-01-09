@@ -372,7 +372,9 @@ function TvDetailsPage() {
                 </Card>
               </Row>
               <Row className="mb-5 mt-4 w-100">
-                <h3 className="text-start fw-bold fs-5 ps-0 mb-4">Трейлер</h3>
+                <h3 className="text-start fw-bold fs-5 ps-0 mb-4">
+                  Трейлер <span className="text-body-tertiary">YouTube</span>
+                </h3>
                 {loadingTrailer ? (
                   <div className="spinner-border text-dark m-5" role="status">
                     <span className="visually-hidden">Загрузка...</span>
@@ -409,7 +411,8 @@ function TvDetailsPage() {
                   )}
                   <Row className="text-start mt-3 justify-content-center">
                     <h3 className="text-start fw-bold fs-5 mt-5 mb-4 px-0">
-                      Трейлер
+                      Трейлер{" "}
+                      <span className="text-body-tertiary">YouTube</span>
                     </h3>
                     {loadingTrailer ? (
                       <div
