@@ -96,7 +96,7 @@ function MovieDetailsPage() {
     } catch (err) {
       setError(err.message);
       triggerToast(
-        `Ошибка запроса данных (${err.message})`,
+        `Ошибка запроса данных трейлера (${err.message})`,
         "danger-subtle",
         "danger-emphasis"
       );
@@ -119,9 +119,7 @@ function MovieDetailsPage() {
   // Добавление или удаление фильма из закладок
   const handleBookmarkClick = () => {
     if (authLoading || !user) {
-      triggerToast(
-        "Необходимо войти в аккаунт",
-      );
+      triggerToast("Необходимо войти в аккаунт");
       return;
     }
 
@@ -324,7 +322,9 @@ function MovieDetailsPage() {
                 </Row>
               </Row>
               <Row className="mb-5 mt-4 w-100">
-                <h3 className="text-start fw-bold fs-5 ps-0 mb-4">Трейлер</h3>
+                <h3 className="text-start fw-bold fs-5 ps-0 mb-4">
+                  Трейлер <span className="text-body-tertiary">YouTube</span>
+                </h3>
                 {loadingTrailer ? (
                   <div className="spinner-border text-dark m-5" role="status">
                     <span className="visually-hidden">Загрузка...</span>
@@ -361,7 +361,7 @@ function MovieDetailsPage() {
                   )}
                   <Row className="text-start mt-3 justify-content-center">
                     <h3 className="text-start fw-bold fs-5 mt-5 mb-4 px-0">
-                      Трейлер
+                      Трейлер <span className="text-body-tertiary">YouTube</span>
                     </h3>
                     {loadingTrailer ? (
                       <div
@@ -500,7 +500,7 @@ function MovieDetailsPage() {
                           </p>
                         </Col>
                       </Row>
-                      
+
                       <Row className="text-start fs-6 text-secondary">
                         <Col md={5}>
                           <p>

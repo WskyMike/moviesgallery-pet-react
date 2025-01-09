@@ -40,6 +40,7 @@ export async function transformResultData(data) {
           ? parseFloat(item.vote_average.toFixed(1))
           : null,
         overview: item.overview || "Описание отсутствует.",
+        genres: item.genre_ids || [],
       };
     })
   );

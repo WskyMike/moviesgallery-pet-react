@@ -86,7 +86,9 @@ export async function transformTvData(data) {
 
 export async function transformMovieDetailsData(item) {
   return {
-    genres: item.genres.map((genre) => genre.name),
+    genres: item.genres.map(
+      (genre) => genre.name.charAt(0).toUpperCase() + genre.name.slice(1)
+    ),
     id: item.id,
     media_type: "movie",
     production_countries: item.production_countries
@@ -169,7 +171,9 @@ export async function transformTvDetailsData(item) {
   return {
     name: item.name || null,
     original_name: item.name !== item.original_name ? item.original_name : null,
-    genres: item.genres.map((genre) => genre.name),
+    genres: item.genres.map(
+      (genre) => genre.name.charAt(0).toUpperCase() + genre.name.slice(1)
+    ),
     id: item.id,
     media_type: "tv",
     episode_run_time:
