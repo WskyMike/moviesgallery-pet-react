@@ -1,12 +1,12 @@
 import "./carouselSettings.css"
 
-const actorsСarouselSettings = {
+const adviceСarouselSettings = {
   additionalTransfrom: 0,
   arrows: false,
   className: "carousel",
   dotListClass: "",
   focusOnSelect: false,
-  infinite: false,
+  infinite: true,
   itemClass: "",
   keyBoardControl: true,
   minimumTouchDrag: 80,
@@ -16,29 +16,29 @@ const actorsСarouselSettings = {
   removeArrowOnDeviceType: ["tablet", "mobile", "smallMobile"],
   responsive: {
     largeDesktop: {
-      breakpoint: { max: 3000, min: 1200 },
-      items: 8,
-      slidesToSlide: 8,
-    },
-    smallDesktop: {
-      breakpoint: { max: 1199, min: 768 },
-      items: 7,
-      slidesToSlide: 7,
-    },
-    tablet: {
-      breakpoint: { max: 767, min: 576 },
-      items: 6,
-      slidesToSlide: 6,
-    },
-    mobile: {
-      breakpoint: { max: 575, min: 316 },
+      breakpoint: { max: 3000, min: 993 },
       items: 4,
       slidesToSlide: 4,
     },
-    smallMobile: {
-      breakpoint: { max: 315, min: 0 },
+    smallDesktop: {
+      breakpoint: { max: 992, min: 768 },
       items: 3,
       slidesToSlide: 3,
+    },
+    tablet: {
+      breakpoint: { max: 767, min: 576 },
+      items: 3,
+      slidesToSlide: 3,
+    },
+    mobile: {
+      breakpoint: { max: 575, min: 316 },
+      items: 2,
+      slidesToSlide: 2,
+    },
+    smallMobile: {
+      breakpoint: { max: 315, min: 0 },
+      items: 1,
+      slidesToSlide: 1,
     },
   },
   rewind: false,
@@ -49,4 +49,4 @@ const actorsСarouselSettings = {
   swipeable: true,
 };
 
-export default actorsСarouselSettings;
+export default adviceСarouselSettings;

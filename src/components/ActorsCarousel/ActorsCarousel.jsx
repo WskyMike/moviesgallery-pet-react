@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import Carousel from "react-multi-carousel";
 import actorsСarouselSettings from "../../vendor/actorsСarouselSettings";
-import ActorsCard from "../ActorsCard/ActorsCard";
+import ActorsCard from "./ActorsCard/ActorsCard";
 import "react-multi-carousel/lib/styles.css";
 import {
   CustomLeftArrowThin,

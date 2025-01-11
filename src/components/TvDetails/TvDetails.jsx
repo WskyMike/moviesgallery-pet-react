@@ -12,6 +12,7 @@ import { tvDetailsData } from "../../utils/TvDetailApi";
 import { tvVideosData } from "../../utils/TvVideosApi";
 import ActorsCarousel from "../ActorsCarousel/ActorsCarousel";
 import useMobileLayout from "../../hooks/useMobileLayout";
+import RecommendationsCarousel from "../MovieDetails/RecommendationsCarousel/RecommendationsCarousel";
 import "./TvDetails.css";
 import {
   Bookmark,
@@ -693,6 +694,10 @@ function TvDetailsPage() {
           <Row className="mx-0 px-0 mt-3 mt-lg-5">
             <h3 className="text-start fw-bold fs-5 ps-0 mb-4">Актеры</h3>
             <ActorsCarousel />
+          </Row>
+          <Row className="mx-0 px-0 mt-5 mt-lg-5">
+            <h3 className="text-start fw-bold fs-5 ps-0 mb-3">Рекомендуемые сериалы</h3>
+            <RecommendationsCarousel />
           </Row>
         </Container>
       </section>

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import MovieCard from "../MovieCard/Moviecard";
+import MovieCard from "../MovieCarousel/MovieCard/Moviecard";
 import SearchForm from "../SearchForm/SearchForm";
 import ScrollToTopButton from "../../vendor/ScrollToTopButton/ToTopButton";
 import ScrollToEndButton from "../../vendor/ScrollToEndButton/ScrollToEndButton";

@@ -12,6 +12,12 @@ function getPosterPath(poster_path) {
     : fallbackSrc;
 }
 
+function getBackdropPath(backdrop_path) {
+  return backdrop_path
+    ? `https://movieapiproxy.tw1.ru/t/p/w500${backdrop_path}`
+    : fallbackSrc;
+}
+
 export async function transformSingleMovieData(item) {
   return {
     id: item.id,
@@ -282,4 +288,26 @@ export async function transformTvSeasonsData(data) {
       vote_average: season.vote_average || "-",
     })),
   };
+}
+
+export async function transformRecommendationData(data) {
+  const recommendationsData = await Promise.all(
+    data.results.map(async (item) => ({
+      id: item.id,
+      media_type: item.media_type,
+      title: item.title || item.name,
+      // original_title:
+      //   item.title !== item.original_title ? item.original_title : null,
+      release_date:
+        item.release_date
+          ? new Date(item.release_date).getFullYear()
+          : item.first_air_date
+          ? new Date(item.first_air_date).getFullYear()
+          : "-",
+      backdrop: getBackdropPath(item.backdrop_path),
+      rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : "",
+    }))
+  );
+
+  return recommendationsData;
 }
