@@ -13,6 +13,7 @@ import { creditsMovieData } from "../../utils/CreditsMovieApi";
 import { videosData } from "../../utils/VideosApi";
 import ActorsCarousel from "../ActorsCarousel/ActorsCarousel";
 import useMobileLayout from "../../hooks/useMobileLayout";
+import RecommendationsCarousel from "./RecommendationsCarousel/RecommendationsCarousel";
 import "./MovieDetails.css";
 import {
   Bookmark,
@@ -574,6 +575,10 @@ function MovieDetailsPage() {
           <Row className="mx-0 px-0 mt-3 mt-lg-5">
             <h3 className="text-start fw-bold fs-5 ps-0 mb-4">Актеры</h3>
             <ActorsCarousel />
+          </Row>
+          <Row className="mx-0 px-0 mt-5 mt-lg-5">
+            <h3 className="text-start fw-bold fs-5 ps-0 mb-3">Рекомендуемые фильмы</h3>
+            <RecommendationsCarousel />
           </Row>
         </Container>
       </section>

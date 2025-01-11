@@ -9,7 +9,7 @@ import {
   Button,
   NavDropdown,
 } from "react-bootstrap";
-import MovieCard from "../MovieCard/Moviecard";
+import MovieCard from "../MovieCarousel/MovieCard/Moviecard";
 import SearchForm from "../SearchForm/SearchForm";
 import ScrollToTopButton from "../../vendor/ScrollToTopButton/ToTopButton";
 import ScrollToEndButton from "../../vendor/ScrollToEndButton/ScrollToEndButton";

@@ -7,7 +7,7 @@ import { ChevronRight } from "react-bootstrap-icons";
 import "react-multi-carousel/lib/styles.css";
 import movieCarouselSettings from "../../vendor/movieСarouselSettings";
 import { CustomLeftArrow, CustomRightArrow } from "../../vendor/customArrows";
-import MovieCard from "../MovieCard/Moviecard";
+import MovieCard from "./MovieCard/Moviecard";
 import "./MovieCarousel.css";
 
 function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {

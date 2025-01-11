@@ -14,7 +14,6 @@ function MainPage() {
   const [currentCarousel, setCurrentCarousel] = useState(0);
   const { setMainPageLoading } = useLoading();
 
-  // Массив подборок фильмов (каруселей)
   const carousels = [
     {
       title: "Популярные фильмы",
@@ -27,11 +26,6 @@ function MainPage() {
       category: "nowPlaying",
     },
     {
-      title: "Популярные российские фильмы",
-      fetchMoviesApi: popularRusApi,
-      category: "popularRus",
-    },
-    {
       title: "Лучшие сериалы",
       fetchMoviesApi: popularTvApi,
       category: "popularTv",
@@ -40,6 +34,11 @@ function MainPage() {
       title: "Лучшие фильмы",
       fetchMoviesApi: topRatedApi,
       category: "topRated",
+    },
+    {
+      title: "Популярные российские фильмы",
+      fetchMoviesApi: popularRusApi,
+      category: "popularRus",
     },
   ];
 
