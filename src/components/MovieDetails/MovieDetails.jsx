@@ -1,18 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Image } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastProvider";
-
 import { toggleBookmark, checkBookmarkStatus } from "../../utils/BookmarkUtils";
-
 import { movieDetailsData } from "../../utils/MovieDetailApi";
 import { creditsMovieData } from "../../utils/CreditsMovieApi";
 import { videosData } from "../../utils/VideosApi";
 import ActorsCarousel from "../ActorsCarousel/ActorsCarousel";
 import useMobileLayout from "../../hooks/useMobileLayout";
+import SearchForm from "../SearchForm/SearchForm";
 import RecommendationsCarousel from "./RecommendationsCarousel/RecommendationsCarousel";
 import "./MovieDetails.css";
 import {
@@ -21,6 +20,9 @@ import {
   BookmarkStarFill,
 } from "react-bootstrap-icons";
 import { VscQuote } from "react-icons/vsc";
+import { ImYoutube2 } from "react-icons/im";
+import NotFoundVideoImg from "../../images/pixeltrue-seo.svg";
+import CustomGradientButton from "../CustomButton/CustomGradientButton";
 
 function MovieDetailsPage() {
   const { triggerToast } = useToast();
@@ -34,9 +36,10 @@ function MovieDetailsPage() {
   const [error, setError] = useState(null);
   const [loadingTrailer, setLoadingTrailer] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
-  const { user, authLoading } = useAuth();
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const isMobile = useMobileLayout();
+  const { user, authLoading } = useAuth(); // Проверка на авторизацию
+  const [isBookmarked, setIsBookmarked] = useState(false); // Проверка на наличие фильма в закладках
+  const isMobile = useMobileLayout(); // Проверка на мобильное устройство
+  const [showButton, setShowButton] = useState(false); // Показывать кнопку с линком на главную страницу
 
   useEffect(() => {
     // Устанавливаем title в зависимости от названия фильма
@@ -142,6 +145,14 @@ function MovieDetailsPage() {
     fetchVideos();
   }, [id]);
 
+  // Показываем кнопку только при переходе с других сайтов
+  useEffect(() => {
+    const referrer = document.referrer;
+    if (!referrer || !referrer.startsWith(window.location.origin)) {
+      setShowButton(true);
+    }
+  }, []);
+
   if (movieDetailsLoading) {
     return (
       <div className="spinner-border text-primary m-5" role="status">
@@ -155,11 +166,12 @@ function MovieDetailsPage() {
 
   return (
     <>
-      <section className="moviedetails-backdrop pt-md-5 pt-4 pb-5 px-sm-4 px-md-5">
+      <SearchForm />
+      <section className="moviedetails-backdrop pt-1 pb-5 px-sm-4 px-md-5">
         <Container fluid="xl">
           {/* Мобильная версия */}
           {isMobile ? (
-            <div className="d-flex align-items-center justify-content-center flex-column">
+            <div className="d-flex align-items-center justify-content-center flex-column px-1">
               <Col xs={8} sm={6} className="mb-4">
                 {movie?.poster ? (
                   <img
@@ -243,88 +255,99 @@ function MovieDetailsPage() {
                 </Row>
                 <h3 className="text-start fw-bold fs-5 mb-4">О фильме</h3>
                 <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p>
                       <small>Оригинальный язык</small>
                     </p>
                   </Col>
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p className="text-black text-end">
                       <small>{movie?.original_language || "-"}</small>
                     </p>
                   </Col>
                 </Row>
                 <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p>
                       <small>Дата выхода</small>
                     </p>
                   </Col>
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p className="text-black text-end">
                       <small>{movie?.release_date || "-"}</small>
                     </p>
                   </Col>
                 </Row>
                 <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p>
                       <small>Режиссер</small>
                     </p>
                   </Col>
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p className="text-black text-end">
                       <small>{credits?.directors || "-"}</small>{" "}
                     </p>
                   </Col>
                 </Row>
                 <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p>
                       <small>Кинокомпания</small>
                     </p>
                   </Col>
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p className="text-black text-end">
                       <small>{movie?.production_companies || "-"}</small>
                     </p>
                   </Col>
                 </Row>
                 <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p>
                       <small>Бюджет</small>
                     </p>
                   </Col>
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p className="text-black text-end">
                       <small>{movie?.budget || "-"}</small>
                     </p>
                   </Col>
                 </Row>
                 <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p>
                       <small>Сборы в мире</small>
                     </p>
                   </Col>
-                  <Col xs={6}>
+                  <Col xs={6} className="pe-0">
                     <p className="text-black text-end">
                       <small>{movie?.revenue || "-"}</small>
                     </p>
                   </Col>
                 </Row>
-                <Row className="m-0">
+                <Row className="m-0 d-flex justify-content-center">
                   <hr className="my-4"></hr>
-                  <small className="text-start p-0">
-                    {movie?.overview ||
-                      "Нет обзора, переведённого на русский язык."}
-                  </small>
+                  <div className="moviedetails__overview px-0">
+                    {" "}
+                    <small className="text-start p-0">
+                      {movie?.overview || (
+                        <p className="text-center pb-5 mb-0">
+                          Нет описания, переведённого на русский язык.
+                        </p>
+                      )}
+                    </small>
+                  </div>
+                  {showButton && (
+                    <Row>
+                      <CustomGradientButton />
+                    </Row>
+                  )}
                 </Row>
               </Row>
-              <Row className="mb-5 mt-4 w-100">
-                <h3 className="text-start fw-bold fs-5 ps-0 mb-4">
-                  Трейлер <span className="text-body-tertiary">YouTube</span>
+              <Row className="mb-3 mt-4 w-100">
+                <h3 className="d-flex align-items-center gap-2 fw-bold fs-5 ps-0 mb-3">
+                  Трейлер <ImYoutube2 className="display-1 text-secondary" />{" "}
                 </h3>
                 {loadingTrailer ? (
                   <div className="spinner-border text-dark m-5" role="status">
@@ -342,14 +365,25 @@ function MovieDetailsPage() {
                     </div>
                   ))
                 ) : (
-                  <p>Трейлеров нет &#128532;</p>
+                  <>
+                    <div className="ratio ratio-4x3 d-flex justify-content-center align-items-center">
+                      <Image
+                        src={NotFoundVideoImg}
+                        alt="Трейлер не найден"
+                        fluid
+                      ></Image>
+                    </div>
+                    <span className="text-center text-secondary ">
+                      Видео не найдено
+                    </span>
+                  </>
                 )}
               </Row>
             </div>
           ) : (
             <div>
               {/* Десктопная версия */}
-              <Row className="gx-5 mb-5 justify-content-center">
+              <Row className="gx-5 pb-4 justify-content-center">
                 <Col lg={4}>
                   {movie?.poster ? (
                     <img
@@ -360,9 +394,10 @@ function MovieDetailsPage() {
                   ) : (
                     <div>Постер не доступен</div>
                   )}
-                  <Row className="text-start mt-3 justify-content-center">
-                    <h3 className="text-start fw-bold fs-5 mt-5 mb-4 px-0">
-                      Трейлер <span className="text-body-tertiary">YouTube</span>
+                  <Row className="text-start mt-3">
+                    <h3 className="d-flex align-items-center gap-2 mt-5 mb-2 px-0 fw-bold fs-5  ">
+                      Трейлер{" "}
+                      <ImYoutube2 className="display-4 text-secondary" />
                     </h3>
                     {loadingTrailer ? (
                       <div
@@ -383,7 +418,18 @@ function MovieDetailsPage() {
                         </div>
                       ))
                     ) : (
-                      <p>Ничего нет &#128532;</p>
+                      <>
+                        <div className="ratio ratio-4x3 d-flex justify-content-center align-items-center">
+                          <Image
+                            src={NotFoundVideoImg}
+                            alt="Трейлер не найден"
+                            fluid
+                          ></Image>
+                        </div>
+                        <span className="text-center text-secondary ">
+                          Видео не найдено
+                        </span>
+                      </>
                     )}
                   </Row>
                 </Col>
@@ -415,7 +461,9 @@ function MovieDetailsPage() {
                           </figure>
                         )}
                       </Row>
-                      <h3 className="text-start fw-bold fs-5 mb-4">О фильме</h3>
+                      <h3 className="text-start fw-bold fs-5 mb-4  ">
+                        О фильме
+                      </h3>
                       <Row className="text-start fs-6 text-secondary">
                         <Col md={5}>
                           <p>
@@ -561,23 +609,37 @@ function MovieDetailsPage() {
                       </button>
                     </Col>
                   </Row>
-                  <Row>
+                  <Row className="pb-3">
                     <hr className="my-4"></hr>
-                    <p className="text-start">
-                      {movie?.overview ||
-                        "Нет обзора, переведённого на русский язык."}
-                    </p>
+                    <div className="moviedetails__overview">
+                      <p className="text-start">
+                        {movie?.overview || (
+                          <p className="text-center pb-5 mb-0">
+                            Нет описания, переведённого на русский язык.
+                          </p>
+                        )}
+                      </p>
+                    </div>
+                    {showButton && (
+                      <Row>
+                        <CustomGradientButton />
+                      </Row>
+                    )}
                   </Row>
                 </Col>
               </Row>
             </div>
           )}
-          <Row className="mx-0 px-0 mt-3 mt-lg-5">
-            <h3 className="text-start fw-bold fs-5 ps-0 mb-4">Актеры</h3>
+          <Row className="mx-0 px-0 mt-5 pb-4 mt-lg-5">
+            <h3 className="text-start fw-bold fs-5 ps-0 mb-4">
+              В главных ролях
+            </h3>
             <ActorsCarousel />
           </Row>
           <Row className="mx-0 px-0 mt-5 mt-lg-5">
-            <h3 className="text-start fw-bold fs-5 ps-0 mb-3">Рекомендуемые фильмы</h3>
+            <h3 className="text-start fw-bold fs-5 ps-0 mb-3">
+              Рекомендуемые фильмы
+            </h3>
             <RecommendationsCarousel />
           </Row>
         </Container>

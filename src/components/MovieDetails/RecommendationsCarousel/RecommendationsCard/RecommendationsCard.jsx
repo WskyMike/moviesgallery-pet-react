@@ -19,7 +19,7 @@ function RecommendationsCard({ movie, isLoading }) {
       className="text-decoration-none text-black"
     >
       <div
-        className="recommendation-card pt-3"
+        className="recommendation-card pt-2"
         // onClick={!isLoading ? handleClick : undefined}
       >
         <div className="movie-content d-flex flex-column justify-content-end h-100">
