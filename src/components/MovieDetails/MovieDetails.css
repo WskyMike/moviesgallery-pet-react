@@ -12,3 +12,13 @@
 .bookmark-button:active {
   opacity: 0.7;
 }
+
+.moviedetails__overview {
+  min-height: 100px;
+}
+
+@media screen and (max-width: 992px) {
+  .moviedetails__overview {
+    text-align: start;
+  }
+}

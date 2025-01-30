@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [
     react(),
     visualizer({
-      open: true, // Автоматически откроет визуализацию после сборки
+      open: false, 
       gzipSize: true,
       brotliSize: true,
     }),
@@ -18,6 +18,10 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ["react", "react-dom"],
+          router: ["react-router-dom"],
+          bootstrap: ["react-bootstrap"],
+          forms: ["react-hook-form"],
+          carousel: ["react-multi-carousel"]
         },
         chunkFileNames: "[name]-[hash].js", // Оптимизация имен файлов
       },

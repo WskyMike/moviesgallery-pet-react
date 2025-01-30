@@ -1,0 +1,64 @@
+.btn-grad {
+  background-image: linear-gradient(
+    to right,
+    #56ccf2 0%,
+    #2f80ed 51%,
+    #56ccf2 100%
+  );
+}
+.btn-grad {
+  margin: 10px;
+  padding: 15px 45px;
+  text-align: center;
+  letter-spacing: 0.5px;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 20px #eee;
+  border-radius: 2rem;
+  display: block;
+  text-decoration: none;
+  font-family: "Stem";
+  font-weight: 500;
+  font-size: 1.1rem;
+  width: 90%;
+}
+
+.btn-grad:hover {
+  background-position: right center; 
+  color: #fff;
+  text-decoration: none;
+}
+
+.custom-gradient-button__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media screen and (max-width: 1125px) {
+  .btn-grad {
+    padding: 15px 15px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .btn-grad {
+    width: 80%;
+    font-size: .875rem;
+    padding: 10px 15px;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .btn-grad {
+    width: 100%;
+  }
+  .custom-gradient-button__container {
+    padding-top: 20px;
+  }
+  /* .custom-gradient-button__container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  } */
+}

@@ -13,16 +13,17 @@ import { MovieCardByIdData } from "../../utils/MovieCardByIdApi";
 import { TvCardByIdData } from "../../utils/TvCardByIdApi";
 
 import { db } from "../../utils/firebase";
-import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 
 function Bookmarks() {
   const { user } = useAuth();
   const [bookmarkedMovies, setBookmarkedMovies] = useState([]);
   const { bookmarksLoading, setBookmarksLoading } = useLoading();
   const [filterType, setFilterType] = useState("all");
+  const [hasBothTypes, setHasBothTypes] = useState(false); //Проверка наличия обоих типов контента
 
   // Запрос данных из Firestore
-  const fetchBookmarks = async (type) => {
+  const fetchBookmarks = async () => {
     if (!user) return;
 
     setBookmarksLoading(true);
@@ -33,23 +34,25 @@ function Bookmarks() {
         orderBy("timestamp", "asc")
       );
 
-      if (type !== "all") {
-        bookmarksQuery = query(
-          collection(db, "users", user.uid, "bookmarks"),
-          where("mediaType", "==", type),
-          orderBy("timestamp", "asc")
-        );
-      }
-
       const querySnapshot = await getDocs(bookmarksQuery);
       const bookmarks = querySnapshot.docs.map((doc) => ({
         id: doc.data().itemId,
         mediaType: doc.data().mediaType,
       }));
 
+      // Проверяем, есть ли оба типа контента
+      const types = new Set(bookmarks.map((b) => b.mediaType));
+      setHasBothTypes(types.has("movie") && types.has("tv"));
+
+      // Фильтрация по выбранному типу
+      const filteredBookmarks =
+        filterType === "all"
+          ? bookmarks
+          : bookmarks.filter((b) => b.mediaType === filterType);
+
       // Получаем данные для каждого фильма или сериала
       const items = await Promise.all(
-        bookmarks.map((bookmark) =>
+        filteredBookmarks.map((bookmark) =>
           bookmark.mediaType === "movie"
             ? MovieCardByIdData(bookmark.id)
             : TvCardByIdData(bookmark.id)
@@ -81,7 +84,7 @@ function Bookmarks() {
             <Col xs="auto">
               <h2 className="text-start display-5">Буду смотреть</h2>
             </Col>
-            {!bookmarksLoading && bookmarkedMovies.length > 0 && (
+            {!bookmarksLoading && hasBothTypes && (
               <Col xs="auto" className="ms-md-3">
                 <NavDropdown
                   id="filter-dropdown"
@@ -138,14 +141,14 @@ function Bookmarks() {
                 <p className="text-muted mt-5 fs-6">
                   Добавьте{" "}
                   <a
-                    href="http://localhost:5173/list/popular"
+                    href="https://moviegallery.tw1.ru/list/popular"
                     className="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                   >
                     фильмы
                   </a>{" "}
                   или{" "}
                   <a
-                    href="http://localhost:5173/list/popularTv"
+                    href="https://moviegallery.tw1.ru/list/popularTv"
                     className="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                   >
                     сериалы
