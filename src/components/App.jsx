@@ -2,8 +2,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import NaviBar from "./NaviBar/Navibar";
-import MovieDetails from "./MovieDetails/MovieDetails";
-import TvDetails from "./TvDetails/TvDetails";
+import MediaDetailsPage from "./MediaDetailsPage/MediaDetailsPage";
 import MovieList from "./MovieList/MovieList";
 import MainPage from "./MainPage/MainPage";
 import Footer from "./Footer/Footer";
@@ -28,8 +27,8 @@ function App() {
               <div className="content">
                 <Routes>
                   <Route path="/" element={<MainPage />} />
-                  <Route path="/movie/:id" element={<MovieDetails />} />
-                  <Route path="/tv/:id" element={<TvDetails />} />
+                  <Route path="/movie/:id" element={<MediaDetailsPage type="movie" />} />
+                  <Route path="/tv/:id" element={<MediaDetailsPage type="tv" />} />
                   <Route path="/tv/:id/seasons" element={<Seasons />} />
                   <Route path="/list/:category" element={<MovieList />} />
                   <Route path="/search" element={<SearchResults />} />
