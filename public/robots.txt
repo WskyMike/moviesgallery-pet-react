@@ -1,3 +1,6 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Disallow: /my
+Allow: /
+
+Sitemap: https://moviegallery.tw1.ru/sitemap.txt
