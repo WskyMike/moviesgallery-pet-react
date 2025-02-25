@@ -60,10 +60,36 @@ function MediaDetailsPage({ type }) {
     }
   }
 
+  // Функция установки мета-тега description
+  const defaultDescription =
+    "Популярные новинки, рейтинги лучших картин и актуальные премьеры. Присоединяйтесь и создавайте персональные подборки любимого кино.";
+
+  function setMetaDescription(media) {
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        media?.overview || defaultDescription
+      );
+    } else {
+      const meta = document.createElement("meta");
+      meta.name = "description";
+      meta.content = media?.overview || defaultDescription;
+      document.head.appendChild(meta);
+    }
+  }
+
   useEffect(() => {
     setDocumentTitle(media);
+    setMetaDescription(media);
     return () => {
       document.title = "Киногалерея";
+      const metaDescription = document.querySelector(
+        'meta[name="description"]'
+      );
+      if (metaDescription) {
+        metaDescription.setAttribute("content", defaultDescription);
+      }
     };
   }, [media]);
 
@@ -899,6 +925,7 @@ function MediaDetailsPage({ type }) {
               </Row>
             </div>
           )}
+          <div className="d-none media-content-loaded"></div>
           <Row className="mx-0 px-0 mt-5 pb-4 mt-lg-5">
             <h3 className="text-start fw-bold fs-5 ps-0 mb-4">
               Актёрский состав
