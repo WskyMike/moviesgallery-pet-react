@@ -39,4 +39,4 @@ vite.config.js
 stats.html
 
 # Ignore specific subfolders
-backend/
+backend/*.env
