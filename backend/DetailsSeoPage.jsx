@@ -42,9 +42,28 @@ function SEOPage({ media, type, url }) {
         <meta name="description" content={metaDescription} />
         <link rel="canonical" href={url} />
       </head>
-      <body>
-        <div style={{ padding: "1rem", fontFamily: "Arial, sans-serif", fontSize: "0.9rem" }}>
+      <body
+        style={{
+          margin: 0,
+          fontFamily: "Arial, sans-serif",
+          lineHeight: 1.2,
+          fontSize: "0.9rem",
+        }}
+      >
+        <header
+          style={{
+            padding: "1rem",
+            backgroundColor: "#f5f5f5",
+            textAlign: "center",
+          }}
+        >
           <h1>{metaTitle}</h1>
+        </header>
+        <main
+          style={{
+            padding: "1rem",
+          }}
+        >
           <h2>О {type === "movie" ? "фильме:" : "сериале:"}</h2>
           <p>{overview}</p>
           <ul>
@@ -120,22 +139,25 @@ function SEOPage({ media, type, url }) {
               </>
             )}
           </ul>
-        </div>
-        <footer>
+        </main>
+        <footer
+          style={{
+            padding: "1rem",
+            textAlign: "center",
+            backgroundColor: "#f5f5f5",
+            marginTop: "2rem",
+          }}
+        >
           <p>
-            <small>Михаил Соснин &nbsp;&copy; 2024</small>
+            Михаил Соснин &nbsp;&copy; 2025 Киногалерея. Все права защищены.{" "}
           </p>
           <p>
-            <small>
-              GitHub:
-              <a href="https://github.com/WskyMike/moviesgallery-pet-react">
-                https://github.com/WskyMike/moviesgallery-pet-react
-              </a>
-            </small>
+            GitHub:
+            <a href="https://github.com/WskyMike/moviesgallery-pet-react">
+              https://github.com/WskyMike/moviesgallery-pet-react
+            </a>
           </p>
-          <p>
-            <small>Данные: API The Movie Database</small>
-          </p>
+          <p>Данные: API The Movie Database</p>
         </footer>
       </body>
     </html>
