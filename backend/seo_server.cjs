@@ -10,7 +10,8 @@ const process = require("process");
 const dotenv = require("dotenv");
 const { renderToStaticMarkup } = require("react-dom/server");
 // const cron = require("node-cron");
-const SEOPage = require("./SEOPage.jsx").default;
+const DetailsSeoPage = require("./DetailsSeoPage.jsx").default;
+const MainSeoPage = require("./MainSeoPage.jsx").default;
 const { transformSeoMovieData, transformSeoTvData, transformSeoMoviesCreditsData, transformSeoTvCreditsData } = require("./transformSeoData.js");
 
 dotenv.config();
@@ -157,13 +158,31 @@ app.get("/seo/:type/:id", async (req, res) => {
         }
 
         // Рендерим SEOPage с полученными данными
-        const html = renderToStaticMarkup(React.createElement(SEOPage, { media: transformedData, type, url }));
+        const html = renderToStaticMarkup(React.createElement(DetailsSeoPage, { media: transformedData, type, url }));
         res.header("Content-Type", "text/html");
         console.log(`🕵️ Пришёл User-Agent: ${userAgent}. ✅ SEO-страница сформирована: ${url}`);
         return res.send(`<!DOCTYPE html>${html}`);
     } catch (error) {
         console.error("❌ Ошибка генерации SEO-страницы:", error.message);
         return res.status(500).send("❌ Ошибка генерации SEO-страницы");
+    }
+});
+
+// SEO-эндпоинт для главной страницы
+app.get("/seo/main", async (req, res) => {
+    const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    const userAgent = req.get("User-Agent");
+
+    try {
+        const html = renderToStaticMarkup(
+            React.createElement(MainSeoPage, { url })
+        );
+        res.header("Content-Type", "text/html");
+        console.log(`🕵️ Пришёл User-Agent: ${userAgent}. ✅ SEO версия главной страницы сформирована: ${url}`);
+        return res.send(`<!DOCTYPE html>${html}`);
+    } catch (error) {
+        console.error("❌ Ошибка генерации SEO главной страницы:", error.message);
+        return res.status(500).send("❌ Ошибка генерации SEO главной страницы");
     }
 });
 
