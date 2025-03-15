@@ -14,7 +14,10 @@ import placeholder from "../../../images/mesh-gradient.webp";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useToast } from "../../../contexts/ToastProvider";
 
-import { toggleBookmark, checkBookmarkStatus } from "../../../utils/BookmarkUtils";
+import {
+  toggleBookmark,
+  checkBookmarkStatus,
+} from "../../../utils/BookmarkUtils";
 
 function MovieCard({ movie, isLoading, onImageLoaded }) {
   const navigate = useNavigate();
@@ -154,8 +157,10 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
                 </small>
               </Row>
               <Row>
-                <small className="text-secondary">
-                  {movie.release_date || movie.first_air_date || "Загрузка..."}
+                <small className="text-body-tertiary">
+                  {isLoading
+                    ? "Загрузка..."
+                    : movie.release_date || movie.first_air_date || ""}
                 </small>
               </Row>
             </Col>

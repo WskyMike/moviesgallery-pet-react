@@ -16,12 +16,37 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
   const [loadedImagesCount, setLoadedImagesCount] = useState(0);
   const carouselRef = useRef(null); // Реф для управления каруселью
 
-  // Обновляем счетчик загруженных изображений на основе состояния `imageLoaded` в MovieCard для последовательной загрузки
+  // Состояния для ленивой загрузки: 
+  // visibleCount – количество карточек, для которых выключен placeholder;
+  // loadedPages – количество «загруженных» страниц;
+  const [visibleCount, setVisibleCount] = useState(0);
+  const [loadedPages, setLoadedPages] = useState(2);
+
+  // Функция для вычисления количества карточек на страницу по ширине экрана (исходя из настроек react-multi-carousel)
+  const getItemsPerPage = () => {
+    const width = window.innerWidth;
+    if (width >= 1200) return 5;
+    else if (width >= 768) return 4;
+    else if (width >= 576) return 3;
+    else if (width >= 316) return 2;
+    else return 1;
+  };
+
+  // После загрузки фильмов сразу активируем первые две страницы (visibleCount = itemsPerPage * 2)
   useEffect(() => {
-    if (loadedImagesCount >= movies.length && movies.length > 0) {
+    if (!loading && movies.length > 0) {
+      const itemsPerPage = getItemsPerPage();
+      setVisibleCount(Math.min(movies.length, itemsPerPage * 2));
+      setLoadedPages(2);
+    }
+  }, [loading, movies]);
+
+  // После загрузки всех активных карточек вызываем onCarouselLoaded
+  useEffect(() => {
+    if (loadedImagesCount >= visibleCount && visibleCount > 0) {
       onCarouselLoaded();
     }
-  }, [loadedImagesCount, movies.length]);
+  }, [loadedImagesCount, visibleCount]);
 
   async function fetchMovies() {
     try {
@@ -65,18 +90,21 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
     }
   };
 
-  // заглушки
-  const placeholderMovies = Array.from({ length: 5 }, (_, index) => ({
-    id: index,
-    title: (
-      <div className="spinner-border text-light spinner_touch" role="status">
-        <span className="visually-hidden">Загрузка...</span>
-      </div>
-    ),
-    original_title: "",
-    rating: "",
-    release_date: "",
-  }));
+  // Обработчик смены слайда: если пользователь движется вперед и доходит до конца загруженных страниц,
+  // дозагружаем следующую страницу (увеличиваем loadedPages и visibleCount)
+  const handleAfterChange = (currentSlideIndex) => {
+    const itemsPerPage = getItemsPerPage();
+    const currentPage = Math.floor(currentSlideIndex / itemsPerPage) + 1;
+    if (currentPage >= loadedPages && visibleCount < movies.length) {
+      const newLoadedPages = currentPage + 1; // загружаем следующую страницу
+      const newVisibleCount = Math.min(
+        movies.length,
+        newLoadedPages * itemsPerPage
+      );
+      setLoadedPages(newLoadedPages);
+      setVisibleCount(newVisibleCount);
+    }
+  };
 
   return (
     <div className="py-4 mx-0 mx-lg-5">
@@ -103,16 +131,27 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
       <div className="d-flex align-items-center">
         <CustomLeftArrow onClick={goToPrevious} />
 
-        <Carousel {...movieCarouselSettings} ref={carouselRef}>
-          {(loading ? placeholderMovies : movies).map((movie) => (
+        <Carousel
+          {...movieCarouselSettings}
+          ref={carouselRef}
+          afterChange={handleAfterChange}
+        >
+          {movies.map((movie, index) => (
             <MovieCard
               key={movie.id}
               movie={movie}
-              isLoading={loading}
-              onImageLoaded={() => setLoadedImagesCount((prev) => prev + 1)}
+              // Если данные ещё загружаются или карточка находится за пределами visibleCount – isLoading=true
+              isLoading={loading || index >= visibleCount}
+              onImageLoaded={() => {
+                // Учитываем загрузку только активных карточек
+                if (index < visibleCount) {
+                  setLoadedImagesCount((prev) => prev + 1);
+                }
+              }}
             />
           ))}
         </Carousel>
+
         <CustomRightArrow onClick={goToNext} />
       </div>
     </div>

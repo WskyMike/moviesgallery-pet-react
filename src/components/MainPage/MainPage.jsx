@@ -54,8 +54,6 @@ function MainPage() {
     }
   }, [currentCarousel, carousels.length]);
 
-  // console.debug(mainPageLoading)
-
   return (
     <Container fluid>
       <SearchForm />
@@ -65,7 +63,11 @@ function MainPage() {
           title={carousel.title}
           fetchMoviesApi={carousel.fetchMoviesApi}
           category={carousel.category}
-          onCarouselLoaded={handleCarouselLoadComplete}
+          // Только последняя (открытая) карусель уведомляет, что её первая страница полностью загрузилась,
+          // и только тогда запускается загрузка следующей карусели.
+          onCarouselLoaded={
+            index === currentCarousel ? handleCarouselLoadComplete : () => {}
+          }
         />
       ))}
     </Container>

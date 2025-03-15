@@ -2,6 +2,7 @@ import { Form, FormControl, Button, Row, Col } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearch } from "../../contexts/SearchContext";
+import { FaSearch } from "react-icons/fa";
 
 function SearchForm() {
   const { triggerSearch } = useSearch(); // в контекст
@@ -61,12 +62,12 @@ function SearchForm() {
             disabled={isLoading}
           />
           <Button
-            variant="secondary"
+            variant="primary"
             type="submit"
             className="search-form__btn"
             disabled={isLoading}
           >
-            Искать
+            <FaSearch />
           </Button>
         </Form>
       </Col>
