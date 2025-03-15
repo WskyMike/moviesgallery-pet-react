@@ -15,6 +15,10 @@
   opacity: 0.7;
 }
 
+.movie-carousel-container .react-multi-carousel-track {
+  align-items: flex-end;
+}
+
 @media (max-width: 576px) {
   .fs-sm-custom-5 {
     font-size: 1.25rem !important;

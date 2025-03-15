@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-
 import {
   Bookmark,
   BookmarkStar,
@@ -9,12 +8,15 @@ import {
 } from "react-bootstrap-icons";
 import { Col, Row } from "react-bootstrap";
 import "./Moviecard.css";
-import placeholder from "../../../images/mesh-gradient.webp";
-
+import placeholder from "../../../images/gradient_500_700.png";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useToast } from "../../../contexts/ToastProvider";
-
-import { toggleBookmark, checkBookmarkStatus } from "../../../utils/BookmarkUtils";
+import {
+  toggleBookmark,
+  checkBookmarkStatus,
+} from "../../../utils/BookmarkUtils";
+// import Skeleton from "react-loading-skeleton";
+// import "react-loading-skeleton/dist/skeleton.css";
 
 function MovieCard({ movie, isLoading, onImageLoaded }) {
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
     if (imageLoaded && onImageLoaded) {
       onImageLoaded();
     }
-  }, [imageLoaded]);
+  }, [imageLoaded, onImageLoaded]);
 
   // Проверяем, есть ли фильм в закладках
   useEffect(() => {
@@ -154,8 +156,10 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
                 </small>
               </Row>
               <Row>
-                <small className="text-secondary">
-                  {movie.release_date || movie.first_air_date || "Загрузка..."}
+                <small className="text-body-tertiary">
+                  {isLoading
+                    ? "Загрузка..."
+                    : movie.release_date || movie.first_air_date || ""}
                 </small>
               </Row>
             </Col>

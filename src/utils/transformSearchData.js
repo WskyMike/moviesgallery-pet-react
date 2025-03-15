@@ -1,4 +1,4 @@
-import fallbackSrc from "../images/mesh-gradient.webp";
+import fallbackSrc from "../images/gradient_500_700.png";
 
 function getPosterPath(poster_path) {
   return poster_path

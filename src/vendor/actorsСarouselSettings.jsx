@@ -9,7 +9,7 @@ const actorsСarouselSettings = {
   infinite: false,
   itemClass: "",
   keyBoardControl: true,
-  minimumTouchDrag: 80,
+  minimumTouchDrag: 40,
   renderArrowsWhenDisabled: false,
   renderButtonGroupOutside: false,
   renderDotsOutside: false,

@@ -7,21 +7,13 @@ import { ChevronRight } from "react-bootstrap-icons";
 import "react-multi-carousel/lib/styles.css";
 import movieCarouselSettings from "../../vendor/movieСarouselSettings";
 import { CustomLeftArrow, CustomRightArrow } from "../../vendor/customArrows";
-import MovieCard from "./MovieCard/Moviecard";
+import LazyMovieCard from "./MovieCard/LazyMovieCard";
 import "./MovieCarousel.css";
 
 function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [loadedImagesCount, setLoadedImagesCount] = useState(0);
   const carouselRef = useRef(null); // Реф для управления каруселью
-
-  // Обновляем счетчик загруженных изображений на основе состояния `imageLoaded` в MovieCard для последовательной загрузки
-  useEffect(() => {
-    if (loadedImagesCount >= movies.length && movies.length > 0) {
-      onCarouselLoaded();
-    }
-  }, [loadedImagesCount, movies.length]);
 
   async function fetchMovies() {
     try {
@@ -32,9 +24,9 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
       sessionStorage.setItem(`${category}TotalPages`, totalPages.toString());
 
       setMovies(movies);
-      setLoading(false);
     } catch (error) {
       console.error("Ошибка при получении данных:", error);
+    } finally {
       setLoading(false);
     }
   }
@@ -65,19 +57,6 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
     }
   };
 
-  // заглушки
-  const placeholderMovies = Array.from({ length: 5 }, (_, index) => ({
-    id: index,
-    title: (
-      <div className="spinner-border text-light spinner_touch" role="status">
-        <span className="visually-hidden">Загрузка...</span>
-      </div>
-    ),
-    original_title: "",
-    rating: "",
-    release_date: "",
-  }));
-
   return (
     <div className="py-4 mx-0 mx-lg-5">
       <Link
@@ -103,16 +82,21 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
       <div className="d-flex align-items-center">
         <CustomLeftArrow onClick={goToPrevious} />
 
-        <Carousel {...movieCarouselSettings} ref={carouselRef}>
-          {(loading ? placeholderMovies : movies).map((movie) => (
-            <MovieCard
+        <Carousel
+          {...movieCarouselSettings}
+          ref={carouselRef}
+          containerClass="movie-carousel-container"
+        >
+          {movies.map((movie) => (
+            <LazyMovieCard
               key={movie.id}
               movie={movie}
+              onImageLoaded={onCarouselLoaded}
               isLoading={loading}
-              onImageLoaded={() => setLoadedImagesCount((prev) => prev + 1)}
             />
           ))}
         </Carousel>
+
         <CustomRightArrow onClick={goToNext} />
       </div>
     </div>
