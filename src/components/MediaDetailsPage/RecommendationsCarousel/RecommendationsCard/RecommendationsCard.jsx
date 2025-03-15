@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import placeholder from "../../../../images/mesh-gradient.webp";
+import placeholder from "../../../../images/gradient_500_700.png";
 import { Col, Row } from "react-bootstrap";
 import "./RecommendationsCard.css";
 
