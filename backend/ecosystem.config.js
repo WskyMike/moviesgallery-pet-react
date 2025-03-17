@@ -1,7 +1,7 @@
 export const apps = [
   {
-    name: "seo_server",
-    script: "seo_server.cjs",
+    name: "server",
+    script: "server.js",
     watch: false,
     autorestart: true,
     restart_delay: 3000,
@@ -11,24 +11,8 @@ export const apps = [
       PORT: 3000,
     },
     log_date_format: "DD-MM-YYYY HH:mm:ss",
-    error_file: "./logs/pm2-seo-error.log",
-    out_file: "./logs/pm2-seo-out.log",
-    combine_logs: true,
-  },
-  {
-    name: "tracker_server",
-    script: "tracker_server.js", 
-    watch: false,
-    autorestart: true,
-    restart_delay: 3000,
-    max_memory_restart: "300M",
-    env: {
-      NODE_ENV: "production",
-      PORT: 3001,
-    },
-    log_date_format: "DD-MM-YYYY HH:mm:ss",
-    error_file: "./logs/pm2-tracker-error.log",
-    out_file: "./logs/pm2-tracker-out.log",
+    error_file: "./logs/pm2-error.log",
+    out_file: "./logs/pm2-out.log",
     combine_logs: true,
   },
 ];
