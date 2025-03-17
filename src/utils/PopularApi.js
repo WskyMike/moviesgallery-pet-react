@@ -11,7 +11,7 @@ export async function popularApi(page = 1, genre = "", carousel = false) {
   };
 
   const URL = carousel
-    ? `https://try.readme.io/https://api.themoviedb.org/3/movie/popular?language=ru-RU&page=${page}&region=RU`
+    ? `https://try.readme.io/https://api.themoviedb.org/3/movie/popular?language=ru-RU&page=${page}`
     : `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&sort_by=popularity.desc&with_genres=${genre}`;
 
   try {
