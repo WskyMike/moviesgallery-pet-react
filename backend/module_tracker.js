@@ -7,15 +7,7 @@ import fs from 'fs';
 import path from 'path';
 
 dotenv.config();
-
-const app = express();
-const port = process.env.PORT || 3001;
-
-// Middleware для разбора JSON в теле запросов
-app.use(express.json());
-
-// Доверяем заголовкам прокси
-app.set('trust proxy', true);
+const router = express.Router();
 
 // Задаём путь к файлу логов (создадим папку logs, если её нет)
 const logsDir = path.join(process.cwd(), 'logs');
@@ -26,24 +18,9 @@ if (!fs.existsSync(logsDir)) {
 }
 
 /**
- * Глобальный middleware для логирования базовой информации
- * для всех запросов, кроме /back/, /seo/ и /log.
- */
-app.use((req, res, next) => {
-  // Исключаем маршруты админки и трекинга, чтобы не создавать дубли
-  if (
-    req.path === '/favicon.ico' ||
-    req.path.startsWith('/seo/') ||
-    req.path.startsWith('/back/')
-  ) {
-    return next();
-  }
-});
-
-/**
  * Эндпоинт для логирования с добавлением геоданных.
  */
-app.post('/back/log', async (req, res) => {
+router.post('/log', async (req, res) => {
   const rawIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
   const ip = rawIp ? rawIp.split(',')[0].replace(/^::ffff:/, '') : "n/a";
   // const ipList = rawIp ? rawIp.split(',').map(ip => ip.trim().replace(/^::ffff:/, '')) : ["n/a"]; // Все IP в виде массива
@@ -93,7 +70,7 @@ app.post('/back/log', async (req, res) => {
 /**
  * Пример тестового маршрута
  */
-app.get('/back/test', (req, res) => {
+router.get('/test', (req, res) => {
   res.send('Это тестовый маршрут');
 });
 
@@ -109,7 +86,7 @@ const checkSecret = (req, res, next) => {
 /**
  * Эндпоинт для отображения статистики в виде HTML-страницы.
  */
-app.get('/back/stats', checkSecret, (req, res) => {
+router.get('/stats', checkSecret, (req, res) => {
   fs.readFile(logFilePath, 'utf8', (err, data) => {
     if (err) {
       console.error("❌ Ошибка чтения файла логов:", err);
@@ -208,9 +185,5 @@ app.get('/back/stats', checkSecret, (req, res) => {
   });
 });
 
-/**
- * Запуск сервера
- */
-app.listen(port, () => {
-  console.log(`🔎 Сервер-трекер запущен на порту ${port}`);
-});
+// Запуск серверa
+export default router;

@@ -15,9 +15,7 @@ const MainSeoPage = require("./MainSeoPage.jsx").default;
 const { transformSeoMovieData, transformSeoTvData, transformSeoMoviesCreditsData, transformSeoTvCreditsData } = require("./transformSeoData.js");
 
 dotenv.config();
-
-const app = express();
-const PORT = 3000;
+const router = express.Router();
 const HOSTNAME = "https://moviegallery.tw1.ru";
 const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
 
@@ -69,7 +67,7 @@ async function updateCache() {
 }
 
 // Middleware: блокировка запросов во время обновления кеша
-app.use((req, res, next) => {
+router.use((req, res, next) => {
     if (isUpdatingCache) {
         console.warn(`🚧 Сервер занят обновлением данных. Блокируем: ${req.path}`);
         return res.status(503).send("🔄 Сервер обновляет данные. Попробуйте позже.");
@@ -87,7 +85,7 @@ updateCache();
 
 // === Sitemap endpoints ===
 // Индексный с ссылками на дочерние файлы
-app.get("/sitemap.txt", (req, res) => {
+router.get("/sitemap.txt", (req, res) => {
     res.header("Content-Type", "text/plain");
     console.log("📄 Генерируем индексный sitemap.txt");
     let sitemapContent = [
@@ -98,7 +96,7 @@ app.get("/sitemap.txt", (req, res) => {
 });
 
 // Sitemap для фильмов
-app.get("/sitemap-movies.txt", (req, res) => {
+router.get("/sitemap-movies.txt", (req, res) => {
     if (!cachedMovieIds.length) {
         console.warn("⚠️ sitemap-movies.txt пуст! Возвращаем 404");
         return res.status(404).send("Not Found");
@@ -109,7 +107,7 @@ app.get("/sitemap-movies.txt", (req, res) => {
 });
 
 // Sitemap для сериалов
-app.get("/sitemap-tv.txt", (req, res) => {
+router.get("/sitemap-tv.txt", (req, res) => {
     if (!cachedTvIds.length) {
         console.warn("⚠️ sitemap-tv.txt пуст! Возвращаем 404");
         return res.status(404).send("Not Found");
@@ -120,7 +118,7 @@ app.get("/sitemap-tv.txt", (req, res) => {
 });
 
 // === SEO endpoint ===
-app.get("/seo/:type/:id", async (req, res) => {
+router.get("/:type/:id", async (req, res) => {
     const { type, id } = req.params;
     const publicUrl = `${req.protocol}://${req.get('host')}${req.originalUrl.replace(/^\/seo/, '')}`;
     const userAgent = req.get("User-Agent");
@@ -169,7 +167,7 @@ app.get("/seo/:type/:id", async (req, res) => {
 });
 
 // SEO-эндпоинт для главной страницы
-app.get("/seo/main", async (req, res) => {
+router.get("/main", async (req, res) => {
     const publicUrl = `${req.protocol}://${req.get('host')}/`;
     const userAgent = req.get("User-Agent");
 
@@ -187,9 +185,9 @@ app.get("/seo/main", async (req, res) => {
 });
 
 // === Fallback: редирект остальных запросов на фронтенд ===
-app.get("*", (req, res) => {
+router.get("*", (req, res) => {
     res.redirect(`https://moviegallery.tw1.ru${req.path}`);
 });
 
 // Запуск сервера
-app.listen(PORT, () => console.log(`✅ SEO cервер работает на ${PORT} порту`));
+module.exports = router;
