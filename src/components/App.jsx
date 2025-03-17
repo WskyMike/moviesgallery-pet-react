@@ -16,6 +16,8 @@ import { AuthProvider } from "../contexts/AuthContext";
 import { ToastProvider } from "../contexts/ToastProvider";
 import { SearchProvider } from "../contexts/SearchContext";
 
+import RouteTracker from '../utils/RouteTracker';
+
 function App() {
   return (
     <ToastProvider>
@@ -24,6 +26,7 @@ function App() {
           <SearchProvider>
             <div className="app-container">
               <NaviBar />
+              <RouteTracker />
               <div className="content">
                 <Routes>
                   <Route path="/" element={<MainPage />} />

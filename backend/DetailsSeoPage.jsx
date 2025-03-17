@@ -148,9 +148,7 @@ function SEOPage({ media, type, url }) {
             marginTop: "2rem",
           }}
         >
-          <p>
-            Михаил Соснин &nbsp;&copy; 2025 Киногалерея. Все права защищены.{" "}
-          </p>
+          <p>&nbsp;&copy; 2025 Киногалерея. Все права защищены. </p>
           <p>
             GitHub:
             <a href="https://github.com/WskyMike/moviesgallery-pet-react">

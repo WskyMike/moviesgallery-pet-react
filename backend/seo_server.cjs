@@ -122,7 +122,7 @@ app.get("/sitemap-tv.txt", (req, res) => {
 // === SEO endpoint ===
 app.get("/seo/:type/:id", async (req, res) => {
     const { type, id } = req.params;
-    const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    const publicUrl = `${req.protocol}://${req.get('host')}${req.originalUrl.replace(/^\/seo/, '')}`;
     const userAgent = req.get("User-Agent");
     let transformedData;
 
@@ -158,9 +158,9 @@ app.get("/seo/:type/:id", async (req, res) => {
         }
 
         // Рендерим SEOPage с полученными данными
-        const html = renderToStaticMarkup(React.createElement(DetailsSeoPage, { media: transformedData, type, url }));
+        const html = renderToStaticMarkup(React.createElement(DetailsSeoPage, { media: transformedData, type, url: publicUrl }));
         res.header("Content-Type", "text/html");
-        console.log(`🕵️ Пришёл User-Agent: ${userAgent}. ✅ SEO-страница сформирована: ${url}`);
+        console.log(`🕵️ Пришёл User-Agent: ${userAgent}. ✅ SEO-страница сформирована: ${publicUrl}`);
         return res.send(`<!DOCTYPE html>${html}`);
     } catch (error) {
         console.error("❌ Ошибка генерации SEO-страницы:", error.message);
@@ -170,15 +170,15 @@ app.get("/seo/:type/:id", async (req, res) => {
 
 // SEO-эндпоинт для главной страницы
 app.get("/seo/main", async (req, res) => {
-    const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    const publicUrl = `${req.protocol}://${req.get('host')}/`;
     const userAgent = req.get("User-Agent");
 
     try {
         const html = renderToStaticMarkup(
-            React.createElement(MainSeoPage, { url })
+            React.createElement(MainSeoPage, { url: publicUrl })
         );
         res.header("Content-Type", "text/html");
-        console.log(`🕵️ Пришёл User-Agent: ${userAgent}. ✅ SEO версия главной страницы сформирована: ${url}`);
+        console.log(`🕵️ Пришёл User-Agent: ${userAgent}. ✅ SEO версия главной страницы сформирована: ${publicUrl}`);
         return res.send(`<!DOCTYPE html>${html}`);
     } catch (error) {
         console.error("❌ Ошибка генерации SEO главной страницы:", error.message);
