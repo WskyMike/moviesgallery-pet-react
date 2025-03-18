@@ -2,6 +2,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import process from 'process';
+import seoRouter from './module_seo.cjs';
+import trackerRouter from './module_tracker.js';
 
 dotenv.config();
 
@@ -11,9 +13,6 @@ const port = process.env.PORT || 3000;
 // Middleware для разбора JSON и доверия заголовкам прокси
 app.use(express.json());
 app.set('trust proxy', true);
-
-import seoRouter from './module_seo.cjs';
-import trackerRouter from './module_tracker.js';
 
 app.use('/seo', seoRouter);
 app.use('/back', trackerRouter);

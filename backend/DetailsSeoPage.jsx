@@ -23,6 +23,7 @@ function SEOPage({ media, type, url }) {
   const directors = media.credits?.directors || "-";
   const actors = media.credits?.actors || "-";
   const creator = media.creator || "-";
+  const poster = media.poster || "";
 
   // Формирование мета-тегов
   const metaTitle = title
@@ -64,6 +65,17 @@ function SEOPage({ media, type, url }) {
             padding: "1rem",
           }}
         >
+          {poster && (
+            <img
+              src={poster}
+              alt={`Постер ${title}`}
+              style={{
+                maxWidth: "154px",
+                height: "auto",
+                margin: "1rem 0",
+              }}
+            />
+          )}
           <h2>О {type === "movie" ? "фильме:" : "сериале:"}</h2>
           <p>{overview}</p>
           <ul>
@@ -185,6 +197,7 @@ SEOPage.propTypes = {
     tagline: PropTypes.string,
     overview: PropTypes.string,
     creator: PropTypes.string,
+    poster: PropTypes.string,
     credits: PropTypes.shape({
       directors: PropTypes.string,
       actors: PropTypes.arrayOf(
