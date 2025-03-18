@@ -8,7 +8,6 @@ import {
 } from "react-bootstrap-icons";
 import { Col, Row } from "react-bootstrap";
 import "./Moviecard.css";
-import placeholder from "../../../images/gradient_500_700.png";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useToast } from "../../../contexts/ToastProvider";
 import {
@@ -18,6 +17,8 @@ import {
 // import Skeleton from "react-loading-skeleton";
 // import "react-loading-skeleton/dist/skeleton.css";
 
+const placeholderUrl = "/placeholder-card.webp";
+
 function MovieCard({ movie, isLoading, onImageLoaded }) {
   const navigate = useNavigate();
   const { triggerToast } = useToast();
@@ -25,11 +26,11 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
   const { user, authLoading } = useAuth();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [currentSrc, setCurrentSrc] = useState(placeholder);
+  const [currentSrc, setCurrentSrc] = useState(placeholderUrl);
 
   // Обновляем `currentSrc` при смене `isLoading`
   useEffect(() => {
-    setCurrentSrc(isLoading ? placeholder : movie.poster);
+    setCurrentSrc(isLoading ? placeholderUrl : movie.poster);
   }, [isLoading, movie.poster]);
 
   useEffect(() => {
@@ -140,7 +141,7 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
                   setImageLoaded(true);
                 }
               }}
-              onError={() => setCurrentSrc(placeholder)}
+              onError={() => setCurrentSrc(placeholderUrl)}
             />
           </div>
           <div className="movie-info flex-row">

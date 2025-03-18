@@ -17,6 +17,15 @@ if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir);
 }
 
+// Middleware для проверки секретного query-параметра
+const checkSecret = (req, res, next) => {
+  const secret = process.env.STATS_SECRET;
+  if (req.query.secret !== secret) {
+    return res.status(403).send("🔒 Доступ запрещен");
+  }
+  next();
+};
+
 /**
  * Эндпоинт для логирования с добавлением геоданных.
  */
@@ -68,20 +77,25 @@ router.post('/log', async (req, res) => {
 });
 
 /**
+ * Эндпоинт для очистки логов
+ */
+router.post('/clear', checkSecret, (req, res) => {
+  fs.writeFile(logFilePath, '', (err) => {
+    if (err) {
+      console.error("❌ Ошибка очистки логов:", err);
+      return res.status(500).json({ status: "error", message: "Ошибка очистки логов" });
+    }
+    console.log("✅ Логи посещения очищены.");
+    res.json({ status: "ok" });
+  });
+});
+
+/**
  * Пример тестового маршрута
  */
 router.get('/test', (req, res) => {
   res.send('Это тестовый маршрут');
 });
-
-// Middleware для проверки секретного query-параметра
-const checkSecret = (req, res, next) => {
-  const secret = process.env.STATS_SECRET;
-  if (req.query.secret !== secret) {
-    return res.status(403).send("🔒 Доступ запрещен");
-  }
-  next();
-};
 
 /**
  * Эндпоинт для отображения статистики в виде HTML-страницы.
@@ -113,26 +127,35 @@ router.get('/stats', checkSecret, (req, res) => {
         <head>
           <meta charset="UTF-8">
           <title>Статистика посещений</title>
-          <style>
-          body { font-family: Arial, sans-serif; font-size: 0.8rem; }
-          table { width: 100%; border-collapse: collapse; }
-          th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-          th { background-color: #f4f4f4; }
-          a { text-decoration: none; color: blue; }
-          .url-cell {
-            max-width: 150px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-          .url-title {
-            max-width: 150px;
-            overflow: hidden;
-          }
-        </style>
+            <style>
+            body { font-family: Arial, sans-serif; font-size: 0.8rem; margin: 20px;}
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+              }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+            th { background-color: #f4f4f4; }
+            a { text-decoration: none; color: blue; }
+            .url-cell {
+              max-width: 150px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+            .url-title {
+              max-width: 150px;
+              overflow: hidden;
+            }
+          </style>
         </head>
         <body>
-          <h1>Статистика посещений</h1>
+          <div class="header">
+            <h1 style="margin: 0;">Статистика посещений</h1>
+            <button id="clearBtn" style="padding: 8px 16px; font-size: 0.8rem; cursor: pointer; background-color: bisque; border: none; border-radius: 5px;">Очистить статистику</button>
+          </div>
           <table>
             <thead>
               <tr>
@@ -177,6 +200,25 @@ router.get('/stats', checkSecret, (req, res) => {
     html += `
             </tbody>
           </table>
+          <script>
+            const secret = "${process.env.STATS_SECRET}";
+            document.getElementById('clearBtn').addEventListener('click', function() {
+              if (confirm('Вы действительно хотите очистить статистику?')) {
+                fetch('/back/clear?secret=' + secret, { method: 'POST' })
+                  .then(response => response.json())
+                  .then(data => {
+                    if (data.status === 'ok') {
+                      window.location.reload();
+                    } else {
+                      alert('Ошибка очистки статистики');
+                    }
+                  })
+                  .catch(err => {
+                    alert('Ошибка: ' + err.message);
+                  });
+              }
+            });
+          </script>
         </body>
       </html>
     `;

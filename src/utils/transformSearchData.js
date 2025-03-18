@@ -1,4 +1,5 @@
-import fallbackSrc from "../images/gradient_500_700.png";
+const fallbackSrc = "/placeholder-card.webp";
+
 
 function getPosterPath(poster_path) {
   return poster_path

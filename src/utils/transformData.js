@@ -4,7 +4,7 @@ import find from "lang-codes";
 
 countries.registerLocale(ruLocale);
 
-import fallbackSrc from "../images/gradient_500_700.png";
+const fallbackSrc = "/placeholder-card.webp";
 
 function getPosterPath(poster_path) {
   return poster_path
@@ -99,16 +99,15 @@ export async function transformMovieDetailsData(item) {
     media_type: "movie",
     production_countries: item.production_countries
       ? item.production_countries
-          .map(
-            (country) =>
-              countries.getName(country.iso_3166_1, "ru") || country.name
-          )
-          .join(", ")
+        .map(
+          (country) =>
+            countries.getName(country.iso_3166_1, "ru") || country.name
+        )
+        .join(", ")
       : "-",
     runtime: item.runtime
-      ? `${Math.floor(item.runtime / 60)} час${
-          Math.floor(item.runtime / 60) === 1 ? "" : "а"
-        } ${item.runtime % 60} минут`
+      ? `${Math.floor(item.runtime / 60)} час${Math.floor(item.runtime / 60) === 1 ? "" : "а"
+      } ${item.runtime % 60} минут`
       : "-",
     title: item.title,
     original_title:
@@ -119,10 +118,10 @@ export async function transformMovieDetailsData(item) {
     overview: item.overview,
     release_date: item.release_date
       ? new Date(item.release_date).toLocaleDateString("ru-RU", {
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        })
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })
       : "-",
     release_year: item.release_date
       ? new Date(item.release_date).getFullYear()
@@ -133,20 +132,20 @@ export async function transformMovieDetailsData(item) {
     budget:
       item.budget !== undefined && item.budget > 0
         ? new Intl.NumberFormat("ru-RU", {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          }).format(item.budget)
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(item.budget)
         : "-",
     revenue:
       item.revenue !== undefined && item.revenue > 0
         ? new Intl.NumberFormat("ru-RU", {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          }).format(item.revenue)
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(item.revenue)
         : "-",
     production_companies: item.production_companies
       ? item.production_companies.map((company) => company.name).join(", ")
@@ -189,11 +188,11 @@ export async function transformTvDetailsData(item) {
     status: statusTranslations[item.status] || "Неизвестен",
     production_countries: item.production_countries
       ? item.production_countries
-          .map(
-            (country) =>
-              countries.getName(country.iso_3166_1, "ru") || country.name
-          )
-          .join(", ")
+        .map(
+          (country) =>
+            countries.getName(country.iso_3166_1, "ru") || country.name
+        )
+        .join(", ")
       : null,
 
     original_language: item.original_language
@@ -205,17 +204,17 @@ export async function transformTvDetailsData(item) {
       : null,
     first_air_date: item.first_air_date
       ? new Date(item.first_air_date).toLocaleDateString("ru-RU", {
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        })
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })
       : "-",
     last_air_date: item.last_air_date
       ? new Date(item.last_air_date).toLocaleDateString("ru-RU", {
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        })
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })
       : "-",
     last_air_year: item.last_air_date
       ? new Date(item.last_air_date).getFullYear()
@@ -228,48 +227,48 @@ export async function transformTvDetailsData(item) {
     rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : "-",
     creator: item.created_by?.length
       ? item.created_by
-          .map((creator) => creator.name || creator.original_name)
-          .join(", ")
+        .map((creator) => creator.name || creator.original_name)
+        .join(", ")
       : "-",
     tagline: item.tagline ? item.tagline.replace(/['"«»„“”]/g, "") : null,
     // Последний сезон
     last_production_season: lastProductionSeason
       ? {
-          name: lastProductionSeason.name,
-          air_date: lastProductionSeason.air_date
-            ? new Date(lastProductionSeason.air_date).toLocaleDateString(
-                "ru-RU",
-                {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric",
-                }
-              )
-            : "-",
-          episode_count: lastProductionSeason.episode_count,
-          season_poster_path: getPosterPath(lastProductionSeason.poster_path),
-          vote_average: lastProductionSeason.vote_average,
-        }
+        name: lastProductionSeason.name,
+        air_date: lastProductionSeason.air_date
+          ? new Date(lastProductionSeason.air_date).toLocaleDateString(
+            "ru-RU",
+            {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            }
+          )
+          : "-",
+        episode_count: lastProductionSeason.episode_count,
+        season_poster_path: getPosterPath(lastProductionSeason.poster_path),
+        vote_average: lastProductionSeason.vote_average,
+      }
       : null,
     last_episode_to_air: item.last_episode_to_air?.air_date
       ? new Date(item.last_episode_to_air.air_date).toLocaleDateString(
-          "ru-RU",
-          {
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-          }
-        )
+        "ru-RU",
+        {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        }
+      )
       : "-",
     next_episode_to_air: item.next_episode_to_air?.air_date
       ? new Date(item.next_episode_to_air.air_date).toLocaleDateString(
-          "ru-RU",
-          {
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-          }
-        )
+        "ru-RU",
+        {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        }
+      )
       : null,
   };
 }
@@ -302,8 +301,8 @@ export async function transformRecommendationData(data) {
         item.release_date
           ? new Date(item.release_date).getFullYear()
           : item.first_air_date
-          ? new Date(item.first_air_date).getFullYear()
-          : "-",
+            ? new Date(item.first_air_date).getFullYear()
+            : "-",
       backdrop: getBackdropPath(item.backdrop_path),
       rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : "",
     }))
