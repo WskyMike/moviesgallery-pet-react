@@ -13,13 +13,12 @@ const { renderToStaticMarkup } = require("react-dom/server");
 const DetailsSeoPage = require("./DetailsSeoPage.jsx").default;
 const MainSeoPage = require("./MainSeoPage.jsx").default;
 const { transformSeoMovieData, transformSeoTvData, transformSeoMoviesCreditsData, transformSeoTvCreditsData } = require("./transformSeoData.js");
-
 dotenv.config();
 const router = express.Router();
-const HOSTNAME = "https://moviegallery.tw1.ru";
-const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
 
 // === Sitemap caching: переменные и функции ===
+const HOSTNAME = "https://moviegallery.tw1.ru";
+const TMDB_API_TOKEN = process.env.TMDB_API_TOKEN;
 const MAX_PAGES = 500; // Максимально возможное количество страниц API TMDB
 let cachedMovieIds = [];
 let cachedTvIds = [];
@@ -67,13 +66,13 @@ async function updateCache() {
 }
 
 // Middleware: блокировка запросов во время обновления кеша
-router.use((req, res, next) => {
-    if (isUpdatingCache) {
-        console.warn(`🚧 Сервер занят обновлением данных. Блокируем: ${req.path}`);
-        return res.status(503).send("🔄 Сервер обновляет данные. Попробуйте позже.");
-    }
-    next();
-});
+// router.use((req, res, next) => {
+//     if (isUpdatingCache) {
+//         console.warn(`🚧 Сервер занят обновлением данных. Блокируем: ${req.path}`);
+//         return res.status(503).send("🔄 Сервер обновляет данные. Попробуйте позже.");
+//     }
+//     next();
+// });
 
 // Обновляем кеш при запуске сервера
 updateCache();

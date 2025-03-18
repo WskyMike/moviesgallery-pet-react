@@ -40,6 +40,12 @@ function formatCurrency(amount) {
     }).format(amount);
 }
 
+function getPosterPath(poster_path) {
+    return poster_path
+        ? `https://image.tmdb.org/t/p/w154${poster_path}`
+        : null;
+}
+
 /**
  * Преобразует данные для страницы фильма для SEO.
  */
@@ -69,6 +75,7 @@ export async function transformSeoMovieData(item) {
         production_companies: item.production_companies
             ? item.production_companies.map((company) => company.name).join(", ")
             : "-",
+        poster: getPosterPath(item.poster_path)
     };
 }
 
