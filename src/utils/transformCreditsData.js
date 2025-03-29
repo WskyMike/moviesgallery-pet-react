@@ -1,4 +1,4 @@
-import noPhoto from "../images/1299805-9e9e9e.png";
+import noPhoto from '../images/1299805-9e9e9e.png';
 
 async function fetchImageUrl(profilePath) {
   return `https://movieapiproxy.tw1.ru/t/p/w185${profilePath}`;
@@ -7,14 +7,14 @@ async function fetchImageUrl(profilePath) {
 export async function transformMoviesCreditsData(data) {
   // Фильтруем и обрабатываем данные режиссеров
   const directors = data.crew
-    .filter((person) => person.job === "Director")
+    .filter((person) => person.job === 'Director')
     .map((director) => director.name)
-    .join(", ");
+    .join(', ');
 
   // Фильтруем и обрабатываем данные актеров
   const actors = await Promise.all(
     data.cast
-      .filter((actor) => actor.known_for_department === "Acting")
+      .filter((actor) => actor.known_for_department === 'Acting')
       .map(async (actor) => ({
         id: actor.id,
         name: actor.name,
@@ -51,12 +51,12 @@ function pluralizeEpisodes(count) {
 export async function transformTvCreditsData(data) {
   const actors = await Promise.all(
     data.cast
-      .filter((actor) => actor.known_for_department === "Acting")
+      .filter((actor) => actor.known_for_department === 'Acting')
       .slice(0, 100)
       .map(async (actor) => ({
         id: actor.id,
         name: actor.name,
-        character: actor.roles[0]?.character || "",
+        character: actor.roles[0]?.character || '',
         episode_count: actor.roles[0]?.episode_count
           ? pluralizeEpisodes(actor.roles[0].episode_count)
           : null,

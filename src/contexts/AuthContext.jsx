@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import { createContext, useContext, useState, useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../utils/firebase"; 
+import { createContext, useContext, useState, useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../utils/firebase';
 
 const AuthContext = createContext(null);
 
@@ -26,5 +26,5 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-  return useContext(AuthContext); 
+  return useContext(AuthContext);
 }

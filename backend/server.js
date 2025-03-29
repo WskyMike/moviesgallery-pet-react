@@ -18,5 +18,5 @@ app.use('/seo', seoRouter);
 app.use('/back', trackerRouter);
 
 app.listen(port, () => {
-    console.log(`🔎 Cервер запущен на порту ${port}`);
+  console.log(`🔎 Cервер запущен на порту ${port}`);
 });

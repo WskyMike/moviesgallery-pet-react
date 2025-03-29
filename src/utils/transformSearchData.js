@@ -1,4 +1,4 @@
-import fallbackSrc from "../images/gradient_500_700.png";
+const fallbackSrc = '/placeholder-card.webp';
 
 function getPosterPath(poster_path) {
   return poster_path
@@ -13,22 +13,22 @@ export async function transformResultData(data) {
 
   const result = await Promise.all(
     data.results.map(async (item) => {
-      if (item.media_type === "movie") {
+      if (item.media_type === 'movie') {
         movieCount++;
-      } else if (item.media_type === "tv") {
+      } else if (item.media_type === 'tv') {
         tvCount++;
       }
 
       return {
-        media_type: item.media_type || "unknown",
+        media_type: item.media_type || 'unknown',
         id: item.id,
         title: item.title || item.name || null,
         original_title:
           item.title !== item.original_title && item.original_title
             ? item.original_title
             : item.name !== item.original_name && item.original_name
-            ? item.original_name
-            : null,
+              ? item.original_name
+              : null,
         release_year:
           item.release_date || item.first_air_date
             ? new Date(
@@ -39,7 +39,7 @@ export async function transformResultData(data) {
         rating: item.vote_average
           ? parseFloat(item.vote_average.toFixed(1))
           : null,
-        overview: item.overview || "Описание отсутствует.",
+        overview: item.overview || 'Описание отсутствует.',
         genres: item.genre_ids || [],
       };
     })

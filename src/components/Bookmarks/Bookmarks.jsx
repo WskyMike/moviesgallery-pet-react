@@ -1,25 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from "react";
-import { Container, Row, Col, NavDropdown } from "react-bootstrap";
-import MovieCard from "../MovieCarousel/MovieCard/Moviecard";
-import SearchForm from "../SearchForm/SearchForm";
-import ScrollToTopButton from "../../vendor/ScrollToTopButton/ToTopButton";
-import ScrollToEndButton from "../../vendor/ScrollToEndButton/ScrollToEndButton";
-import BackwardButton from "../../vendor/BackwardButton/BackwardButton";
+import { useState, useEffect } from 'react';
+import { Container, Row, Col, NavDropdown } from 'react-bootstrap';
+import MovieCard from '../MovieCarousel/MovieCard/Moviecard';
+import SearchForm from '../SearchForm/SearchForm';
+import ScrollToTopButton from '../../vendor/ScrollToTopButton/ToTopButton';
+import ScrollToEndButton from '../../vendor/ScrollToEndButton/ScrollToEndButton';
+import BackwardButton from '../../vendor/BackwardButton/BackwardButton';
 
-import { useAuth } from "../../contexts/AuthContext";
-import { useLoading } from "../../contexts/LoadingContext";
-import { MovieCardByIdData } from "../../utils/MovieCardByIdApi";
-import { TvCardByIdData } from "../../utils/TvCardByIdApi";
+import { useAuth } from '../../contexts/AuthContext';
+import { useLoading } from '../../contexts/LoadingContext';
+import { MovieCardByIdData } from '../../utils/MovieCardByIdApi';
+import { TvCardByIdData } from '../../utils/TvCardByIdApi';
 
-import { db } from "../../utils/firebase";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from '../../utils/firebase';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 function Bookmarks() {
   const { user } = useAuth();
   const [bookmarkedMovies, setBookmarkedMovies] = useState([]);
   const { bookmarksLoading, setBookmarksLoading } = useLoading();
-  const [filterType, setFilterType] = useState("all");
+  const [filterType, setFilterType] = useState('all');
   const [hasBothTypes, setHasBothTypes] = useState(false); //Проверка наличия обоих типов контента
 
   // Запрос данных из Firestore
@@ -30,8 +30,8 @@ function Bookmarks() {
     try {
       // Создаём запрос к Firestore
       let bookmarksQuery = query(
-        collection(db, "users", user.uid, "bookmarks"),
-        orderBy("timestamp", "asc")
+        collection(db, 'users', user.uid, 'bookmarks'),
+        orderBy('timestamp', 'asc')
       );
 
       const querySnapshot = await getDocs(bookmarksQuery);
@@ -42,18 +42,18 @@ function Bookmarks() {
 
       // Проверяем, есть ли оба типа контента
       const types = new Set(bookmarks.map((b) => b.mediaType));
-      setHasBothTypes(types.has("movie") && types.has("tv"));
+      setHasBothTypes(types.has('movie') && types.has('tv'));
 
       // Фильтрация по выбранному типу
       const filteredBookmarks =
-        filterType === "all"
+        filterType === 'all'
           ? bookmarks
           : bookmarks.filter((b) => b.mediaType === filterType);
 
       // Получаем данные для каждого фильма или сериала
       const items = await Promise.all(
         filteredBookmarks.map((bookmark) =>
-          bookmark.mediaType === "movie"
+          bookmark.mediaType === 'movie'
             ? MovieCardByIdData(bookmark.id)
             : TvCardByIdData(bookmark.id)
         )
@@ -61,7 +61,7 @@ function Bookmarks() {
 
       setBookmarkedMovies(items);
     } catch (error) {
-      console.error("Ошибка при загрузке закладок:", error);
+      console.error('Ошибка при загрузке закладок:', error);
     } finally {
       setBookmarksLoading(false);
     }
@@ -89,16 +89,15 @@ function Bookmarks() {
                 <NavDropdown
                   id="filter-dropdown"
                   title={
-                    filterType === "all"
-                      ? "Тип контента "
-                      : filterType === "movie"
-                      ? "Фильмы "
-                      : "Сериалы "
+                    filterType === 'all'
+                      ? 'Тип контента '
+                      : filterType === 'movie'
+                        ? 'Фильмы '
+                        : 'Сериалы '
                   }
                   variant="light"
                   className="movie-list__dropdown-button"
-                  onSelect={(selectedKey) => setFilterType(selectedKey)}
-                >
+                  onSelect={(selectedKey) => setFilterType(selectedKey)}>
                   <div className="movie-list__custom-scroll">
                     <NavDropdown.Item eventKey="all">Все</NavDropdown.Item>
                     <NavDropdown.Item eventKey="movie" className="fw-light">
@@ -127,30 +126,26 @@ function Bookmarks() {
                   md={4}
                   lg={3}
                   className="mb-4 px-1 px-sm-2"
-                  key={movie.id}
-                >
+                  key={movie.id}>
                   <MovieCard movie={movie} isLoading={false} />
                 </Col>
               ))
             ) : (
               <Col
                 className="text-center"
-                style={{ fontFamily: "Inter, sans-serif" }}
-              >
+                style={{ fontFamily: 'Inter, sans-serif' }}>
                 <p className="mt-5 fs-5 fw-bold">У вас ещё нет закладок.</p>
                 <p className="text-muted mt-5 fs-6">
-                  Добавьте{" "}
+                  Добавьте{' '}
                   <a
                     href="https://moviegallery.tw1.ru/list/popular"
-                    className="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                  >
+                    className="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                     фильмы
-                  </a>{" "}
-                  или{" "}
+                  </a>{' '}
+                  или{' '}
                   <a
                     href="https://moviegallery.tw1.ru/list/popularTv"
-                    className="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                  >
+                    className="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                     сериалы
                   </a>
                   , которые хотите посмотреть.

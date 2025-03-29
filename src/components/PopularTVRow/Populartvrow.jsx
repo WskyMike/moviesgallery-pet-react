@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from "react";
-import { popularTvApi } from "../../utils/PopularTvApi";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
-import carouselSettings from "../../vendor/carouselSettings";
-import { CustomLeftArrow, CustomRightArrow } from "../../vendor/customArrows";
-import MovieCard from "../MovieCard/Moviecard";
+import { useState, useEffect, useRef } from 'react';
+import { popularTvApi } from '../../utils/PopularTvApi';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import carouselSettings from '../../vendor/carouselSettings';
+import { CustomLeftArrow, CustomRightArrow } from '../../vendor/customArrows';
+import MovieCard from '../MovieCard/Moviecard';
 
 function PopularRow() {
   const [movies, setMovies] = useState([]);
@@ -16,7 +16,7 @@ function PopularRow() {
         const data = await popularTvApi();
         setMovies(data);
       } catch (error) {
-        console.error("Ошибка при получении данных:", error);
+        console.error('Ошибка при получении данных:', error);
       }
     }
 
@@ -58,6 +58,3 @@ function PopularRow() {
 }
 
 export default PopularRow;
-
-
-

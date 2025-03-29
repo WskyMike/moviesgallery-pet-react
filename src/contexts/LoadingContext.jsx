@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from 'react';
 
 const LoadingContext = createContext();
 
@@ -20,8 +20,7 @@ export const LoadingProvider = ({ children }) => {
         setBookmarksLoading,
         mainPageLoading,
         setMainPageLoading,
-      }}
-    >
+      }}>
       {children}
     </LoadingContext.Provider>
   );

@@ -1,6 +1,6 @@
 // Компонент для ленивой загрузки карточек фильмов.
-import { useState, useRef, useEffect } from "react";
-import MovieCard from "./Moviecard";
+import { useState, useRef, useEffect } from 'react';
+import MovieCard from './Moviecard';
 
 function LazyMovieCard(props) {
   const [isVisible, setIsVisible] = useState(false);
@@ -16,7 +16,7 @@ function LazyMovieCard(props) {
           }
         });
       },
-      { threshold: 0, rootMargin: "0px", triggerOnce: true }
+      { threshold: 0, rootMargin: '0px', triggerOnce: true }
     );
 
     const currentRef = containerRef.current;

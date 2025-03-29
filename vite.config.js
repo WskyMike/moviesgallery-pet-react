@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { visualizer } from "rollup-plugin-visualizer";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
   define: {
@@ -15,18 +15,18 @@ export default defineConfig({
     }),
   ],
   build: {
-    minify: "terser", // Используем Terser для более агрессивной минимизации
+    minify: 'terser', // Используем Terser для более агрессивной минимизации
     sourcemap: false, // Отключение source map для уменьшения итогового размера
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ["react", "react-dom"],
-          router: ["react-router-dom"],
-          bootstrap: ["react-bootstrap"],
-          forms: ["react-hook-form"],
-          carousel: ["react-multi-carousel"]
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          bootstrap: ['react-bootstrap'],
+          forms: ['react-hook-form'],
+          carousel: ['react-multi-carousel']
         },
-        chunkFileNames: "[name]-[hash].js", // Оптимизация имен файлов
+        chunkFileNames: '[name]-[hash].js', // Оптимизация имен файлов
       },
     },
     commonjsOptions: {

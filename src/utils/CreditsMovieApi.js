@@ -1,12 +1,12 @@
-import { transformMoviesCreditsData } from "./transformCreditsData";
+import { transformMoviesCreditsData } from './transformCreditsData';
 
 export async function creditsMovieData(movieId) {
   const options = {
-    method: "GET",
+    method: 'GET',
     headers: {
-      accept: "application/json",
+      accept: 'application/json',
       Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzA2NDdhMjQxZTIxNDFiZjFlNjQ4MDc3MWM2MTg5MiIsInN1YiI6IjY2MmUyNTViZDk2YzNjMDEyMjk4YTcyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.74MnfDTKv4T4gC4Ku91CCZ6mQWLIf0QpR_L9IuRbiM8",
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzA2NDdhMjQxZTIxNDFiZjFlNjQ4MDc3MWM2MTg5MiIsInN1YiI6IjY2MmUyNTViZDk2YzNjMDEyMjk4YTcyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.74MnfDTKv4T4gC4Ku91CCZ6mQWLIf0QpR_L9IuRbiM8',
     },
   };
 
@@ -20,10 +20,10 @@ export async function creditsMovieData(movieId) {
     }
 
     const creditsData = await response.json();
-    const selectedItems = await transformMoviesCreditsData(creditsData); 
+    const selectedItems = await transformMoviesCreditsData(creditsData);
     return selectedItems;
   } catch (error) {
-    console.error("Ошибка при выполнении запроса creditsMovieData", error);
+    console.error('Ошибка при выполнении запроса creditsMovieData', error);
     throw error;
   }
 }

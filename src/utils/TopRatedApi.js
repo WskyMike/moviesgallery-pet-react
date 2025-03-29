@@ -1,17 +1,17 @@
-import { transformMovieData } from "../utils/transformData";
+import { transformMovieData } from '../utils/transformData';
 
 export async function topRatedApi(
   page = 1,
-  genre = "",
+  genre = '',
   carousel = false,
-  lang = ""
+  lang = ''
 ) {
   const options = {
-    method: "GET",
+    method: 'GET',
     headers: {
-      accept: "application/json",
+      accept: 'application/json',
       Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzA2NDdhMjQxZTIxNDFiZjFlNjQ4MDc3MWM2MTg5MiIsInN1YiI6IjY2MmUyNTViZDk2YzNjMDEyMjk4YTcyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.74MnfDTKv4T4gC4Ku91CCZ6mQWLIf0QpR_L9IuRbiM8",
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzA2NDdhMjQxZTIxNDFiZjFlNjQ4MDc3MWM2MTg5MiIsInN1YiI6IjY2MmUyNTViZDk2YzNjMDEyMjk4YTcyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.74MnfDTKv4T4gC4Ku91CCZ6mQWLIf0QpR_L9IuRbiM8',
     },
   };
 
@@ -30,7 +30,7 @@ export async function topRatedApi(
     // console.debug({ movies, totalPages });
     return { movies, totalPages };
   } catch (error) {
-    console.error("Ошибка при выполнении запроса popularApi", error);
+    console.error('Ошибка при выполнении запроса popularApi', error);
     return { movies: [], totalPages: 0 };
   }
 }

@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useLoading } from "../../contexts/LoadingContext";
-import SearchForm from "../SearchForm/SearchForm";
-import MovieCarousel from "../MovieCarousel/MovieCarousel";
-import { popularApi } from "../../utils/PopularApi";
-import { topRatedApi } from "../../utils/TopRatedApi";
-import { nowPlayingApi } from "../../utils/NowPlayingApi";
-import { popularRusApi } from "../../utils/PopularRusApi";
-import { popularTvApi } from "../../utils/PopularTvApi";
+import { useEffect, useState } from 'react';
+import { Container } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useLoading } from '../../contexts/LoadingContext';
+import SearchForm from '../SearchForm/SearchForm';
+import MovieCarousel from '../MovieCarousel/MovieCarousel';
+import { popularApi } from '../../utils/PopularApi';
+import { topRatedApi } from '../../utils/TopRatedApi';
+import { nowPlayingApi } from '../../utils/NowPlayingApi';
+import { popularRusApi } from '../../utils/PopularRusApi';
+import { popularTvApi } from '../../utils/PopularTvApi';
 
 function MainPage() {
   const [currentCarousel, setCurrentCarousel] = useState(0);
@@ -16,29 +16,29 @@ function MainPage() {
 
   const carousels = [
     {
-      title: "Популярные фильмы",
+      title: 'Популярные фильмы',
       fetchMoviesApi: popularApi,
-      category: "popular",
+      category: 'popular',
     },
     {
-      title: "Сейчас в кино",
+      title: 'Сейчас в кино',
       fetchMoviesApi: nowPlayingApi,
-      category: "nowPlaying",
+      category: 'nowPlaying',
     },
     {
-      title: "Лучшие сериалы",
+      title: 'Лучшие сериалы',
       fetchMoviesApi: popularTvApi,
-      category: "popularTv",
+      category: 'popularTv',
     },
     {
-      title: "Лучшие фильмы",
+      title: 'Лучшие фильмы',
       fetchMoviesApi: topRatedApi,
-      category: "topRated",
+      category: 'topRated',
     },
     {
-      title: "Популярные российские фильмы",
+      title: 'Популярные российские фильмы',
       fetchMoviesApi: popularRusApi,
-      category: "popularRus",
+      category: 'popularRus',
     },
   ];
 
@@ -52,7 +52,7 @@ function MainPage() {
     if (currentCarousel >= carousels.length) {
       setMainPageLoading(false);
     }
-  }, [currentCarousel, carousels.length]);
+  }, [currentCarousel]);
 
   return (
     <Container fluid>

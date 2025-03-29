@@ -1,17 +1,18 @@
-import { transformMovieData } from "../utils/transformData";
+import { transformMovieData } from '../utils/transformData';
 
-export async function popularApi(page = 1, genre = "", carousel = false) {
+export async function popularApi(page = 1, genre = '', carousel = false) {
   const options = {
-    method: "GET",
+    method: 'GET',
     headers: {
-      accept: "application/json",
+      accept: 'application/json',
       Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzA2NDdhMjQxZTIxNDFiZjFlNjQ4MDc3MWM2MTg5MiIsInN1YiI6IjY2MmUyNTViZDk2YzNjMDEyMjk4YTcyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.74MnfDTKv4T4gC4Ku91CCZ6mQWLIf0QpR_L9IuRbiM8",
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzA2NDdhMjQxZTIxNDFiZjFlNjQ4MDc3MWM2MTg5MiIsInN1YiI6IjY2MmUyNTViZDk2YzNjMDEyMjk4YTcyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.74MnfDTKv4T4gC4Ku91CCZ6mQWLIf0QpR_L9IuRbiM8',
     },
   };
 
   const URL = carousel
-    ? `https://try.readme.io/https://api.themoviedb.org/3/movie/popular?language=ru-RU&page=${page}`
+    ? // из карусели Popular передал carousel = true
+      'https://try.readme.io/https://api.themoviedb.org/3/trending/movie/week?language=ru-RU'
     : `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&sort_by=popularity.desc&with_genres=${genre}`;
 
   try {
@@ -24,7 +25,10 @@ export async function popularApi(page = 1, genre = "", carousel = false) {
     );
     return { movies, totalPages };
   } catch (error) {
-    console.error("Ошибка при выполнении запроса popularApi", error);
+    console.error('Ошибка при выполнении запроса popularApi', error);
     return { movies: [], totalPages: 0 };
   }
 }
+
+//
+// https://try.readme.io/https://api.themoviedb.org/3/movie/popular?language=ru-RU&page=${page}

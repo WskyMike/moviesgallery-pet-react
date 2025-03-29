@@ -1,19 +1,19 @@
-import "./carouselSettings.css"
+import './carouselSettings.css';
 
 const actorsСarouselSettings = {
   additionalTransfrom: 0,
   arrows: false,
-  className: "carousel",
-  dotListClass: "",
+  className: 'carousel',
+  dotListClass: '',
   focusOnSelect: false,
   infinite: false,
-  itemClass: "",
+  itemClass: '',
   keyBoardControl: true,
   minimumTouchDrag: 40,
   renderArrowsWhenDisabled: false,
   renderButtonGroupOutside: false,
   renderDotsOutside: false,
-  removeArrowOnDeviceType: ["tablet", "mobile", "smallMobile"],
+  removeArrowOnDeviceType: ['tablet', 'mobile', 'smallMobile'],
   responsive: {
     largeDesktop: {
       breakpoint: { max: 3000, min: 1200 },
@@ -45,7 +45,7 @@ const actorsСarouselSettings = {
   rewindWithAnimation: false,
   rtl: false,
   showDots: false,
-  sliderClass: "",
+  sliderClass: '',
   swipeable: true,
 };
 

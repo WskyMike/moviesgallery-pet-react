@@ -1,32 +1,32 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Container, Row, Col, Image, Card } from "react-bootstrap";
-import PropTypes from "prop-types";
-import { Link, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useLoading } from "../../contexts/LoadingContext";
-import { useAuth } from "../../contexts/AuthContext";
-import { useToast } from "../../contexts/ToastProvider";
-import { toggleBookmark, checkBookmarkStatus } from "../../utils/BookmarkUtils";
-import { movieDetailsData } from "../../utils/MovieDetailApi";
-import { creditsMovieData } from "../../utils/CreditsMovieApi";
-import { videosData } from "../../utils/VideosApi";
-import { tvDetailsData } from "../../utils/TvDetailApi";
-import { tvVideosData } from "../../utils/TvVideosApi";
-import ActorsCarousel from "../ActorsCarousel/ActorsCarousel";
-import useMobileLayout from "../../hooks/useMobileLayout";
-import SearchForm from "../SearchForm/SearchForm";
-import RecommendationsCarousel from "../MediaDetailspage/RecommendationsCarousel/RecommendationsCarousel";
-import "./MediaDetailsPage.css";
+import { Container, Row, Col, Image, Card } from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import { Link, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLoading } from '../../contexts/LoadingContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { useToast } from '../../contexts/ToastProvider';
+import { toggleBookmark, checkBookmarkStatus } from '../../utils/BookmarkUtils';
+import { movieDetailsData } from '../../utils/MovieDetailApi';
+import { creditsMovieData } from '../../utils/CreditsMovieApi';
+import { videosData } from '../../utils/VideosApi';
+import { tvDetailsData } from '../../utils/TvDetailApi';
+import { tvVideosData } from '../../utils/TvVideosApi';
+import ActorsCarousel from '../ActorsCarousel/ActorsCarousel';
+import useMobileLayout from '../../hooks/useMobileLayout';
+import SearchForm from '../SearchForm/SearchForm';
+import RecommendationsCarousel from '../MediaDetailspage/RecommendationsCarousel/RecommendationsCarousel';
+import './MediaDetailsPage.css';
 import {
   Bookmark,
   BookmarkStar,
   BookmarkStarFill,
-} from "react-bootstrap-icons";
-import { VscQuote } from "react-icons/vsc";
-import { ImYoutube2 } from "react-icons/im";
-import { BsCalendar3, BsCheck2Square } from "react-icons/bs";
-import NotFoundVideoImg from "../../images/pixeltrue-seo.svg";
-import CustomGradientButton from "../CustomButton/CustomGradientButton";
+} from 'react-bootstrap-icons';
+import { VscQuote } from 'react-icons/vsc';
+import { ImYoutube2 } from 'react-icons/im';
+import { BsCalendar3, BsCheck2Square } from 'react-icons/bs';
+import NotFoundVideoImg from '../../images/pixeltrue-seo.svg';
+import CustomGradientButton from '../CustomButton/CustomGradientButton';
 
 function MediaDetailsPage({ type }) {
   const { id } = useParams();
@@ -36,7 +36,7 @@ function MediaDetailsPage({ type }) {
   const { movieDetailsLoading, setMovieDetailsLoading } = useLoading();
   const [media, setMedia] = useState(null);
   const [movieDirector, setMovieDirector] = useState({
-    directors: "",
+    directors: '',
   });
   const [videoKeys, setVideoKeys] = useState([]);
   const [error, setError] = useState(null);
@@ -54,26 +54,26 @@ function MediaDetailsPage({ type }) {
         ? originalTitle && title !== originalTitle
           ? `${title} • ${originalTitle}`
           : title
-        : "Киногалерея";
+        : 'Киногалерея';
     } else {
-      document.title = "Киногалерея";
+      document.title = 'Киногалерея';
     }
   }
 
   // Функция установки мета-тега description
   const defaultDescription =
-    "Популярные новинки, рейтинги лучших картин и актуальные премьеры. Присоединяйтесь и создавайте персональные подборки любимого кино.";
+    'Популярные новинки, рейтинги лучших картин и актуальные премьеры. Присоединяйтесь и создавайте персональные подборки любимого кино.';
 
   function setMetaDescription(media) {
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute(
-        "content",
+        'content',
         media?.overview || defaultDescription
       );
     } else {
-      const meta = document.createElement("meta");
-      meta.name = "description";
+      const meta = document.createElement('meta');
+      meta.name = 'description';
       meta.content = media?.overview || defaultDescription;
       document.head.appendChild(meta);
     }
@@ -83,12 +83,12 @@ function MediaDetailsPage({ type }) {
     setDocumentTitle(media);
     setMetaDescription(media);
     return () => {
-      document.title = "Киногалерея";
+      document.title = 'Киногалерея';
       const metaDescription = document.querySelector(
         'meta[name="description"]'
       );
       if (metaDescription) {
-        metaDescription.setAttribute("content", defaultDescription);
+        metaDescription.setAttribute('content', defaultDescription);
       }
     };
   }, [media]);
@@ -97,9 +97,9 @@ function MediaDetailsPage({ type }) {
   const fetchMediaDetails = async () => {
     try {
       const data =
-        type === "movie" ? await movieDetailsData(id) : await tvDetailsData(id);
+        type === 'movie' ? await movieDetailsData(id) : await tvDetailsData(id);
       setMedia(data);
-      if (type === "movie") {
+      if (type === 'movie') {
         const movieDirectorsData = await creditsMovieData(id);
         setMovieDirector(movieDirectorsData);
       }
@@ -107,8 +107,8 @@ function MediaDetailsPage({ type }) {
       setError(err.message);
       triggerToast(
         `Ошибка загрузки данных (${err.message})`,
-        "danger-subtle",
-        "danger-emphasis"
+        'danger-subtle',
+        'danger-emphasis'
       );
     } finally {
       setMovieDetailsLoading(false);
@@ -119,15 +119,15 @@ function MediaDetailsPage({ type }) {
   const fetchVideos = async () => {
     try {
       const keys =
-        type === "movie" ? await videosData(id) : await tvVideosData(id);
+        type === 'movie' ? await videosData(id) : await tvVideosData(id);
       setVideoKeys(keys);
       setLoadingTrailer(false);
     } catch (err) {
       setError(err.message);
       triggerToast(
         `Ошибка загрузки видео-трейлера (${err.message})`,
-        "danger-subtle",
-        "danger-emphasis"
+        'danger-subtle',
+        'danger-emphasis'
       );
     }
   };
@@ -148,7 +148,7 @@ function MediaDetailsPage({ type }) {
   // Добавление или удаление из закладок
   const handleBookmarkClick = () => {
     if (authLoading || !user) {
-      triggerToast("Необходимо войти в аккаунт");
+      triggerToast('Необходимо войти в аккаунт');
       return;
     }
 
@@ -218,26 +218,26 @@ function MediaDetailsPage({ type }) {
               <Row className="mb-5 mx-2">
                 <div>
                   <small className="text-secondary">
-                    {type === "movie"
-                      ? media?.release_year || "-"
+                    {type === 'movie'
+                      ? media?.release_year || '-'
                       : `${media?.first_air_year || null} - ${
-                          media?.status === "Завершился" ||
-                          media?.status === "Отменён"
+                          media?.status === 'Завершился' ||
+                          media?.status === 'Отменён'
                             ? media?.last_air_year
-                            : "н.в."
+                            : 'н.в.'
                         }`}
                     &nbsp;
                     <br />
-                    {media?.genres.join(", ") || "-"}
+                    {media?.genres.join(', ') || '-'}
                   </small>
                 </div>
                 <div>
                   <small className="text-secondary">
                     {media?.production_countries}
-                    {(type === "movie" && media?.runtime) ||
-                    (type === "tv" && media?.episode_run_time)
+                    {(type === 'movie' && media?.runtime) ||
+                    (type === 'tv' && media?.episode_run_time)
                       ? `, ${media?.runtime || media?.episode_run_time}`
-                      : ""}
+                      : ''}
                   </small>
                 </div>
               </Row>
@@ -245,7 +245,7 @@ function MediaDetailsPage({ type }) {
                 <Col xs={6} className="text-center">
                   <div className="text-secondary">Рейтинг TMDB:</div>
                   <div className="fw-bold display-5">
-                    {media?.rating || "-"}{" "}
+                    {media?.rating || '-'}{' '}
                     <span className="fs-5 text-secondary fw-semibold">
                       / 10
                     </span>
@@ -258,8 +258,7 @@ function MediaDetailsPage({ type }) {
                     className="btn btn-warning text-nowrap bookmark-button"
                     onClick={handleBookmarkClick}
                     onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
-                  >
+                    onMouseLeave={() => setIsHovered(false)}>
                     {isBookmarked ? (
                       <BookmarkStarFill
                         className="me-2"
@@ -282,17 +281,16 @@ function MediaDetailsPage({ type }) {
                       <VscQuote className="d-flex fs-4" />
                       <blockquote
                         className="fst-italic text-start text-secondary blockquote mt-1 ps-4"
-                        style={{ fontSize: "0.9rem" }}
-                      >
+                        style={{ fontSize: '0.9rem' }}>
                         <p>{media.tagline}</p>
                       </blockquote>
                     </figure>
                   )}
                 </Row>
                 <h3 className="text-start fw-bold fs-5 mb-4">
-                  {type === "movie" ? "О фильме" : "О сериале"}
+                  {type === 'movie' ? 'О фильме' : 'О сериале'}
                 </h3>
-                {type === "tv" && media?.status && (
+                {type === 'tv' && media?.status && (
                   <Row className="text-start fs-6 text-secondary pe-0">
                     <Col xs={6} className="pe-0">
                       <p>
@@ -304,17 +302,16 @@ function MediaDetailsPage({ type }) {
                         <small
                           className={`badge fw-normal ${
                             {
-                              Продолжается: "text-bg-success",
-                              Завершился: "text-bg-danger",
-                              "В производстве": "text-bg-warning",
-                              Запланирован: "text-bg-info",
-                              Отменён: "text-bg-secondary",
-                              "Пилотный выпуск": "text-bg-primary",
-                            }[media?.status] || "text-bg-secondary"
+                              Продолжается: 'text-bg-success',
+                              Завершился: 'text-bg-danger',
+                              'В производстве': 'text-bg-warning',
+                              Запланирован: 'text-bg-info',
+                              Отменён: 'text-bg-secondary',
+                              'Пилотный выпуск': 'text-bg-primary',
+                            }[media?.status] || 'text-bg-secondary'
                           }`}
-                          style={{ fontSize: "0.875em" }}
-                        >
-                          {media?.status || "Неизвестен"}
+                          style={{ fontSize: '0.875em' }}>
+                          {media?.status || 'Неизвестен'}
                         </small>
                       </p>
                     </Col>
@@ -328,7 +325,7 @@ function MediaDetailsPage({ type }) {
                   </Col>
                   <Col xs={6} className="pe-0">
                     <p className="text-black text-end">
-                      <small>{media?.original_language || "-"}</small>
+                      <small>{media?.original_language || '-'}</small>
                     </p>
                   </Col>
                 </Row>
@@ -336,21 +333,21 @@ function MediaDetailsPage({ type }) {
                   <Col xs={6} className="pe-0">
                     <p>
                       <small>
-                        {type === "movie" ? "Дата выхода" : "Первый эпизод"}
+                        {type === 'movie' ? 'Дата выхода' : 'Первый эпизод'}
                       </small>
                     </p>
                   </Col>
                   <Col xs={6} className="pe-0">
                     <p className="text-black text-end">
                       <small>
-                        {type === "movie"
-                          ? media?.release_date || "-"
-                          : media?.first_air_date || "-"}
+                        {type === 'movie'
+                          ? media?.release_date || '-'
+                          : media?.first_air_date || '-'}
                       </small>
                     </p>
                   </Col>
                 </Row>
-                {type === "tv" && media?.last_air_date && (
+                {type === 'tv' && media?.last_air_date && (
                   <Row className="text-start fs-6 text-secondary pe-0">
                     <Col xs={6} className="pe-0">
                       <p>
@@ -359,7 +356,7 @@ function MediaDetailsPage({ type }) {
                     </Col>
                     <Col xs={6} className="pe-0">
                       <p className="text-black text-end">
-                        <small>{media?.last_air_date || "-"}</small>
+                        <small>{media?.last_air_date || '-'}</small>
                       </p>
                     </Col>
                   </Row>
@@ -368,15 +365,15 @@ function MediaDetailsPage({ type }) {
                   <Col xs={6} className="pe-0">
                     <p>
                       <small>
-                        {type === "movie" ? "Режиссер" : "Создатель"}
+                        {type === 'movie' ? 'Режиссер' : 'Создатель'}
                       </small>
                     </p>
                   </Col>
                   <Col xs={6} className="pe-0">
                     <p className="text-black text-end">
                       <small>
-                        {movieDirector?.directors || media?.creator || "-"}
-                      </small>{" "}
+                        {movieDirector?.directors || media?.creator || '-'}
+                      </small>{' '}
                     </p>
                   </Col>
                 </Row>
@@ -388,11 +385,11 @@ function MediaDetailsPage({ type }) {
                   </Col>
                   <Col xs={6} className="pe-0">
                     <p className="text-black text-end">
-                      <small>{media?.production_companies || "-"}</small>
+                      <small>{media?.production_companies || '-'}</small>
                     </p>
                   </Col>
                 </Row>
-                {type === "movie" && media?.budget && (
+                {type === 'movie' && media?.budget && (
                   <Row className="text-start fs-6 text-secondary pe-0">
                     <Col xs={6} className="pe-0">
                       <p>
@@ -406,7 +403,7 @@ function MediaDetailsPage({ type }) {
                     </Col>
                   </Row>
                 )}
-                {type === "movie" && media?.revenue && (
+                {type === 'movie' && media?.revenue && (
                   <Row className="text-start fs-6 text-secondary pe-0">
                     <Col xs={6} className="pe-0">
                       <p>
@@ -423,7 +420,7 @@ function MediaDetailsPage({ type }) {
                 <Row className="m-0 d-flex justify-content-center">
                   <hr className="my-4"></hr>
                   <div className="mediadetails__overview px-0">
-                    {" "}
+                    {' '}
                     <small className="text-start p-0">
                       {media?.overview || (
                         <p className="text-center pb-5 mb-0">
@@ -438,7 +435,7 @@ function MediaDetailsPage({ type }) {
                     </Row>
                   )}
                 </Row>
-                {type === "tv" && media?.last_production_season && (
+                {type === 'tv' && media?.last_production_season && (
                   <Row className="text-start mx-0 mb-5 mt-2">
                     <h3 className=" fw-bold fs-5 mb-4 mt-3 px-0">
                       Текущий сезон
@@ -447,48 +444,46 @@ function MediaDetailsPage({ type }) {
                       <Col className="d-flex">
                         <Card.Body className="d-flex flex-column justify-content-start">
                           <Card.Title className="fw-semibold">
-                            {media?.last_production_season.name}{" "}
+                            {media?.last_production_season.name}{' '}
                           </Card.Title>
                           <Card.Text className="mb-2">
                             {media?.last_production_season.vote_average > 0 && (
                               <span
                                 className="badge fw-semibold text-bg-secondary"
-                                style={{ fontSize: "0.875em" }}
-                              >
+                                style={{ fontSize: '0.875em' }}>
                                 {media.last_production_season.vote_average}
                               </span>
                             )}
                             <small className="text-muted">
-                              {" "}
-                              {media?.last_production_season.episode_count}{" "}
+                              {' '}
+                              {media?.last_production_season.episode_count}{' '}
                               эпизодов
                             </small>
                           </Card.Text>
                           <Card.Body className="px-0">
-                            {" "}
-                            <Card.Text style={{ fontSize: "0.875em" }}>
+                            {' '}
+                            <Card.Text style={{ fontSize: '0.875em' }}>
                               <BsCheck2Square />
                               &ensp;Последний эпизод сезона вышел&ensp;
                               <nobr>{media?.last_episode_to_air}</nobr>
                             </Card.Text>
-                            <Card.Text style={{ fontSize: "0.875em" }}>
+                            <Card.Text style={{ fontSize: '0.875em' }}>
                               <BsCalendar3 />
                               &ensp;
                               {media?.next_episode_to_air ? (
                                 <>
-                                  Следующий эпизод планируется{" "}
+                                  Следующий эпизод планируется{' '}
                                   <nobr>{media?.next_episode_to_air}</nobr>
                                 </>
                               ) : (
-                                "Новые эпизоды не планируются."
+                                'Новые эпизоды не планируются.'
                               )}
                             </Card.Text>
                           </Card.Body>
                           <Card.Text className="fs-5 text-center mt-3 text-primary">
                             <Link
                               to={`/tv/${id}/seasons`}
-                              className="text-decoration-none"
-                            >
+                              className="text-decoration-none">
                               Все сезоны
                             </Link>
                           </Card.Text>
@@ -500,7 +495,8 @@ function MediaDetailsPage({ type }) {
               </Row>
               <Row className="mb-3 mt-4 w-100">
                 <h3 className="d-flex align-items-center gap-2 fw-bold fs-5 ps-0 mb-3">
-                  Трейлер <ImYoutube2 className="display-1 text-secondary" />{" "}
+                  Трейлер{' '}
+                  <ImYoutube2 className="display-1 text-secondary" />{' '}
                 </h3>
                 {loadingTrailer ? (
                   <div className="spinner-border text-dark m-5" role="status">
@@ -513,8 +509,7 @@ function MediaDetailsPage({ type }) {
                         src={`https://youtube.com/embed/${key}?rel=0`}
                         title="Video Trailer"
                         allowFullScreen
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      ></iframe>
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
                     </div>
                   ))
                 ) : (
@@ -523,8 +518,7 @@ function MediaDetailsPage({ type }) {
                       <Image
                         src={NotFoundVideoImg}
                         alt="Трейлер не найден"
-                        fluid
-                      ></Image>
+                        fluid></Image>
                     </div>
                     <span className="text-center text-secondary ">
                       Видео не найдено
@@ -549,14 +543,13 @@ function MediaDetailsPage({ type }) {
                   )}
                   <Row className="text-start mt-3">
                     <h3 className="d-flex align-items-center gap-2 mt-5 mb-2 px-0 fw-bold fs-5">
-                      Трейлер{" "}
+                      Трейлер{' '}
                       <ImYoutube2 className="display-4 text-secondary" />
                     </h3>
                     {loadingTrailer ? (
                       <div
                         className="spinner-border text-dark m-5"
-                        role="status"
-                      >
+                        role="status">
                         <span className="visually-hidden">Загрузка...</span>
                       </div>
                     ) : videoKeys.length > 0 ? (
@@ -566,8 +559,7 @@ function MediaDetailsPage({ type }) {
                             src={`https://youtube.com/embed/${key}?rel=0`}
                             title="Video Trailer"
                             allowFullScreen
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          ></iframe>
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
                         </div>
                       ))
                     ) : (
@@ -576,8 +568,7 @@ function MediaDetailsPage({ type }) {
                           <Image
                             src={NotFoundVideoImg}
                             alt="Трейлер не найден"
-                            fluid
-                          ></Image>
+                            fluid></Image>
                         </div>
                         <span className="text-center text-secondary ">
                           Видео не найдено
@@ -592,13 +583,13 @@ function MediaDetailsPage({ type }) {
                       {media?.title || media?.name}
                       <small className="fw-light">
                         &nbsp;(
-                        {type === "movie"
-                          ? media?.release_year || "-"
+                        {type === 'movie'
+                          ? media?.release_year || '-'
                           : `${media?.first_air_year || null} - ${
-                              media?.status === "Завершился" ||
-                              media?.status === "Отменён"
+                              media?.status === 'Завершился' ||
+                              media?.status === 'Отменён'
                                 ? media?.last_air_year
-                                : "..."
+                                : '...'
                             }`}
                         )
                       </small>
@@ -616,18 +607,17 @@ function MediaDetailsPage({ type }) {
                             <VscQuote className="d-flex fs-4" />
                             <blockquote
                               className="fst-italic text-start text-secondary blockquote mt-1 ps-4"
-                              style={{ fontSize: "0.9rem" }}
-                            >
+                              style={{ fontSize: '0.9rem' }}>
                               <p>{media.tagline}</p>
                             </blockquote>
                           </figure>
                         )}
                       </Row>
                       <h3 className="text-start fw-bold fs-5 mb-4">
-                        {type === "movie" ? "О фильме" : "О сериале"}
+                        {type === 'movie' ? 'О фильме' : 'О сериале'}
                       </h3>
                       <Row className="text-start fs-6 text-secondary">
-                        {type === "tv" && (
+                        {type === 'tv' && (
                           <>
                             <Col md={5}>
                               <p>
@@ -639,17 +629,16 @@ function MediaDetailsPage({ type }) {
                                 <small
                                   className={`badge fw-normal ${
                                     {
-                                      Продолжается: "text-bg-success",
-                                      Завершился: "text-bg-danger",
-                                      "В производстве": "text-bg-warning",
-                                      Запланирован: "text-bg-info",
-                                      Отменён: "text-bg-secondary",
-                                      "Пилотный выпуск": "text-bg-primary",
-                                    }[media?.status] || "text-bg-secondary"
+                                      Продолжается: 'text-bg-success',
+                                      Завершился: 'text-bg-danger',
+                                      'В производстве': 'text-bg-warning',
+                                      Запланирован: 'text-bg-info',
+                                      Отменён: 'text-bg-secondary',
+                                      'Пилотный выпуск': 'text-bg-primary',
+                                    }[media?.status] || 'text-bg-secondary'
                                   }`}
-                                  style={{ fontSize: "0.875em" }}
-                                >
-                                  {media?.status || "Неизвестен"}
+                                  style={{ fontSize: '0.875em' }}>
+                                  {media?.status || 'Неизвестен'}
                                 </small>
                               </p>
                             </Col>
@@ -664,7 +653,7 @@ function MediaDetailsPage({ type }) {
                         </Col>
                         <Col md={7}>
                           <p className="text-black">
-                            <small>{media?.genres.join(", ") || "-"}</small>
+                            <small>{media?.genres.join(', ') || '-'}</small>
                           </p>
                         </Col>
                       </Row>
@@ -692,7 +681,7 @@ function MediaDetailsPage({ type }) {
                         </Col>
                         <Col md={7}>
                           <p className="text-black">
-                            <small>{media?.production_countries || "-"}</small>
+                            <small>{media?.production_countries || '-'}</small>
                           </p>
                         </Col>
                       </Row>
@@ -704,7 +693,7 @@ function MediaDetailsPage({ type }) {
                         </Col>
                         <Col md={7}>
                           <p className="text-black">
-                            <small>{media?.original_language || "-"}</small>
+                            <small>{media?.original_language || '-'}</small>
                           </p>
                         </Col>
                       </Row>
@@ -712,23 +701,23 @@ function MediaDetailsPage({ type }) {
                         <Col md={5}>
                           <p>
                             <small>
-                              {type === "movie"
-                                ? "Дата выхода"
-                                : "Первый эпизод"}
+                              {type === 'movie'
+                                ? 'Дата выхода'
+                                : 'Первый эпизод'}
                             </small>
                           </p>
                         </Col>
                         <Col md={7}>
                           <p className="text-black">
                             <small>
-                              {type === "movie"
-                                ? media?.release_date || "-"
-                                : media?.first_air_date || "-"}
+                              {type === 'movie'
+                                ? media?.release_date || '-'
+                                : media?.first_air_date || '-'}
                             </small>
                           </p>
                         </Col>
                       </Row>
-                      {type === "tv" && media?.last_air_date && (
+                      {type === 'tv' && media?.last_air_date && (
                         <Row className="text-start fs-6 text-secondary">
                           <Col md={5}>
                             <p>
@@ -737,7 +726,7 @@ function MediaDetailsPage({ type }) {
                           </Col>
                           <Col md={7}>
                             <p className="text-black">
-                              <small>{media?.last_air_date || "-"}</small>
+                              <small>{media?.last_air_date || '-'}</small>
                             </p>
                           </Col>
                         </Row>
@@ -746,7 +735,7 @@ function MediaDetailsPage({ type }) {
                         <Col md={5}>
                           <p>
                             <small>
-                              {type === "movie" ? "Режиссер" : "Создатель"}
+                              {type === 'movie' ? 'Режиссер' : 'Создатель'}
                             </small>
                           </p>
                         </Col>
@@ -755,8 +744,8 @@ function MediaDetailsPage({ type }) {
                             <small>
                               {movieDirector?.directors ||
                                 media?.creator ||
-                                "-"}
-                            </small>{" "}
+                                '-'}
+                            </small>{' '}
                           </p>
                         </Col>
                       </Row>
@@ -769,12 +758,12 @@ function MediaDetailsPage({ type }) {
                         </Col>
                         <Col md={7}>
                           <p className="text-black">
-                            <small>{media?.production_companies || "-"}</small>
+                            <small>{media?.production_companies || '-'}</small>
                           </p>
                         </Col>
                       </Row>
 
-                      {type === "movie" && media?.budget && (
+                      {type === 'movie' && media?.budget && (
                         <Row className="text-start fs-6 text-secondary">
                           <Col md={5}>
                             <p>
@@ -788,7 +777,7 @@ function MediaDetailsPage({ type }) {
                           </Col>
                         </Row>
                       )}
-                      {type === "movie" && media?.revenue && (
+                      {type === 'movie' && media?.revenue && (
                         <Row className="text-start fs-6 text-secondary">
                           <Col md={5}>
                             <p>
@@ -806,7 +795,7 @@ function MediaDetailsPage({ type }) {
                     <Col md={4}>
                       <div className="text-secondary">Рейтинг TMDB:</div>
                       <div className="fw-bold display-5">
-                        {media?.rating || "-"}{" "}
+                        {media?.rating || '-'}{' '}
                         <span className="fs-5 text-secondary fw-semibold">
                           / 10
                         </span>
@@ -816,8 +805,7 @@ function MediaDetailsPage({ type }) {
                         className="btn btn-warning my-5 bookmark-button"
                         onClick={handleBookmarkClick}
                         onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}
-                      >
+                        onMouseLeave={() => setIsHovered(false)}>
                         {isBookmarked ? (
                           <BookmarkStarFill
                             className="me-2"
@@ -854,7 +842,7 @@ function MediaDetailsPage({ type }) {
                       </Row>
                     )}
                   </Row>
-                  {type === "tv" && media?.last_production_season && (
+                  {type === 'tv' && media?.last_production_season && (
                     <>
                       <h3 className="text-start fw-bold fs-5 mb-4 mt-5">
                         Текущий сезон
@@ -865,7 +853,7 @@ function MediaDetailsPage({ type }) {
                             <Card.Img
                               src={
                                 media?.last_production_season
-                                  ?.season_poster_path || ""
+                                  ?.season_poster_path || ''
                               }
                               alt="Card image"
                               className="img-fluid"
@@ -874,15 +862,14 @@ function MediaDetailsPage({ type }) {
                           <Col md={9} className="d-flex">
                             <Card.Body className="d-flex flex-column justify-content-end rounded bg-body-tertiary ps-5">
                               <Card.Title className="fw-semibold">
-                                {media?.last_production_season?.name || "-"}
+                                {media?.last_production_season?.name || '-'}
                               </Card.Title>
                               <Card.Text className="mb-4">
                                 {media?.last_production_season?.vote_average >
                                   0 && (
                                   <span
                                     className="badge fw-semibold text-bg-secondary"
-                                    style={{ fontSize: "0.875em" }}
-                                  >
+                                    style={{ fontSize: '0.875em' }}>
                                     {
                                       media?.last_production_season
                                         ?.vote_average
@@ -890,28 +877,27 @@ function MediaDetailsPage({ type }) {
                                   </span>
                                 )}
                                 <small className="text-muted">
-                                  {" "}
+                                  {' '}
                                   {media?.last_production_season
-                                    ?.episode_count || "-"}{" "}
+                                    ?.episode_count || '-'}{' '}
                                   эпизодов
                                 </small>
                               </Card.Text>
-                              <Card.Text style={{ fontSize: "0.875rem" }}>
+                              <Card.Text style={{ fontSize: '0.875rem' }}>
                                 <BsCheck2Square />
-                                &ensp; Последний эпизод сезона вышел{" "}
-                                {media?.last_episode_to_air || "-"}
+                                &ensp; Последний эпизод сезона вышел{' '}
+                                {media?.last_episode_to_air || '-'}
                               </Card.Text>
-                              <Card.Text style={{ fontSize: "0.875rem" }}>
+                              <Card.Text style={{ fontSize: '0.875rem' }}>
                                 <BsCalendar3 /> &ensp;
                                 {media?.next_episode_to_air
                                   ? `Следующий эпизод планируется ${media?.next_episode_to_air}`
-                                  : "Новые эпизоды не планируются."}
+                                  : 'Новые эпизоды не планируются.'}
                               </Card.Text>
                               <Card.Text className="mt-auto fs-5 text-primary">
                                 <Link
                                   to={`/tv/${id}/seasons`}
-                                  className="text-decoration-none"
-                                >
+                                  className="text-decoration-none">
                                   Все сезоны
                                 </Link>
                               </Card.Text>
@@ -934,7 +920,7 @@ function MediaDetailsPage({ type }) {
           </Row>
           <Row className="mx-0 px-0 mt-5 mt-lg-5">
             <h3 className="text-start fw-bold fs-5 ps-0 mb-3">
-              Рекомендуемые {type === "movie" ? "фильмы" : "сериалы"}
+              Рекомендуемые {type === 'movie' ? 'фильмы' : 'сериалы'}
             </h3>
             <RecommendationsCarousel />
           </Row>

@@ -18,14 +18,14 @@
   border-radius: 2rem;
   display: block;
   text-decoration: none;
-  font-family: "Stem";
+  font-family: 'Stem';
   font-weight: 500;
   font-size: 1.1rem;
   width: 90%;
 }
 
 .btn-grad:hover {
-  background-position: right center; 
+  background-position: right center;
   color: #fff;
   text-decoration: none;
 }
@@ -45,7 +45,7 @@
 @media screen and (max-width: 992px) {
   .btn-grad {
     width: 80%;
-    font-size: .875rem;
+    font-size: 0.875rem;
     padding: 10px 15px;
   }
 }

@@ -1,5 +1,5 @@
-import { doc, getDoc, setDoc, deleteDoc, Timestamp } from "firebase/firestore";
-import { db } from "./firebase";
+import { doc, getDoc, setDoc, deleteDoc, Timestamp } from 'firebase/firestore';
+import { db } from './firebase';
 
 export const toggleBookmark = async ({
   userId,
@@ -14,14 +14,14 @@ export const toggleBookmark = async ({
   if (preventPropagation && event) event.stopPropagation();
 
   const docKey = `${mediaType}_${itemId}`;
-  const docRef = doc(db, "users", userId, "bookmarks", docKey);
+  const docRef = doc(db, 'users', userId, 'bookmarks', docKey);
 
   try {
     if (isBookmarked) {
       await deleteDoc(docRef);
       setIsBookmarked(false);
       triggerToast(
-        `Удалили ${mediaType === "movie" ? "фильм" : "сериал"}`,
+        `Удалили ${mediaType === 'movie' ? 'фильм' : 'сериал'}`
         // "info-subtle",
         // "info-emphasis",
         // "top-center"
@@ -30,19 +30,19 @@ export const toggleBookmark = async ({
       await setDoc(docRef, { itemId, mediaType, timestamp: Timestamp.now() });
       setIsBookmarked(true);
       triggerToast(
-        `Сохранили ${mediaType === "movie" ? "фильм" : "сериал"}`,
+        `Сохранили ${mediaType === 'movie' ? 'фильм' : 'сериал'}`
         // "info-subtle",
         // "info-emphasis",
         // "top-center"
       );
     }
   } catch (error) {
-    console.error("Error updating bookmark:", error);
+    console.error('Error updating bookmark:', error);
     triggerToast(
       `Ошибка добавления или удаления фильма (${error.message})`,
-      "danger-subtle",
-      "black",
-      "top-center"
+      'danger-subtle',
+      'black',
+      'top-center'
     );
   }
 };
@@ -56,18 +56,18 @@ export const checkBookmarkStatus = async ({
   triggerToast,
 }) => {
   const docKey = `${mediaType}_${itemId}`;
-  const docRef = doc(db, "users", userId, "bookmarks", docKey);
+  const docRef = doc(db, 'users', userId, 'bookmarks', docKey);
 
   try {
     const docSnap = await getDoc(docRef);
     setIsBookmarked(docSnap.exists());
   } catch (error) {
-    console.error("Error fetching bookmark status:", error);
+    console.error('Error fetching bookmark status:', error);
     triggerToast(
       `Ошибка проверки статуса закладки(${error.message})`,
-      "danger-subtle",
-      "danger-emphasis",
-      "top-center"
+      'danger-subtle',
+      'danger-emphasis',
+      'top-center'
     );
   }
 };

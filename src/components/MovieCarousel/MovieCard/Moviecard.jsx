@@ -1,22 +1,23 @@
 /* eslint-disable react/prop-types */
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import {
   Bookmark,
   BookmarkStar,
   BookmarkStarFill,
-} from "react-bootstrap-icons";
-import { Col, Row } from "react-bootstrap";
-import "./Moviecard.css";
-import placeholder from "../../../images/gradient_500_700.png";
-import { useAuth } from "../../../contexts/AuthContext";
-import { useToast } from "../../../contexts/ToastProvider";
+} from 'react-bootstrap-icons';
+import { Col, Row } from 'react-bootstrap';
+import './Moviecard.css';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useToast } from '../../../contexts/ToastProvider';
 import {
   toggleBookmark,
   checkBookmarkStatus,
-} from "../../../utils/BookmarkUtils";
+} from '../../../utils/BookmarkUtils';
 // import Skeleton from "react-loading-skeleton";
 // import "react-loading-skeleton/dist/skeleton.css";
+
+const placeholderUrl = '/placeholder-card.webp';
 
 function MovieCard({ movie, isLoading, onImageLoaded }) {
   const navigate = useNavigate();
@@ -25,11 +26,11 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
   const { user, authLoading } = useAuth();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [currentSrc, setCurrentSrc] = useState(placeholder);
+  const [currentSrc, setCurrentSrc] = useState(placeholderUrl);
 
   // Обновляем `currentSrc` при смене `isLoading`
   useEffect(() => {
-    setCurrentSrc(isLoading ? placeholder : movie.poster);
+    setCurrentSrc(isLoading ? placeholderUrl : movie.poster);
   }, [isLoading, movie.poster]);
 
   useEffect(() => {
@@ -70,7 +71,7 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
   const handleClick = () => {
     if (!isLoading) {
       const path =
-        movie.media_type === "tv" ? `/tv/${movie.id}` : `/movie/${movie.id}`;
+        movie.media_type === 'tv' ? `/tv/${movie.id}` : `/movie/${movie.id}`;
       navigate(path);
     }
   };
@@ -89,17 +90,15 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
     <a
       href={
         !isLoading
-          ? `/${movie.media_type === "tv" ? "tv" : "movie"}/${movie.id}`
+          ? `/${movie.media_type === 'tv' ? 'tv' : 'movie'}/${movie.id}`
           : undefined
       }
       tabIndex={!isLoading ? 0 : -1} // фокусируемая только если !isLoading
-      role={!isLoading ? "link" : undefined}
-      className="text-decoration-none text-black"
-    >
+      role={!isLoading ? 'link' : undefined}
+      className="text-decoration-none text-black">
       <div
         className="movie-card pt-3"
-        onClick={!isLoading ? handleClick : undefined}
-      >
+        onClick={!isLoading ? handleClick : undefined}>
         <div className="movie-content d-flex flex-column justify-content-end h-100">
           <div className="poster-container">
             {imageLoaded && !isLoading && !authLoading && user && (
@@ -107,8 +106,7 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
                 className="bookmark-icon"
                 onClick={handleBookmarkClick}
                 onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
+                onMouseLeave={() => setIsHovered(false)}>
                 {isBookmarked ? (
                   <BookmarkStarFill
                     className="text-warning"
@@ -140,7 +138,7 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
                   setImageLoaded(true);
                 }
               }}
-              onError={() => setCurrentSrc(placeholder)}
+              onError={() => setCurrentSrc(placeholderUrl)}
             />
           </div>
           <div className="movie-info flex-row">
@@ -152,14 +150,14 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
                       movie.name ||
                       movie.original_title ||
                       movie.original_name)) ||
-                    ""}
+                    ''}
                 </small>
               </Row>
               <Row>
                 <small className="text-body-tertiary">
                   {isLoading
-                    ? "Загрузка..."
-                    : movie.release_date || movie.first_air_date || ""}
+                    ? 'Загрузка...'
+                    : movie.release_date || movie.first_air_date || ''}
                 </small>
               </Row>
             </Col>

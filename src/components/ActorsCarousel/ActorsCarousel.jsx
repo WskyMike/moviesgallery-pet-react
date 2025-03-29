@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState, useRef } from "react";
-import Carousel from "react-multi-carousel";
-import actorsСarouselSettings from "../../vendor/actorsСarouselSettings";
-import ActorsCard from "./ActorsCard/ActorsCard";
-import "react-multi-carousel/lib/styles.css";
+import { useEffect, useState, useRef } from 'react';
+import Carousel from 'react-multi-carousel';
+import actorsСarouselSettings from '../../vendor/actorsСarouselSettings';
+import ActorsCard from './ActorsCard/ActorsCard';
+import 'react-multi-carousel/lib/styles.css';
 import {
   CustomLeftArrowThin,
   CustomRightArrowThin,
-} from "../../vendor/customArrows";
-import { useParams, useLocation } from "react-router-dom";
+} from '../../vendor/customArrows';
+import { useParams, useLocation } from 'react-router-dom';
 
-import { creditsMovieData } from "../../utils/CreditsMovieApi";
-import { creditsTvData } from "../../utils/CreditsTvApi";
+import { creditsMovieData } from '../../utils/CreditsMovieApi';
+import { creditsTvData } from '../../utils/CreditsTvApi';
 
 function ActorsCarousel() {
   const { id } = useParams(); // Получаем ID фильма из URL
@@ -23,7 +23,7 @@ function ActorsCarousel() {
 
   async function fetchActors() {
     try {
-      const fetchCredits = location.pathname.startsWith("/movie/")
+      const fetchCredits = location.pathname.startsWith('/movie/')
         ? creditsMovieData
         : creditsTvData;
 
@@ -37,7 +37,7 @@ function ActorsCarousel() {
       setActors(uniqueActors || []);
       setLoadingCredits(false);
     } catch (error) {
-      console.error("Ошибка при загрузке актеров:", error);
+      console.error('Ошибка при загрузке актеров:', error);
       setError(error.message);
       setLoadingCredits(false);
     }
