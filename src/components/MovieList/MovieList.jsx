@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Container,
   Form,
@@ -8,21 +8,21 @@ import {
   Col,
   Button,
   NavDropdown,
-} from "react-bootstrap";
-import MovieCard from "../MovieCarousel/MovieCard/Moviecard";
-import SearchForm from "../SearchForm/SearchForm";
-import ScrollToTopButton from "../../vendor/ScrollToTopButton/ToTopButton";
-import ScrollToEndButton from "../../vendor/ScrollToEndButton/ScrollToEndButton";
-import BackwardButton from "../../vendor/BackwardButton/BackwardButton";
-import "./MovieList.css";
-import { useToast } from "../../contexts/ToastProvider";
+} from 'react-bootstrap';
+import MovieCard from '../MovieCarousel/MovieCard/Moviecard';
+import SearchForm from '../SearchForm/SearchForm';
+import ScrollToTopButton from '../../vendor/ScrollToTopButton/ToTopButton';
+import ScrollToEndButton from '../../vendor/ScrollToEndButton/ScrollToEndButton';
+import BackwardButton from '../../vendor/BackwardButton/BackwardButton';
+import './MovieList.css';
+import { useToast } from '../../contexts/ToastProvider';
 
-import { popularApi } from "../../utils/PopularApi";
-import { topRatedApi } from "../../utils/TopRatedApi";
-import { nowPlayingApi } from "../../utils/NowPlayingApi";
-import { popularRusApi } from "../../utils/PopularRusApi";
-import { popularTvApi } from "../../utils/PopularTvApi";
-import { GenresApi } from "../../utils/GenresApi";
+import { popularApi } from '../../utils/PopularApi';
+import { topRatedApi } from '../../utils/TopRatedApi';
+import { nowPlayingApi } from '../../utils/NowPlayingApi';
+import { popularRusApi } from '../../utils/PopularRusApi';
+import { popularTvApi } from '../../utils/PopularTvApi';
+import { GenresApi } from '../../utils/GenresApi';
 
 function MovieList() {
   const { category } = useParams(); // Получаем параметр из URL
@@ -32,16 +32,16 @@ function MovieList() {
   // Категории на заголовки
   const titleMap = useMemo(
     () => ({
-      popular: "Популярные фильмы",
-      topRated: "Лучшие фильмы",
-      nowPlaying: "Сейчас в кино",
-      popularRus: "Популярные российские фильмы",
-      popularTv: "Лучшие сериалы",
+      popular: 'Популярные фильмы',
+      topRated: 'Лучшие фильмы',
+      nowPlaying: 'Сейчас в кино',
+      popularRus: 'Популярные российские фильмы',
+      popularTv: 'Лучшие сериалы',
     }),
     []
   );
 
-  const title = titleMap[category] || "";
+  const title = titleMap[category] || '';
 
   //  Маппинг категорий на API
   const apiMap = useMemo(
@@ -61,29 +61,29 @@ function MovieList() {
   const apiKeyMap = useMemo(
     () => ({
       popular: {
-        moviesKey: "popularMovies",
-        pageKey: "popularPage",
-        totalPagesKey: "popularTotalPages",
+        moviesKey: 'popularMovies',
+        pageKey: 'popularPage',
+        totalPagesKey: 'popularTotalPages',
       },
       topRated: {
-        moviesKey: "topRatedMovies",
-        pageKey: "topRatedPage",
-        totalPagesKey: "topRatedTotalPages",
+        moviesKey: 'topRatedMovies',
+        pageKey: 'topRatedPage',
+        totalPagesKey: 'topRatedTotalPages',
       },
       nowPlaying: {
-        moviesKey: "nowPlayingMovies",
-        pageKey: "nowPlayingPage",
-        totalPagesKey: "nowPlayingTotalPages",
+        moviesKey: 'nowPlayingMovies',
+        pageKey: 'nowPlayingPage',
+        totalPagesKey: 'nowPlayingTotalPages',
       },
       popularRus: {
-        moviesKey: "popularRusMovies",
-        pageKey: "popularRusPage",
-        totalPagesKey: "popularRusTotalPages",
+        moviesKey: 'popularRusMovies',
+        pageKey: 'popularRusPage',
+        totalPagesKey: 'popularRusTotalPages',
       },
       popularTv: {
-        moviesKey: "popularTvMovies",
-        pageKey: "popularTvPage",
-        totalPagesKey: "popularTvTotalPages",
+        moviesKey: 'popularTvMovies',
+        pageKey: 'popularTvPage',
+        totalPagesKey: 'popularTvTotalPages',
       },
     }),
     []
@@ -92,7 +92,7 @@ function MovieList() {
   const { moviesKey, pageKey, totalPagesKey } = apiKeyMap[category];
 
   // Загружаем данные из sessionStorage при первом рендере
-  const savedMovies = JSON.parse(sessionStorage.getItem(moviesKey) || "[]");
+  const savedMovies = JSON.parse(sessionStorage.getItem(moviesKey) || '[]');
   const savedPage = parseInt(sessionStorage.getItem(pageKey), 10) || 1;
   const savedTotalPages =
     parseInt(sessionStorage.getItem(totalPagesKey), 10) || 0;
@@ -102,16 +102,16 @@ function MovieList() {
   const [loading, setLoading] = useState(!savedMovies.length);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [totalPages, setTotalPages] = useState(savedTotalPages) || 0;
-  const [selectedGenre, setSelectedGenre] = useState(""); //Выбранный жанр
+  const [selectedGenre, setSelectedGenre] = useState(''); //Выбранный жанр
   const [showRussianOnly, setShowRussianOnly] = useState(
-    JSON.parse(sessionStorage.getItem("showRussianOnly")) || false
+    JSON.parse(sessionStorage.getItem('showRussianOnly')) || false
   );
 
   async function fetchMovies(
     page,
     genre = selectedGenre,
     isReset = false,
-    lang = showRussianOnly ? "ru" : ""
+    lang = showRussianOnly ? 'ru' : ''
   ) {
     try {
       const { movies: newMovies, totalPages } = await currentApi(
@@ -129,12 +129,12 @@ function MovieList() {
       setLoading(false);
       setIsLoadingMore(false);
     } catch (error) {
-      console.error("Ошибка при получении данных:", error);
+      console.error('Ошибка при получении данных:', error);
       triggerToast(
-        "Ошибка при получении данных. Попробуйте немного позже.",
-        "danger-subtle",
-        "danger-emphasis",
-        "top-center"
+        'Ошибка при получении данных. Попробуйте немного позже.',
+        'danger-subtle',
+        'danger-emphasis',
+        'top-center'
       );
       setLoading(false);
       setIsLoadingMore(false);
@@ -157,7 +157,7 @@ function MovieList() {
     setLoading(true);
     setMovies([]);
     setPage(1);
-    fetchMovies(1, selectedGenre, true, isRussian ? "ru" : "");
+    fetchMovies(1, selectedGenre, true, isRussian ? 'ru' : '');
   };
 
   // Сохраняем состояния в sessionStorage при каждом изменении зависимостей
@@ -165,7 +165,7 @@ function MovieList() {
     sessionStorage.setItem(moviesKey, JSON.stringify(movies));
     sessionStorage.setItem(pageKey, page.toString());
     sessionStorage.setItem(totalPagesKey, totalPages.toString());
-    sessionStorage.setItem("showRussianOnly", JSON.stringify(showRussianOnly));
+    sessionStorage.setItem('showRussianOnly', JSON.stringify(showRussianOnly));
   }, [movies, page, totalPages, showRussianOnly]);
 
   // Проверим наличе данных в storage
@@ -186,7 +186,7 @@ function MovieList() {
   useEffect(() => {
     async function fetchGenres() {
       try {
-        const isTvSeries = category === "popularTv";
+        const isTvSeries = category === 'popularTv';
         const data = await GenresApi(isTvSeries);
 
         // Преобразуем название жанра каждого объекта в массиве в верхний регистр
@@ -197,7 +197,7 @@ function MovieList() {
 
         setGenres(updatedGenres);
       } catch (error) {
-        console.error("Ошибка загрузки жанров:", error);
+        console.error('Ошибка загрузки жанров:', error);
       }
     }
     fetchGenres();
@@ -215,9 +215,9 @@ function MovieList() {
             <Col xs="auto">
               <h2 className="text-start display-5">{title}</h2>
             </Col>
-            {(category === "nowPlaying" ||
-              category === "topRated" ||
-              category === "popularTv") && (
+            {(category === 'nowPlaying' ||
+              category === 'topRated' ||
+              category === 'popularTv') && (
               <Col xs="auto" className="ms-md-auto">
                 <Form.Check
                   reverse
@@ -236,19 +236,17 @@ function MovieList() {
                 id="nav-dropdown"
                 title={
                   selectedGenre
-                    ? genres.find((g) => g.id === selectedGenre)?.name + " " ||
-                      "Фильтр по жанру "
-                    : "Фильтр по жанру "
+                    ? genres.find((g) => g.id === selectedGenre)?.name + ' ' ||
+                      'Фильтр по жанру '
+                    : 'Фильтр по жанру '
                 }
                 variant="light"
-                className="movie-list__dropdown-button"
-              >
+                className="movie-list__dropdown-button">
                 <div className="movie-list__custom-scroll">
                   <NavDropdown.Item
-                    onClick={() => handleGenreChange("")}
+                    onClick={() => handleGenreChange('')}
                     key="all"
-                    href="#/all"
-                  >
+                    href="#/all">
                     Все
                   </NavDropdown.Item>
                   {genres.map((genre) => (
@@ -256,8 +254,7 @@ function MovieList() {
                       onClick={() => handleGenreChange(genre.id)}
                       className="fw-light"
                       key={genre.id}
-                      href={`#/genre-${genre.id}`}
-                    >
+                      href={`#/genre-${genre.id}`}>
                       {genre.name}
                     </NavDropdown.Item>
                   ))}
@@ -280,8 +277,7 @@ function MovieList() {
                   sm={4}
                   md={3}
                   lg={3}
-                  className="mb-4 px-1 px-lg-2"
-                >
+                  className="mb-4 px-1 px-lg-2">
                   <MovieCard movie={movie} />
                 </Col>
               ))
@@ -296,16 +292,14 @@ function MovieList() {
                     variant="primary"
                     size="lg"
                     disabled={isLoadingMore}
-                    className="d-flex align-items-center justify-content-center"
-                  >
+                    className="d-flex align-items-center justify-content-center">
                     {isLoadingMore && (
                       <span
                         className="spinner-grow spinner-grow-sm me-3"
                         role="status"
-                        aria-hidden="true"
-                      ></span>
+                        aria-hidden="true"></span>
                     )}
-                    {isLoadingMore ? "Загружаю..." : "Показать ещё"}
+                    {isLoadingMore ? 'Загружаю...' : 'Показать ещё'}
                   </Button>
                 )}
                 {page >= totalPages && (

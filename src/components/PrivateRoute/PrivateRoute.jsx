@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 const PrivateRoute = ({ children }) => {
   const { user, authLoading } = useAuth();
@@ -13,7 +13,7 @@ const PrivateRoute = ({ children }) => {
     );
   }
 
-  return user ? children : <Navigate to="/" />; 
+  return user ? children : <Navigate to="/" />;
 };
 
 export default PrivateRoute;

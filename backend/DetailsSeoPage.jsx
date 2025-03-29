@@ -1,39 +1,39 @@
 // Этот компонент формирует HTML-страницу для поисковых роботов
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 function SEOPage({ media, type, url }) {
-  const title = media.title || media.name || "";
-  const originalTitle = media.original_title || media.original_name || "";
-  const year = media.release_year || media.first_air_year || "";
-  const rating = media.rating ? media.rating.toString() : "-";
-  const genres = Array.isArray(media.genres) ? media.genres.join(", ") : "-";
-  const country = media.production_countries || "-";
-  const originalLanguage = media.original_language || "";
-  const duration = media.runtime || media.episode_run_time || "-";
+  const title = media.title || media.name || '';
+  const originalTitle = media.original_title || media.original_name || '';
+  const year = media.release_year || media.first_air_year || '';
+  const rating = media.rating ? media.rating.toString() : '-';
+  const genres = Array.isArray(media.genres) ? media.genres.join(', ') : '-';
+  const country = media.production_countries || '-';
+  const originalLanguage = media.original_language || '';
+  const duration = media.runtime || media.episode_run_time || '-';
   const releaseOrEpisodeDate =
-    type === "movie" ? media.release_date : media.first_air_date;
-  const budget = media.budget ? media.budget.toLocaleString("ru-RU") : "-";
-  const revenue = media.revenue ? media.revenue.toLocaleString("ru-RU") : "-";
-  const lastEpisode = media.last_episode_to_air || "-";
-  const nextEpisode = media.next_episode_to_air || "-";
-  const tagline = media.tagline || "";
-  const production_companies = media.production_companies || "-";
+    type === 'movie' ? media.release_date : media.first_air_date;
+  const budget = media.budget ? media.budget.toLocaleString('ru-RU') : '-';
+  const revenue = media.revenue ? media.revenue.toLocaleString('ru-RU') : '-';
+  const lastEpisode = media.last_episode_to_air || '-';
+  const nextEpisode = media.next_episode_to_air || '-';
+  const tagline = media.tagline || '';
+  const production_companies = media.production_companies || '-';
   const overview =
-    media.overview || "Нет описания, переведенного на русский язык";
-  const directors = media.credits?.directors || "-";
-  const actors = media.credits?.actors || "-";
-  const creator = media.creator || "-";
-  const poster = media.poster || "";
+    media.overview || 'Нет описания, переведенного на русский язык';
+  const directors = media.credits?.directors || '-';
+  const actors = media.credits?.actors || '-';
+  const creator = media.creator || '-';
+  const poster = media.poster || '';
 
   // Формирование мета-тегов
   const metaTitle = title
     ? originalTitle && title !== originalTitle
       ? `${title} • ${originalTitle}`
       : title
-    : "Киногалерея";
+    : 'Киногалерея';
   const metaDescription =
     media.overview ||
-    "Популярные новинки, рейтинги лучших картин и актуальные премьеры. Присоединяйтесь и создавайте персональные подборки любимого кино.";
+    'Популярные новинки, рейтинги лучших картин и актуальные премьеры. Присоединяйтесь и создавайте персональные подборки любимого кино.';
 
   return (
     <html lang="ru">
@@ -46,37 +46,34 @@ function SEOPage({ media, type, url }) {
       <body
         style={{
           margin: 0,
-          fontFamily: "Arial, sans-serif",
+          fontFamily: 'Arial, sans-serif',
           lineHeight: 1.2,
-          fontSize: "0.9rem",
-        }}
-      >
+          fontSize: '0.9rem',
+        }}>
         <header
           style={{
-            padding: "1rem",
-            backgroundColor: "#f5f5f5",
-            textAlign: "center",
-          }}
-        >
+            padding: '1rem',
+            backgroundColor: '#f5f5f5',
+            textAlign: 'center',
+          }}>
           <h1>{metaTitle}</h1>
         </header>
         <main
           style={{
-            padding: "1rem",
-          }}
-        >
+            padding: '1rem',
+          }}>
           {poster && (
             <img
               src={poster}
               alt={`Постер ${title}`}
               style={{
-                maxWidth: "154px",
-                height: "auto",
-                margin: "1rem 0",
+                maxWidth: '154px',
+                height: 'auto',
+                margin: '1rem 0',
               }}
             />
           )}
-          <h2>О {type === "movie" ? "фильме:" : "сериале:"}</h2>
+          <h2>О {type === 'movie' ? 'фильме:' : 'сериале:'}</h2>
           <p>{overview}</p>
           <ul>
             <li>
@@ -109,7 +106,7 @@ function SEOPage({ media, type, url }) {
             <li>
               <strong>Кинокомпании:</strong> {production_companies}
             </li>
-            {type === "movie" && (
+            {type === 'movie' && (
               <>
                 <li>
                   <strong>Продолжительность:</strong> {duration}
@@ -131,7 +128,7 @@ function SEOPage({ media, type, url }) {
                 </li>
               </>
             )}
-            {type === "tv" && (
+            {type === 'tv' && (
               <>
                 <li>
                   <strong>Первый эпизод:</strong> {releaseOrEpisodeDate}
@@ -154,12 +151,11 @@ function SEOPage({ media, type, url }) {
         </main>
         <footer
           style={{
-            padding: "1rem",
-            textAlign: "center",
-            backgroundColor: "#f5f5f5",
-            marginTop: "2rem",
-          }}
-        >
+            padding: '1rem',
+            textAlign: 'center',
+            backgroundColor: '#f5f5f5',
+            marginTop: '2rem',
+          }}>
           <p>&nbsp;&copy; 2025 Киногалерея. Все права защищены. </p>
           <p>
             GitHub:
@@ -207,7 +203,7 @@ SEOPage.propTypes = {
       ),
     }),
   }).isRequired,
-  type: PropTypes.oneOf(["movie", "tv"]).isRequired,
+  type: PropTypes.oneOf(['movie', 'tv']).isRequired,
   url: PropTypes.string.isRequired,
 };
 

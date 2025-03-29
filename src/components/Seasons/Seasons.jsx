@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Card, Col, Container, Row } from "react-bootstrap";
-import { useToast } from "../../contexts/ToastProvider";
-import SearchForm from "../SearchForm/SearchForm";
-import BackwardButton from "../../vendor/BackwardButton/BackwardButton";
-import { tvSeasonsData } from "../../utils/TvSeasonsApi";
-import "./Seasons.css";
-import ScrollToTopButton from "../../vendor/ScrollToTopButton/ToTopButton";
-import ScrollToEndButton from "../../vendor/ScrollToEndButton/ScrollToEndButton";
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { Card, Col, Container, Row } from 'react-bootstrap';
+import { useToast } from '../../contexts/ToastProvider';
+import SearchForm from '../SearchForm/SearchForm';
+import BackwardButton from '../../vendor/BackwardButton/BackwardButton';
+import { tvSeasonsData } from '../../utils/TvSeasonsApi';
+import './Seasons.css';
+import ScrollToTopButton from '../../vendor/ScrollToTopButton/ToTopButton';
+import ScrollToEndButton from '../../vendor/ScrollToEndButton/ScrollToEndButton';
 
-import countries from "i18n-iso-countries";
-import ruLocale from "i18n-iso-countries/langs/ru.json";
+import countries from 'i18n-iso-countries';
+import ruLocale from 'i18n-iso-countries/langs/ru.json';
 
 countries.registerLocale(ruLocale);
 
@@ -33,8 +33,8 @@ function Seasons() {
       console.error(err);
       triggerToast(
         `Ошибка запроса данных (${err.message})`,
-        "danger-subtle",
-        "danger-emphasis"
+        'danger-subtle',
+        'danger-emphasis'
       );
     } finally {
       setMovieDetailsLoading(false);
@@ -91,13 +91,12 @@ function Seasons() {
                             {season.vote_average > 0 && (
                               <span
                                 className="badge fw-semibold text-bg-secondary"
-                                style={{ fontSize: "0.875em" }}
-                              >
+                                style={{ fontSize: '0.875em' }}>
                                 {season.vote_average}
                               </span>
                             )}
                             <small className="text-muted">
-                              {" "}
+                              {' '}
                               {season.episode_count} эпизодов
                             </small>
                           </Card.Text>
@@ -105,52 +104,50 @@ function Seasons() {
                             className="mb-4 mb-md-5"
                             style={{
                               fontSize:
-                                window.innerWidth <= 576 ? "0.8em" : "0.875em",
-                            }}
-                          >
+                                window.innerWidth <= 576 ? '0.8em' : '0.875em',
+                            }}>
                             {/* <BsFilm /> &nbsp; */}
                             {season.air_date ? (
                               new Date(season.air_date) > new Date() ? (
                                 <>
-                                  Выход сезона планируется{" "}
+                                  Выход сезона планируется{' '}
                                   <span className="d-md-none">
                                     <br />
                                   </span>
                                   {new Date(season.air_date).toLocaleDateString(
-                                    "ru-RU",
+                                    'ru-RU',
                                     {
-                                      day: "2-digit",
-                                      month: "long",
-                                      year: "numeric",
+                                      day: '2-digit',
+                                      month: 'long',
+                                      year: 'numeric',
                                     }
                                   )}
                                 </>
                               ) : (
                                 <>
-                                  Сезон вышел{" "}
+                                  Сезон вышел{' '}
                                   <span className="d-md-none">
                                     <br />
                                   </span>
                                   {new Date(season.air_date).toLocaleDateString(
-                                    "ru-RU",
+                                    'ru-RU',
                                     {
-                                      day: "2-digit",
-                                      month: "long",
-                                      year: "numeric",
+                                      day: '2-digit',
+                                      month: 'long',
+                                      year: 'numeric',
                                     }
                                   )}
                                 </>
                               )
                             ) : (
-                              "Нет данных или сезон ещё не вышел"
+                              'Нет данных или сезон ещё не вышел'
                             )}
                           </Card.Text>
                           <Card.Text
                             style={{
                               fontSize:
-                                window.innerWidth <= 576 ? "0.8em" : "0.875em",
-                            }}
-                          >
+                                window.innerWidth <= 576 ? '0.8em' : '0.875em',
+                            }}>
                             {season.overview}
                           </Card.Text>
                         </Card.Body>

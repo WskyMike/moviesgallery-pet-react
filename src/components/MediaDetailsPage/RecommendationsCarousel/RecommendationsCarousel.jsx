@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState, useRef } from "react";
-import "react-multi-carousel/lib/styles.css";
-import { useParams, useLocation } from "react-router-dom";
-import Carousel from "react-multi-carousel";
-import RecommendationsCard from "./RecommendationsCard/RecommendationsCard";
+import { useEffect, useState, useRef } from 'react';
+import 'react-multi-carousel/lib/styles.css';
+import { useParams, useLocation } from 'react-router-dom';
+import Carousel from 'react-multi-carousel';
+import RecommendationsCard from './RecommendationsCard/RecommendationsCard';
 import {
   CustomLeftArrowThin,
   CustomRightArrowThin,
-} from "../../../vendor/customArrows";
-import { recommendationsData } from "../../../utils/RecommendationApi";
-import adviceСarouselSettings from "../../../vendor/adviceСarouselSettings";
+} from '../../../vendor/customArrows';
+import { recommendationsData } from '../../../utils/RecommendationApi';
+import adviceСarouselSettings from '../../../vendor/adviceСarouselSettings';
 
 function RecommendationsCarousel() {
   const { id } = useParams(); // Получаем ID фильма из URL
@@ -21,12 +21,12 @@ function RecommendationsCarousel() {
 
   async function fetchRecommendations() {
     try {
-      const mediaType = location.pathname.includes("/movie/") ? "movie" : "tv";
+      const mediaType = location.pathname.includes('/movie/') ? 'movie' : 'tv';
       const data = await recommendationsData(id, mediaType);
       setRecommendations(data || []);
       setLoadingRecommendations(false);
     } catch (error) {
-      console.error("Ошибка при загрузке рекомендаций:", error);
+      console.error('Ошибка при загрузке рекомендаций:', error);
       setError(error.message);
       setLoadingRecommendations(false);
     }

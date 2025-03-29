@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import { createContext, useContext, useState } from "react";
-import ToastManager from "../components/ToastManager/ToastManager";
+import { createContext, useContext, useState } from 'react';
+import ToastManager from '../components/ToastManager/ToastManager';
 
 const ToastContext = createContext();
 
@@ -8,14 +8,19 @@ export const useToast = () => useContext(ToastContext);
 
 export const ToastProvider = ({ children }) => {
   const [toastConfig, setToastConfig] = useState({
-    message: "",
-    variant: "primary",
-    position: "top-center",
-    text: "white",
+    message: '',
+    variant: 'primary',
+    position: 'top-center',
+    text: 'white',
     show: false,
   });
 
-  const triggerToast = (message, variant = "primary", text = "white", position = "top-center") => {
+  const triggerToast = (
+    message,
+    variant = 'primary',
+    text = 'white',
+    position = 'top-center'
+  ) => {
     setToastConfig({ message, variant, show: true, text, position });
   };
 

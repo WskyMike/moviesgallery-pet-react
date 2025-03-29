@@ -1,19 +1,19 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useSearch } from "../../contexts/SearchContext";
-import { Container, Row, Col, Card, ListGroup } from "react-bootstrap";
-import ScrollToTopButton from "../../vendor/ScrollToTopButton/ToTopButton";
-import ScrollToEndButton from "../../vendor/ScrollToEndButton/ScrollToEndButton";
-import BackwardButton from "../../vendor/BackwardButton/BackwardButton";
-import SearchForm from "../SearchForm/SearchForm";
-import { SearchApi } from "../../utils/SearchApi";
-import { GenresApi } from "../../utils/GenresApi";
-import "./SearchResult.css";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useSearch } from '../../contexts/SearchContext';
+import { Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
+import ScrollToTopButton from '../../vendor/ScrollToTopButton/ToTopButton';
+import ScrollToEndButton from '../../vendor/ScrollToEndButton/ScrollToEndButton';
+import BackwardButton from '../../vendor/BackwardButton/BackwardButton';
+import SearchForm from '../SearchForm/SearchForm';
+import { SearchApi } from '../../utils/SearchApi';
+import { GenresApi } from '../../utils/GenresApi';
+import './SearchResult.css';
 
 function SearchResults() {
   const { searchTrigger } = useSearch();
-  const [selectedCategory, setSelectedCategory] = useState("movie");
+  const [selectedCategory, setSelectedCategory] = useState('movie');
   const [isLoading, setIsLoading] = useState(true);
   const [filteredResults, setFilteredResults] = useState([]);
   const [movieCount, setMovieCount] = useState(0);
@@ -24,7 +24,7 @@ function SearchResults() {
   useEffect(() => {
     async function fetchGenres() {
       try {
-        const isTvSeries = selectedCategory === "tv";
+        const isTvSeries = selectedCategory === 'tv';
         const data = await GenresApi(isTvSeries);
 
         // Преобразуем название жанра каждого объекта в массиве в верхний регистр
@@ -35,14 +35,14 @@ function SearchResults() {
 
         setGenres(updatedGenres);
       } catch (error) {
-        console.error("Ошибка загрузки жанров:", error);
+        console.error('Ошибка загрузки жанров:', error);
       }
     }
     fetchGenres();
   }, [selectedCategory]);
 
   const handleStorageChange = async () => {
-    const query = sessionStorage.getItem("searchQuery");
+    const query = sessionStorage.getItem('searchQuery');
     if (!query) {
       setFilteredResults([]);
       setIsLoading(false);
@@ -67,7 +67,7 @@ function SearchResults() {
       setMovieCount(dataPage1.movieCount + dataPage2.movieCount);
       setTvCount(dataPage1.tvCount + dataPage2.tvCount);
     } catch (error) {
-      console.error("Ошибка загрузки данных:", error);
+      console.error('Ошибка загрузки данных:', error);
       setFilteredResults([]);
     } finally {
       setIsLoading(false);
@@ -82,7 +82,7 @@ function SearchResults() {
     return genreIds
       .map((genreId) => genres.find((genre) => genre.id === genreId)?.name)
       .filter(Boolean)
-      .join(", ");
+      .join(', ');
   }
 
   return (
@@ -99,25 +99,23 @@ function SearchResults() {
               <ListGroup.Item
                 as="button"
                 action
-                active={selectedCategory === "movie"}
-                onClick={() => setSelectedCategory("movie")}
-                className="d-flex justify-content-between align-items-center search-results__custom-active rounded border-0"
-              >
+                active={selectedCategory === 'movie'}
+                onClick={() => setSelectedCategory('movie')}
+                className="d-flex justify-content-between align-items-center search-results__custom-active rounded border-0">
                 Фильмы
                 <span className="badge bg-primary rounded-pill fw-normal">
-                  {movieCount || ""}
+                  {movieCount || ''}
                 </span>
               </ListGroup.Item>
               <ListGroup.Item
                 as="button"
                 action
-                active={selectedCategory === "tv"}
-                onClick={() => setSelectedCategory("tv")}
-                className="d-flex justify-content-between align-items-center search-results__custom-active rounded border-0 mt-0"
-              >
+                active={selectedCategory === 'tv'}
+                onClick={() => setSelectedCategory('tv')}
+                className="d-flex justify-content-between align-items-center search-results__custom-active rounded border-0 mt-0">
                 Сериалы
                 <span className="badge bg-primary rounded-pill fw-normal">
-                  {tvCount || ""}
+                  {tvCount || ''}
                 </span>
               </ListGroup.Item>
             </ListGroup>
@@ -136,8 +134,7 @@ function SearchResults() {
                 <Link
                   to={`/${item.media_type}/${item.id}`}
                   key={item.id}
-                  className="text-decoration-none text-reset"
-                >
+                  className="text-decoration-none text-reset">
                   <Card className="border-0 text-start search-results__card mb-4 w-100">
                     <Row>
                       <Col xs={4} sm={2}>
@@ -159,7 +156,7 @@ function SearchResults() {
                           <Card.Title className="fw-semibold mb-md-0 search-results__card-title">
                             {item.title}&nbsp;
                             <span className="mb-4 mb-md-5 fw-light">
-                              {item.release_year || ""}
+                              {item.release_year || ''}
                             </span>
                             <h2 className="text-secondary search-results__card-subtitle">
                               {item.original_title}
@@ -167,9 +164,8 @@ function SearchResults() {
                             <span
                               className="text-secondary fw-light d-block d-md-none mb-2"
                               style={{
-                                fontSize: "0.8em",
-                              }}
-                            >
+                                fontSize: '0.8em',
+                              }}>
                               {getMovieGenres(item.genres, genres)}
                             </span>
                           </Card.Title>
@@ -177,20 +173,18 @@ function SearchResults() {
                             <span
                               className="badge fw-semibold"
                               style={{
-                                fontSize: "0.875em",
-                                backgroundColor: "#f05723",
-                              }}
-                            >
+                                fontSize: '0.875em',
+                                backgroundColor: '#f05723',
+                              }}>
                               {item.rating || null}
                             </span>
                             &emsp;
                             <span
                               className="text-secondary"
                               style={{
-                                fontSize: "0.8em",
-                                verticalAlign: "bottom",
-                              }}
-                            >
+                                fontSize: '0.8em',
+                                verticalAlign: 'bottom',
+                              }}>
                               {getMovieGenres(item.genres, genres)}
                             </span>
                           </Card.Text>
@@ -198,9 +192,8 @@ function SearchResults() {
                             className="search-results__text-clamp lh-sm"
                             style={{
                               fontSize:
-                                window.innerWidth <= 576 ? "0.8em" : "0.875em",
-                            }}
-                          >
+                                window.innerWidth <= 576 ? '0.8em' : '0.875em',
+                            }}>
                             {item.overview}
                           </Card.Text>
                         </Card.Body>

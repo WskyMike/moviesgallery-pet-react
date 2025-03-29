@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import Carousel from "react-multi-carousel";
-import { ChevronRight } from "react-bootstrap-icons";
-import "react-multi-carousel/lib/styles.css";
-import movieCarouselSettings from "../../vendor/movieСarouselSettings";
-import { CustomLeftArrow, CustomRightArrow } from "../../vendor/customArrows";
-import LazyMovieCard from "./MovieCard/LazyMovieCard";
-import "./MovieCarousel.css";
+import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import Carousel from 'react-multi-carousel';
+import { ChevronRight } from 'react-bootstrap-icons';
+import 'react-multi-carousel/lib/styles.css';
+import movieCarouselSettings from '../../vendor/movieСarouselSettings';
+import { CustomLeftArrow, CustomRightArrow } from '../../vendor/customArrows';
+import LazyMovieCard from './MovieCard/LazyMovieCard';
+import './MovieCarousel.css';
 
 function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
   const [movies, setMovies] = useState([]);
@@ -17,7 +17,11 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
 
   async function fetchMovies() {
     try {
-      const { movies = [], totalPages } = await fetchMoviesApi();
+      const { movies = [], totalPages } = await fetchMoviesApi(
+        undefined,
+        undefined,
+        true
+      );
       // Сохраняем фильмы и общее количество страниц в sessionStorage
       sessionStorage.setItem(`${category}Carousel`, JSON.stringify(movies));
       sessionStorage.setItem(`${category}Movies`, JSON.stringify(movies));
@@ -25,7 +29,7 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
 
       setMovies(movies);
     } catch (error) {
-      console.error("Ошибка при получении данных:", error);
+      console.error('Ошибка при получении данных:', error);
     } finally {
       setLoading(false);
     }
@@ -33,7 +37,7 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
 
   useEffect(() => {
     const savedMovies = JSON.parse(
-      sessionStorage.getItem(`${category}Carousel`) || "[]"
+      sessionStorage.getItem(`${category}Carousel`) || '[]'
     );
 
     if (savedMovies.length) {
@@ -61,8 +65,7 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
     <div className="py-4 mx-0 mx-lg-5">
       <Link
         to={`/list/${category}`}
-        className="link-underline link-underline-opacity-0 custom-link-hover text-dark"
-      >
+        className="link-underline link-underline-opacity-0 custom-link-hover text-dark">
         <div className="d-flex justify-content-start justify-content-md-center align-items-center my-4 mx-0 mx-md-3">
           <h2 className="text-start fw-semibold my-0 fs-sm-custom-5">
             {title}
@@ -85,8 +88,7 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
         <Carousel
           {...movieCarouselSettings}
           ref={carouselRef}
-          containerClass="movie-carousel-container"
-        >
+          containerClass="movie-carousel-container">
           {movies.map((movie) => (
             <LazyMovieCard
               key={movie.id}

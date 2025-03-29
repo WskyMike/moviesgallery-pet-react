@@ -1,12 +1,12 @@
-import { Form, FormControl, Button, Row, Col } from "react-bootstrap";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSearch } from "../../contexts/SearchContext";
-import { FaSearch } from "react-icons/fa";
+import { Form, FormControl, Button, Row, Col } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSearch } from '../../contexts/SearchContext';
+import { FaSearch } from 'react-icons/fa';
 
 function SearchForm() {
   const { triggerSearch } = useSearch(); // в контекст
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -15,35 +15,35 @@ function SearchForm() {
     if (!searchQuery.trim()) return;
 
     setIsLoading(true);
-    sessionStorage.setItem("searchQuery", searchQuery);
+    sessionStorage.setItem('searchQuery', searchQuery);
     triggerSearch(); // Триггер обновления в SearchResults
-    navigate("/search");
-    setSearchQuery("");
+    navigate('/search');
+    setSearchQuery('');
     setIsLoading(false);
   };
 
   // Функция для проверки ширины экрана и добавления классов
   const handleResize = () => {
-    const form = document.querySelector(".search-form__form-control");
-    const button = document.querySelector(".search-form__btn");
+    const form = document.querySelector('.search-form__form-control');
+    const button = document.querySelector('.search-form__btn');
 
     if (window.innerWidth >= 992) {
-      form.classList.add("form-control-lg");
-      button.classList.add("btn-lg");
+      form.classList.add('form-control-lg');
+      button.classList.add('btn-lg');
     } else {
-      form.classList.remove("form-control-lg");
-      button.classList.remove("btn-lg");
+      form.classList.remove('form-control-lg');
+      button.classList.remove('btn-lg');
     }
   };
 
   // Используем useEffect для обработки изменений размера экрана
   useEffect(() => {
     handleResize(); // Проверка при монтировании компонента
-    window.addEventListener("resize", handleResize); // Добавляем слушатель
+    window.addEventListener('resize', handleResize); // Добавляем слушатель
 
     // Очищаем слушатель при размонтировании компонента
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -65,8 +65,7 @@ function SearchForm() {
             variant="primary"
             type="submit"
             className="search-form__btn"
-            disabled={isLoading}
-          >
+            disabled={isLoading}>
             <FaSearch />
           </Button>
         </Form>

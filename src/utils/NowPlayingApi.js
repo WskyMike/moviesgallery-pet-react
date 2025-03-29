@@ -1,4 +1,4 @@
-import { transformMovieData } from "../utils/transformData";
+import { transformMovieData } from '../utils/transformData';
 
 // Диапазон дат показа
 function calculateDateRange() {
@@ -6,7 +6,7 @@ function calculateDateRange() {
   const startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 дней назад
   const endDate = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000); // 5 дней вперёд
 
-  const formatDate = (date) => date.toISOString().split("T")[0];
+  const formatDate = (date) => date.toISOString().split('T')[0];
 
   return {
     gte: formatDate(startDate),
@@ -14,14 +14,19 @@ function calculateDateRange() {
   };
 }
 
-export async function nowPlayingApi(page = 1, genre = "", carousel = false, lang = "") {
+export async function nowPlayingApi(
+  page = 1,
+  genre = '',
+  carousel = false,
+  lang = ''
+) {
   const { gte, lte } = calculateDateRange();
   const options = {
-    method: "GET",
+    method: 'GET',
     headers: {
-      accept: "application/json",
+      accept: 'application/json',
       Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzA2NDdhMjQxZTIxNDFiZjFlNjQ4MDc3MWM2MTg5MiIsInN1YiI6IjY2MmUyNTViZDk2YzNjMDEyMjk4YTcyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.74MnfDTKv4T4gC4Ku91CCZ6mQWLIf0QpR_L9IuRbiM8",
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzA2NDdhMjQxZTIxNDFiZjFlNjQ4MDc3MWM2MTg5MiIsInN1YiI6IjY2MmUyNTViZDk2YzNjMDEyMjk4YTcyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.74MnfDTKv4T4gC4Ku91CCZ6mQWLIf0QpR_L9IuRbiM8',
     },
   };
 
@@ -40,7 +45,7 @@ export async function nowPlayingApi(page = 1, genre = "", carousel = false, lang
     // console.log({ movies, totalPages });
     return { movies, totalPages };
   } catch (error) {
-    console.error("Ошибка при выполнении запроса nowPlayingApi", error);
+    console.error('Ошибка при выполнении запроса nowPlayingApi', error);
     return { movies: [], totalPages: 0 };
   }
 }

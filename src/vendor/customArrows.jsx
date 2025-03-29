@@ -1,10 +1,17 @@
 /* eslint-disable react/prop-types */
-import { ChevronLeft, ChevronRight, ChevronCompactLeft, ChevronCompactRight } from 'react-bootstrap-icons';
-import './customArrows.css'
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronCompactLeft,
+  ChevronCompactRight,
+} from 'react-bootstrap-icons';
+import './customArrows.css';
 
 const CustomLeftArrow = ({ onClick }) => {
   return (
-    <button onClick={onClick} className="custom-arrow custom-arrow--left d-none d-lg-block">
+    <button
+      onClick={onClick}
+      className="custom-arrow custom-arrow--left d-none d-lg-block">
       <ChevronLeft />
     </button>
   );
@@ -12,7 +19,9 @@ const CustomLeftArrow = ({ onClick }) => {
 
 const CustomRightArrow = ({ onClick }) => {
   return (
-    <button onClick={onClick} className="custom-arrow custom-arrow--right d-none d-lg-block">
+    <button
+      onClick={onClick}
+      className="custom-arrow custom-arrow--right d-none d-lg-block">
       <ChevronRight />
     </button>
   );
@@ -20,7 +29,9 @@ const CustomRightArrow = ({ onClick }) => {
 
 const CustomLeftArrowThin = ({ onClick }) => {
   return (
-    <button onClick={onClick} className="custom-arrow custom-arrow--left d-none d-md-block px-0">
+    <button
+      onClick={onClick}
+      className="custom-arrow custom-arrow--left d-none d-md-block px-0">
       <ChevronCompactLeft />
     </button>
   );
@@ -28,10 +39,17 @@ const CustomLeftArrowThin = ({ onClick }) => {
 
 const CustomRightArrowThin = ({ onClick }) => {
   return (
-    <button onClick={onClick} className="custom-arrow custom-arrow--right d-none d-md-block px-0">
+    <button
+      onClick={onClick}
+      className="custom-arrow custom-arrow--right d-none d-md-block px-0">
       <ChevronCompactRight />
     </button>
   );
 };
 
-export { CustomLeftArrow, CustomRightArrow, CustomLeftArrowThin, CustomRightArrowThin };
+export {
+  CustomLeftArrow,
+  CustomRightArrow,
+  CustomLeftArrowThin,
+  CustomRightArrowThin,
+};

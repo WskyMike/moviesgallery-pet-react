@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import { ArrowDown } from 'react-bootstrap-icons';
-import "./ScrollToEndButton.css";
+import './ScrollToEndButton.css';
 
 function ScrollToEndButton() {
   const [showButton, setShowButton] = useState(false);
@@ -10,25 +10,24 @@ function ScrollToEndButton() {
       setShowButton(window.scrollY > 600);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleClick = () => {
     window.scrollTo({
       top: (0, document.body.scrollHeight),
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   };
 
   return (
     <button
       className={`scroll-to-end__button ${
-        showButton ? "d-none d-xl-block" : "scroll-to-end__button_hidden"
+        showButton ? 'd-none d-xl-block' : 'scroll-to-end__button_hidden'
       }`}
-      onClick={handleClick}
-    >
+      onClick={handleClick}>
       <ArrowDown />
     </button>
   );

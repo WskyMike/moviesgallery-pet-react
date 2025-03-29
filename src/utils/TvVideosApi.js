@@ -1,10 +1,10 @@
 export async function tvVideosData(movieId) {
   const options = {
-    method: "GET",
+    method: 'GET',
     headers: {
-      accept: "application/json",
+      accept: 'application/json',
       Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzA2NDdhMjQxZTIxNDFiZjFlNjQ4MDc3MWM2MTg5MiIsInN1YiI6IjY2MmUyNTViZDk2YzNjMDEyMjk4YTcyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.74MnfDTKv4T4gC4Ku91CCZ6mQWLIf0QpR_L9IuRbiM8",
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzA2NDdhMjQxZTIxNDFiZjFlNjQ4MDc3MWM2MTg5MiIsInN1YiI6IjY2MmUyNTViZDk2YzNjMDEyMjk4YTcyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.74MnfDTKv4T4gC4Ku91CCZ6mQWLIf0QpR_L9IuRbiM8',
     },
   };
 
@@ -25,26 +25,26 @@ export async function tvVideosData(movieId) {
 
     // Извлекаем ключи только для трейлеров на русском языке
     const ruTrailers = (ruData.results || [])
-      .filter((video) => video.key && video.type === 'Trailer') 
+      .filter((video) => video.key && video.type === 'Trailer')
       .map((video) => video.key);
 
     // Извлекаем ключи только для трейлеров на английском языке
     const enTrailers = (enData.results || [])
-      .filter((video) => video.key && video.type === 'Trailer') 
+      .filter((video) => video.key && video.type === 'Trailer')
       .map((video) => video.key);
 
     // Если есть на русском
     if (ruTrailers.length > 0) {
-      return [ruTrailers[0]]; 
+      return [ruTrailers[0]];
     }
     // Если нет, возвращаем первый на английском
     if (enTrailers.length > 0) {
-      return [enTrailers[0]]; 
+      return [enTrailers[0]];
     }
 
-    return []; 
+    return [];
   } catch (error) {
-    console.error("Ошибка при выполнении запроса TvVideosData", error);
-    return []; 
+    console.error('Ошибка при выполнении запроса TvVideosData', error);
+    return [];
   }
 }

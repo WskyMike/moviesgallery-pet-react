@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import { Card } from "react-bootstrap";
+import { Card } from 'react-bootstrap';
 
-import "./ActorsCard.css";
+import './ActorsCard.css';
 
 function ActorsCard({ actor }) {
   return (
@@ -21,8 +21,7 @@ function ActorsCard({ actor }) {
           {actor?.episode_count && (
             <Card.Text
               className="text-secondary lh-1 actors-card__text"
-              style={{ fontSize: "0.8rem" }}
-            >
+              style={{ fontSize: '0.8rem' }}>
               <small>{actor.episode_count}</small>
             </Card.Text>
           )}

@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import { Col, Row } from "react-bootstrap";
-import "./RecommendationsCard.css";
+import { useState } from 'react';
+import { Col, Row } from 'react-bootstrap';
+import './RecommendationsCard.css';
 
-const placeholder = "/placeholder-card.webp";
+const placeholder = '/placeholder-card.webp';
 
 function RecommendationsCard({ movie, isLoading }) {
   const [currentSrc, setCurrentSrc] = useState(placeholder);
@@ -14,11 +14,10 @@ function RecommendationsCard({ movie, isLoading }) {
 
   return (
     <a
-      href={`/${movie.media_type === "tv" ? "tv" : "movie"}/${movie.id}`}
+      href={`/${movie.media_type === 'tv' ? 'tv' : 'movie'}/${movie.id}`}
       tabIndex={!isLoading ? 0 : -1}
-      role={!isLoading ? "link" : undefined}
-      className="text-decoration-none text-black"
-    >
+      role={!isLoading ? 'link' : undefined}
+      className="text-decoration-none text-black">
       <div
         className="recommendation-card pt-2"
         // onClick={!isLoading ? handleClick : undefined}
@@ -32,9 +31,9 @@ function RecommendationsCard({ movie, isLoading }) {
             )}
             <img
               src={movie?.backdrop || currentSrc}
-              alt={movie?.title || "Нет названия"}
+              alt={movie?.title || 'Нет названия'}
               className="movie-backdrop w-100 rounded"
-              style={{ aspectRatio: "16 / 9" }}
+              style={{ aspectRatio: '16 / 9' }}
               onError={() => setCurrentSrc(placeholder)}
             />
           </div>
@@ -42,12 +41,12 @@ function RecommendationsCard({ movie, isLoading }) {
             <Col xs={11} className="d-flex flex-column text-start pe-1 pt-1">
               <Row>
                 <small className="recommendation-card-title fw-bold">
-                  {movie?.title || "-"}
+                  {movie?.title || '-'}
                 </small>
               </Row>
               <Row>
                 <small className="text-secondary">
-                  {movie?.release_date || "-"}
+                  {movie?.release_date || '-'}
                 </small>
               </Row>
             </Col>
