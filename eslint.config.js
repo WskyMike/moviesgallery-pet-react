@@ -12,16 +12,22 @@ export default [
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
       globals: {
         browser: true,
         es2021: true,
         node: true,
         fetch: 'readonly',
         console: 'readonly',
+        sessionStorage: 'readonly',
       },
     },
     settings: {
-      react: { version: '18.2' },
+      react: { version: '19.1' },
     },
     ignores: ['dist', '.eslintrc.cjs', 'node_modules', 'notes.jsx'],
   },
@@ -55,7 +61,12 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
-      'no-console': 'warn', // Предупреждение при использовании console
+      'no-console': [
+        'warn', // Уровень предупреждения
+        {
+          allow: ['error'], // Разрешаем console.error
+        },
+      ],
     },
   },
   // Правила для Prettier

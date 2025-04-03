@@ -20,6 +20,8 @@ function ActorsCarousel() {
   const [error, setError] = useState(null);
   const [loadingCredits, setLoadingCredits] = useState(true);
   const carouselRef = useRef(null);
+  const [isLastPage, setIsLastPage] = useState(false); // Состояние для отслеживания последней страницы
+  const [isFirstPage, setIsFirstPage] = useState(true); // Состояние для отслеживания первой страницы
 
   async function fetchActors() {
     try {
@@ -59,6 +61,17 @@ function ActorsCarousel() {
     }
   };
 
+  // Проверим состояние карусели после загрузки данных.
+  // Это гарантирует, что isLastPage будет правильно установлено при первой отрисовке
+  useEffect(() => {
+    if (carouselRef.current && actors.length > 0) {
+      const { currentSlide, slidesToShow } = carouselRef.current.state;
+      const totalSlides = actors.length;
+      const isLast = currentSlide + slidesToShow >= totalSlides;
+      setIsLastPage(isLast);
+    }
+  }, [actors]);
+
   if (error) {
     return <div className="m-5">Ошибка: {error}</div>;
   }
@@ -73,13 +86,20 @@ function ActorsCarousel() {
         </div>
       ) : actors.length > 0 ? (
         <div className="d-flex align-items-center px-0">
-          <CustomLeftArrowThin onClick={goToPrevious} />
-          <Carousel {...actorsСarouselSettings} ref={carouselRef}>
+          <CustomLeftArrowThin onClick={goToPrevious} isHidden={isFirstPage} />
+          <Carousel
+            {...actorsСarouselSettings}
+            ref={carouselRef}
+            afterChange={(previousSlide, { currentSlide, slidesToShow }) => {
+              const totalSlides = actors.length;
+              setIsFirstPage(currentSlide === 0);
+              setIsLastPage(currentSlide + slidesToShow >= totalSlides);
+            }}>
             {actors.map((actor) => (
               <ActorsCard key={actor.id} actor={actor} />
             ))}
           </Carousel>
-          <CustomRightArrowThin onClick={goToNext} />
+          <CustomRightArrowThin onClick={goToNext} isHidden={isLastPage} />
         </div>
       ) : (
         <p className="text-center">Нет информации об актерах</p>
