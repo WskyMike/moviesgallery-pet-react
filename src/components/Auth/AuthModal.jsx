@@ -2,13 +2,6 @@
 /* eslint-disable react/prop-types */
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
-// import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  updateProfile,
-} from 'firebase/auth';
-import { auth } from '../../utils/firebase';
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -29,6 +22,8 @@ function AuthModal({
   switchToOther,
   buttonText,
   switchText,
+  onLoad,
+  getAuth,
 }) {
   const {
     register,
@@ -38,7 +33,6 @@ function AuthModal({
     reset,
   } = useForm();
 
-  // const [isAnimationPlaying, setIsAnimationPlaying] = useState(false);
   const { triggerToast } = useToast();
 
   useEffect(() => {
@@ -47,6 +41,14 @@ function AuthModal({
 
   const onSubmit = async (data) => {
     try {
+      // Динамический импорт функций firebase/auth
+      const {
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        updateProfile,
+      } = await import('firebase/auth');
+
+      const auth = await getAuth();
       if (formType === 'register') {
         const userCredential = await createUserWithEmailAndPassword(
           auth,
@@ -61,6 +63,7 @@ function AuthModal({
       onHide();
       triggerToast('Добро пожаловать!', 'success');
     } catch (error) {
+      console.error('Ошибка авторизации:', error);
       if (error.code === 'auth/invalid-credential') {
         triggerToast(
           'Неверный e-mail или пароль',
@@ -77,7 +80,7 @@ function AuthModal({
         );
       } else {
         triggerToast(
-          'Ошибка авторизации',
+          `Ошибка авторизации: ${error.message}`,
           'danger-subtle',
           'danger-emphasis',
           'top-center'
@@ -88,6 +91,11 @@ function AuthModal({
 
   // Для отслеживания значения поля "password" и его сравнения с полем "confirmPassword"
   const password = watch('password');
+
+  useEffect(() => {
+    if (onLoad) onLoad();
+    reset();
+  }, [switchToOther, onLoad]);
 
   return (
     <>

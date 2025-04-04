@@ -219,7 +219,7 @@ function MediaDetailsPage({ type }) {
                 <div>
                   <small className="text-secondary">
                     {type === 'movie'
-                      ? media?.release_year || '-'
+                      ? media?.release_year || ''
                       : `${media?.first_air_year || null} - ${
                           media?.status === 'Завершился' ||
                           media?.status === 'Отменён'
@@ -228,7 +228,7 @@ function MediaDetailsPage({ type }) {
                         }`}
                     &nbsp;
                     <br />
-                    {media?.genres.join(', ') || '-'}
+                    {media?.genres.join(', ') || ''}
                   </small>
                 </div>
                 <div>
@@ -245,7 +245,7 @@ function MediaDetailsPage({ type }) {
                 <Col xs={6} className="text-center">
                   <div className="text-secondary">Рейтинг TMDB:</div>
                   <div className="fw-bold display-5">
-                    {media?.rating || '-'}{' '}
+                    {media?.rating || '0'}{' '}
                     <span className="fs-5 text-secondary fw-semibold">
                       / 10
                     </span>

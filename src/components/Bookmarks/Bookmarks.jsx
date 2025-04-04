@@ -12,15 +12,12 @@ import { useLoading } from '../../contexts/LoadingContext';
 import { MovieCardByIdData } from '../../utils/MovieCardByIdApi';
 import { TvCardByIdData } from '../../utils/TvCardByIdApi';
 
-import { db } from '../../utils/firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-
 function Bookmarks() {
   const { user } = useAuth();
   const [bookmarkedMovies, setBookmarkedMovies] = useState([]);
   const { bookmarksLoading, setBookmarksLoading } = useLoading();
   const [filterType, setFilterType] = useState('all');
-  const [hasBothTypes, setHasBothTypes] = useState(false); //Проверка наличия обоих типов контента
+  const [hasBothTypes, setHasBothTypes] = useState(false); // Проверяем, есть ли оба типа контента
 
   // Запрос данных из Firestore
   const fetchBookmarks = async () => {
@@ -28,7 +25,14 @@ function Bookmarks() {
 
     setBookmarksLoading(true);
     try {
-      // Создаём запрос к Firestore
+      const { getFirestoreInstance } = await import('../../utils/firebase'); // динамический импорт экземпляра Firestore
+      const db = await getFirestoreInstance();
+
+      // Динамический импорт функций firestore
+      const { collection, getDocs, query, orderBy } = await import(
+        'firebase/firestore'
+      );
+
       let bookmarksQuery = query(
         collection(db, 'users', user.uid, 'bookmarks'),
         orderBy('timestamp', 'asc')
@@ -40,17 +44,14 @@ function Bookmarks() {
         mediaType: doc.data().mediaType,
       }));
 
-      // Проверяем, есть ли оба типа контента
       const types = new Set(bookmarks.map((b) => b.mediaType));
       setHasBothTypes(types.has('movie') && types.has('tv'));
 
-      // Фильтрация по выбранному типу
       const filteredBookmarks =
         filterType === 'all'
           ? bookmarks
           : bookmarks.filter((b) => b.mediaType === filterType);
 
-      // Получаем данные для каждого фильма или сериала
       const items = await Promise.all(
         filteredBookmarks.map((bookmark) =>
           bookmark.mediaType === 'movie'
@@ -67,10 +68,10 @@ function Bookmarks() {
     }
   };
 
-  // Обновляем закладки при изменении фильтра
+  // Обновляем закладки при изменении фильтра или пользователя
   useEffect(() => {
-    fetchBookmarks(filterType);
-  }, [filterType]);
+    fetchBookmarks();
+  }, [filterType, user]);
 
   return (
     <>

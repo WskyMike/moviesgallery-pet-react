@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Container, Navbar, Button, Nav } from 'react-bootstrap';
 import {
   CameraReels,
@@ -6,42 +6,49 @@ import {
   BookmarkStarFill,
 } from 'react-bootstrap-icons';
 import './Navibar.css';
-import AuthModal from '../Auth/AuthModal';
-import ProfileModal from '../Profile/ProfileModal';
 
-import { auth } from '../../utils/firebase'; // Для логики выхода
+import AuthModalLoader from '../Auth/AuthModalLoader';
+const ProfileModal = lazy(() => import('../Profile/ProfileModal'));
+
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastProvider';
 
 function NaviBar() {
   const [modalType, setModalType] = useState(null); // null, 'register', 'login'
+  const [isLoadingModal, setIsLoadingModal] = useState(false); // Для анимации lazy загрузки
   const { user, authLoading } = useAuth();
   const [showProfileModal, setShowProfileModal] = useState(false);
   const { triggerToast } = useToast();
 
-  const handleClose = () => setModalType(null);
-
-  const handleSwitchToLogin = () => setModalType('login');
-  const handleSwitchToRegister = () => setModalType('register');
-
   const handleOpenProfileModal = () => setShowProfileModal(true);
   const handleCloseProfileModal = () => setShowProfileModal(false);
 
-  const handleSignOut = () => {
-    auth
-      .signOut()
-      .then(() => {
-        triggerToast('Вы вышли из аккаунта.');
-      })
-      .catch((error) => {
-        console.error('Ошибка при выходе из аккаунта:', error);
-        triggerToast(
-          'Ошибка при выходе из аккаунта.',
-          'danger-subtle',
-          'danger-emphasis',
-          'top-center'
-        );
-      });
+  const handleSignOut = async () => {
+    try {
+      const { getAuthInstance } = await import('../../utils/firebase'); // динамический импорт экземпляра auth
+      const auth = await getAuthInstance();
+      await auth.signOut();
+      triggerToast('Вы вышли из аккаунта.');
+    } catch (error) {
+      console.error('Ошибка при выходе из аккаунта:', error);
+      triggerToast(
+        'Ошибка при выходе из аккаунта.',
+        'danger-subtle',
+        'danger-emphasis',
+        'top-center'
+      );
+    }
+  };
+
+  // Обработчик открытия модального окна
+  const handleOpenModal = (type) => {
+    setIsLoadingModal(true);
+    setModalType(type);
+  };
+
+  // Обработчик завершения загрузки
+  const handleModalLoaded = () => {
+    setIsLoadingModal(false);
   };
 
   return (
@@ -70,12 +77,6 @@ function NaviBar() {
               </div>
             ) : (
               <>
-                {/* {user && (
-                  <span className="me-3">
-                    Привет, {user.displayName || "Пользователь"}!
-                  </span>
-                )} */}
-
                 <Nav className="me-auto row-gap-2">
                   {user && (
                     <>
@@ -115,15 +116,33 @@ function NaviBar() {
                     <Button
                       type="button"
                       variant="outline-primary"
-                      className="mx-2"
-                      onClick={handleSwitchToRegister}>
-                      Регистрация
+                      className="mx-2 reg-button"
+                      onClick={() => handleOpenModal('register')}
+                      disabled={isLoadingModal}>
+                      {isLoadingModal && (
+                        <span
+                          className="spinner-border spinner-border-sm me-1"
+                          role="status"
+                          aria-hidden="true"></span>
+                      )}
+                      <span className={isLoadingModal ? 'visually-hidden' : ''}>
+                        Регистрация
+                      </span>
                     </Button>
                     <Button
                       variant="primary"
-                      className=""
-                      onClick={handleSwitchToLogin}>
-                      Войти
+                      className="ms-1 login-button"
+                      onClick={() => handleOpenModal('login')}
+                      disabled={isLoadingModal}>
+                      {isLoadingModal && (
+                        <span
+                          className="spinner-border spinner-border-sm me-1"
+                          role="status"
+                          aria-hidden="true"></span>
+                      )}
+                      <span className={isLoadingModal ? 'visually-hidden' : ''}>
+                        Войти
+                      </span>
                     </Button>
                   </div>
                 )}
@@ -134,12 +153,16 @@ function NaviBar() {
       </Navbar>
       {/* Унифицированное модальное окно для реги/входа */}
       {modalType && (
-        <AuthModal
+        <AuthModalLoader
+          isOpen={modalType !== null}
+          onLoaded={handleModalLoaded}
           show={modalType !== null}
-          onHide={handleClose}
+          onHide={() => setModalType(null)}
           formType={modalType}
           switchToOther={
-            modalType === 'login' ? handleSwitchToRegister : handleSwitchToLogin
+            modalType === 'login'
+              ? () => setModalType('register')
+              : () => setModalType('login')
           }
           buttonText={modalType === 'login' ? 'Войти' : 'Зарегистрироваться'}
           switchText={
@@ -147,7 +170,19 @@ function NaviBar() {
           }
         />
       )}
-      <ProfileModal show={showProfileModal} onHide={handleCloseProfileModal} />
+
+      {/* Модальное окно профиля */}
+      {user && (
+        <Suspense
+          fallback={
+            <span className="visually-hidden">Ожидайте, идёт загрузка...</span>
+          }>
+          <ProfileModal
+            show={showProfileModal}
+            onHide={handleCloseProfileModal}
+          />
+        </Suspense>
+      )}
     </>
   );
 }

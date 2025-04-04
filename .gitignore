@@ -37,6 +37,8 @@ dist-ssr/
 notes.jsx
 vite.config.js
 stats.html
+.eslintignore
+.prettierrc
 
 # Ignore specific subfolders
 backend/*.env
