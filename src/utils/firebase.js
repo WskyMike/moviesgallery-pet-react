@@ -1,13 +1,8 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app';
-// import { getAnalytics } from "firebase/analytics";
-import { getAuth } from 'firebase/auth';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-import { getFirestore } from 'firebase/firestore';
+// Функция для ленивой загрузки Firebase и инициализации
+let app = null;
+let auth = null;
+let db = null;
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: 'AIzaSyAEKgrY02bNte1T3j2DPxaaK8QkLWwysUc',
   authDomain: 'moviegallery-idd3d.firebaseapp.com',
@@ -18,10 +13,28 @@ const firebaseConfig = {
   measurementId: 'G-CGCBH369LZ',
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
+export async function initializeFirebase() {
+  if (!app) {
+    const firebase = await import('firebase/app');
+    app = firebase.initializeApp(firebaseConfig);
+  }
+  return app;
+}
 
-// Initialize Auth and Firestore
-export const auth = getAuth(app);
-export const db = getFirestore(app); // Initialize and export Firestore
+export async function getAuthInstance() {
+  if (!auth) {
+    await initializeFirebase();
+    const { getAuth } = await import('firebase/auth');
+    auth = getAuth(app);
+  }
+  return auth;
+}
+
+export async function getFirestoreInstance() {
+  if (!db) {
+    await initializeFirebase();
+    const { getFirestore } = await import('firebase/firestore');
+    db = getFirestore(app);
+  }
+  return db;
+}

@@ -61,14 +61,15 @@ function ActorsCarousel() {
     }
   };
 
-  // Проверим состояние карусели после загрузки данных.
-  // Это гарантирует, что isLastPage будет правильно установлено при первой отрисовке
+  // Проверяем, является ли текущий слайд последним.
   useEffect(() => {
     if (carouselRef.current && actors.length > 0) {
-      const { currentSlide, slidesToShow } = carouselRef.current.state;
-      const totalSlides = actors.length;
-      const isLast = currentSlide + slidesToShow >= totalSlides;
-      setIsLastPage(isLast);
+      setTimeout(() => {
+        const { currentSlide, slidesToShow } = carouselRef.current.state;
+        const totalSlides = actors.length;
+        const isLast = currentSlide + slidesToShow >= totalSlides;
+        setIsLastPage(isLast);
+      }, 0); // Задержка 0 мс переносит выполнение в конец очереди событий
     }
   }, [actors]);
 

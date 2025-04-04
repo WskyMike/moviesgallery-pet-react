@@ -24,6 +24,12 @@ export default [
         fetch: 'readonly',
         console: 'readonly',
         sessionStorage: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        document: 'readonly',
+        window: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
       },
     },
     settings: {

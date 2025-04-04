@@ -5,3 +5,11 @@
 .navibar-icon {
   vertical-align: text-top !important;
 }
+
+.login-button {
+  width: 74px;
+}
+
+.reg-button {
+  width: 124px;
+}

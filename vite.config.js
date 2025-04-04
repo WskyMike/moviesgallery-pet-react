@@ -4,12 +4,12 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
   define: {
-    'process.env': import.meta.env
+    'process.env': import.meta.env,
   },
   plugins: [
     react(),
     visualizer({
-      open: false, 
+      open: false,
       gzipSize: true,
       brotliSize: true,
     }),
@@ -24,7 +24,8 @@ export default defineConfig({
           router: ['react-router-dom'],
           bootstrap: ['react-bootstrap'],
           forms: ['react-hook-form'],
-          carousel: ['react-multi-carousel']
+          carousel: ['react-multi-carousel'],
+          firebase: ['firebase/app', 'firebase/firestore'],
         },
         chunkFileNames: '[name]-[hash].js', // Оптимизация имен файлов
       },
