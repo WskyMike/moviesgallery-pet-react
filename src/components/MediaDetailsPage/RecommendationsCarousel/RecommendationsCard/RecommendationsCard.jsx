@@ -1,13 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import './RecommendationsCard.css';
 
-const placeholder = '/placeholder-card.webp';
-
-function RecommendationsCard({ movie, isLoading }) {
-  const [currentSrc, setCurrentSrc] = useState(placeholder);
-
+function RecommendationsCard({ movie, isLoading, onImageError }) {
   if (!movie || isLoading) {
     return null;
   }
@@ -30,18 +25,18 @@ function RecommendationsCard({ movie, isLoading }) {
               </div>
             )}
             <img
-              src={movie?.backdrop || currentSrc}
+              src={movie.backdrop}
               alt={movie?.title || 'Нет названия'}
               className="movie-backdrop w-100 rounded"
               style={{ aspectRatio: '16 / 9' }}
-              onError={() => setCurrentSrc(placeholder)}
+              onError={onImageError}
             />
           </div>
           <div className="recommendation-card-info flex-row">
             <Col xs={11} className="d-flex flex-column text-start pe-1 pt-1">
               <Row>
                 <small className="recommendation-card-title fw-bold">
-                  {movie?.title || '-'}
+                  {movie?.title || 'Нет названия'}
                 </small>
               </Row>
               <Row>
