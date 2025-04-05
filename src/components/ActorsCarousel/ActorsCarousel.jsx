@@ -2,7 +2,8 @@
 import { useEffect, useState, useRef } from 'react';
 import Carousel from 'react-multi-carousel';
 import actorsСarouselSettings from '../../vendor/actorsСarouselSettings';
-import LazyActorsCard from './ActorsCard/LazyActorsCard';
+import LazyLoadWrapper from '../LazyLoadWrapper/LazyLoadWrapper';
+import ActorsCard from './ActorsCard/ActorsCard';
 import 'react-multi-carousel/lib/styles.css';
 import {
   CustomLeftArrowThin,
@@ -97,7 +98,13 @@ function ActorsCarousel() {
               setIsLastPage(currentSlide + slidesToShow >= totalSlides);
             }}>
             {actors.map((actor) => (
-              <LazyActorsCard key={actor.id} actor={actor} />
+              <LazyLoadWrapper
+                key={actor.id}
+                component={ActorsCard}
+                data={actor}
+                imageField="profile_path"
+                dataPropName="actor"
+              />
             ))}
           </Carousel>
           <CustomRightArrowThin onClick={goToNext} isHidden={isLastPage} />

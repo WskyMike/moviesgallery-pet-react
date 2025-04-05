@@ -7,7 +7,9 @@ import { ChevronRight } from 'react-bootstrap-icons';
 import 'react-multi-carousel/lib/styles.css';
 import movieCarouselSettings from '../../vendor/movieСarouselSettings';
 import { CustomLeftArrow, CustomRightArrow } from '../../vendor/customArrows';
-import LazyMovieCard from './MovieCard/LazyMovieCard';
+import LazyLoadWrapper from '../LazyLoadWrapper/LazyLoadWrapper';
+import MovieCard from './MovieCard/Moviecard';
+
 import './MovieCarousel.css';
 
 function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
@@ -90,9 +92,11 @@ function MovieCarousel({ fetchMoviesApi, title, category, onCarouselLoaded }) {
           ref={carouselRef}
           containerClass="movie-carousel-container">
           {movies.map((movie) => (
-            <LazyMovieCard
+            <LazyLoadWrapper
               key={movie.id}
-              movie={movie}
+              component={MovieCard}
+              data={movie}
+              dataPropName="movie"
               onImageLoaded={onCarouselLoaded}
               isLoading={loading}
             />

@@ -3,7 +3,8 @@ import { useEffect, useState, useRef } from 'react';
 import 'react-multi-carousel/lib/styles.css';
 import { useParams, useLocation } from 'react-router-dom';
 import Carousel from 'react-multi-carousel';
-import LazyRecommendationsCard from './RecommendationsCard/LazyRecommendationsCard';
+import LazyLoadWrapper from '../../LazyLoadWrapper/LazyLoadWrapper';
+import RecommendationsCard from './RecommendationsCard/RecommendationsCard';
 import {
   CustomLeftArrowThin,
   CustomRightArrowThin,
@@ -65,9 +66,12 @@ function RecommendationsCarousel() {
           <CustomLeftArrowThin onClick={goToPrevious} />
           <Carousel {...adviceСarouselSettings} ref={carouselRef}>
             {recommendations.map((item) => (
-              <LazyRecommendationsCard
+              <LazyLoadWrapper
                 key={item.id}
-                movie={item}
+                component={RecommendationsCard}
+                data={item}
+                imageField="backdrop"
+                dataPropName="movie"
                 isLoading={loadingRecommendations}
               />
             ))}
