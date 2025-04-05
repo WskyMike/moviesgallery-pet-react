@@ -14,8 +14,6 @@ import {
   toggleBookmark,
   checkBookmarkStatus,
 } from '../../../utils/BookmarkUtils';
-// import Skeleton from "react-loading-skeleton";
-// import "react-loading-skeleton/dist/skeleton.css";
 
 const placeholderUrl = '/placeholder-card.webp';
 
