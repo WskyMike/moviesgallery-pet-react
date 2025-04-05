@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { Card } from 'react-bootstrap';
-
 import './ActorsCard.css';
 
 function ActorsCard({ actor }) {

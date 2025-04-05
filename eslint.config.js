@@ -30,6 +30,9 @@ export default [
         window: 'readonly',
         setInterval: 'readonly',
         clearInterval: 'readonly',
+        IntersectionObserver: 'readonly',
+        localStorage: 'readonly',
+        URL: 'readonly',
       },
     },
     settings: {

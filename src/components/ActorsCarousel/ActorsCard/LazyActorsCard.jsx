@@ -1,18 +1,21 @@
-// Компонент для ленивой загрузки карточек фильмов.
+/* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from 'react';
-import MovieCard from './Moviecard';
+import ActorsCard from './ActorsCard';
 
-function LazyMovieCard(props) {
+const placeholderUrl = '/placeholder-card.webp';
+
+function LazyActorsCard({ actor }) {
   const [isVisible, setIsVisible] = useState(false);
+  const [imageSrc, setImageSrc] = useState(placeholderUrl);
   const containerRef = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries, observer) => {
+      (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsVisible(true);
-            observer.unobserve(entry.target); // Отключаем наблюдение после первого срабатывания
+            observer.unobserve(entry.target); // Отключаем наблюдение после срабатывания
           }
         });
       },
@@ -31,15 +34,17 @@ function LazyMovieCard(props) {
     };
   }, []);
 
+  useEffect(() => {
+    if (isVisible) {
+      setImageSrc(actor.profile_path || placeholderUrl);
+    }
+  }, [isVisible, actor.profile_path]);
+
   return (
-    <div ref={containerRef}>
-      {isVisible ? (
-        <MovieCard {...props} isLoading={false} />
-      ) : (
-        <MovieCard {...props} isLoading={true} />
-      )}
+    <div ref={containerRef} className="h-100">
+      <ActorsCard actor={{ ...actor, profile_path: imageSrc }} />
     </div>
   );
 }
 
-export default LazyMovieCard;
+export default LazyActorsCard;
