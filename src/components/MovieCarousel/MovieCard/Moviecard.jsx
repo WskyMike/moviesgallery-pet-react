@@ -130,6 +130,7 @@ function MovieCard({ movie, isLoading, onImageLoaded }) {
             <img
               src={currentSrc}
               alt={movie.title || movie.name}
+              loading="lazy"
               className="movie-poster"
               onLoad={() => {
                 if (currentSrc === movie.poster) {

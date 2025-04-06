@@ -17,28 +17,31 @@ function LazyLoadWrapper({
   const containerRef = useRef(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0, rootMargin: '0px', triggerOnce: true }
-    );
+    const timer = setTimeout(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setIsVisible(true);
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0 }
+      );
 
-    const currentRef = containerRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
+      const currentRef = containerRef.current;
       if (currentRef) {
-        observer.unobserve(currentRef);
+        observer.observe(currentRef);
       }
-    };
+
+      return () => {
+        if (currentRef) {
+          observer.unobserve(currentRef);
+        }
+      };
+    }, 50); // Задержка для предотвращения преждевременного срабатывания.
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {

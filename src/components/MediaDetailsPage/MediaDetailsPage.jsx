@@ -2,7 +2,7 @@
 import { Container, Row, Col, Image, Card } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { Link, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { useLoading } from '../../contexts/LoadingContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastProvider';
@@ -12,10 +12,15 @@ import { creditsMovieData } from '../../utils/CreditsMovieApi';
 import { videosData } from '../../utils/VideosApi';
 import { tvDetailsData } from '../../utils/TvDetailApi';
 import { tvVideosData } from '../../utils/TvVideosApi';
-import ActorsCarousel from '../ActorsCarousel/ActorsCarousel';
-import useMobileLayout from '../../hooks/useMobileLayout';
+const ActorsCarousel = lazy(() => import('../ActorsCarousel/ActorsCarousel'));
+const RecommendationsCarousel = lazy(
+  () =>
+    import(
+      '../MediaDetailspage/RecommendationsCarousel/RecommendationsCarousel'
+    )
+);
 import SearchForm from '../SearchForm/SearchForm';
-import RecommendationsCarousel from '../MediaDetailspage/RecommendationsCarousel/RecommendationsCarousel';
+import useMobileLayout from '../../hooks/useMobileLayout';
 import './MediaDetailsPage.css';
 import {
   Bookmark,
@@ -162,12 +167,19 @@ function MediaDetailsPage({ type }) {
     });
   };
 
+  // Основные данные
   useEffect(() => {
     setMovieDetailsLoading(true);
     window.scrollTo(0, 0);
     fetchMediaDetails();
-    fetchVideos();
   }, [id]);
+
+  // Трейлеры после загрузки media
+  useEffect(() => {
+    if (media) {
+      fetchVideos();
+    }
+  }, [media]);
 
   // Показываем кнопку только при переходе с других сайтов
   useEffect(() => {
@@ -202,6 +214,7 @@ function MediaDetailsPage({ type }) {
                     src={media.poster}
                     alt={media.title || media.name}
                     className="img-fluid rounded-3"
+                    loading="lazy"
                   />
                 ) : (
                   <div>Постер не доступен</div>
@@ -518,6 +531,7 @@ function MediaDetailsPage({ type }) {
                       <Image
                         src={NotFoundVideoImg}
                         alt="Трейлер не найден"
+                        loading="lazy"
                         fluid></Image>
                     </div>
                     <span className="text-center text-secondary ">
@@ -537,6 +551,7 @@ function MediaDetailsPage({ type }) {
                       src={media.poster}
                       alt={media.title || media.name}
                       className="img-fluid rounded-3"
+                      loading="lazy"
                     />
                   ) : (
                     <div>Постер не доступен</div>
@@ -567,6 +582,7 @@ function MediaDetailsPage({ type }) {
                         <div className="ratio ratio-4x3 d-flex justify-content-center align-items-center">
                           <Image
                             src={NotFoundVideoImg}
+                            loading="lazy"
                             alt="Трейлер не найден"
                             fluid></Image>
                         </div>
@@ -856,6 +872,7 @@ function MediaDetailsPage({ type }) {
                                   ?.season_poster_path || ''
                               }
                               alt="Card image"
+                              loading="lazy"
                               className="img-fluid"
                             />
                           </Col>
@@ -912,18 +929,25 @@ function MediaDetailsPage({ type }) {
             </div>
           )}
           <div className="d-none media-content-loaded"></div>
-          <Row className="mx-0 px-0 mt-5 pb-4 mt-lg-5">
-            <h3 className="text-start fw-bold fs-5 ps-0 mb-4">
-              Актёрский состав
-            </h3>
-            <ActorsCarousel />
-          </Row>
-          <Row className="mx-0 px-0 mt-5 mt-lg-5">
-            <h3 className="text-start fw-bold fs-5 ps-0 mb-3">
-              Рекомендуемые {type === 'movie' ? 'фильмы' : 'сериалы'}
-            </h3>
-            <RecommendationsCarousel />
-          </Row>
+          <Suspense
+            fallback={
+              <div className="spinner-border text-primary m-5" role="status">
+                <span className="visually-hidden">Загрузка...</span>
+              </div>
+            }>
+            <Row className="mx-0 px-0 mt-5 pb-4 mt-lg-5">
+              <h3 className="text-start fw-bold fs-5 ps-0 mb-4">
+                Актёрский состав
+              </h3>
+              <ActorsCarousel />
+            </Row>
+            <Row className="mx-0 px-0 mt-5 mt-lg-5">
+              <h3 className="text-start fw-bold fs-5 ps-0 mb-3">
+                Рекомендуемые {type === 'movie' ? 'фильмы' : 'сериалы'}
+              </h3>
+              <RecommendationsCarousel />
+            </Row>
+          </Suspense>
         </Container>
       </section>
     </>
