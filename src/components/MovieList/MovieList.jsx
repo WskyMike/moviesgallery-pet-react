@@ -10,6 +10,7 @@ import {
   NavDropdown,
 } from 'react-bootstrap';
 import MovieCard from '../MovieCarousel/MovieCard/Moviecard';
+import LazyLoadWrapper from '../LazyLoadWrapper/LazyLoadWrapper';
 import SearchForm from '../SearchForm/SearchForm';
 import ScrollToTopButton from '../../vendor/ScrollToTopButton/ToTopButton';
 import ScrollToEndButton from '../../vendor/ScrollToEndButton/ScrollToEndButton';
@@ -27,7 +28,7 @@ import { GenresApi } from '../../utils/GenresApi';
 function MovieList() {
   const { category } = useParams(); // Получаем параметр из URL
   const { triggerToast } = useToast();
-  const [genres, setGenres] = useState([]); // Список жанров
+  const [genres, setGenres] = useState([]);
 
   // Категории на заголовки
   const titleMap = useMemo(
@@ -99,7 +100,7 @@ function MovieList() {
 
   const [movies, setMovies] = useState(savedMovies);
   const [page, setPage] = useState(savedPage);
-  const [loading, setLoading] = useState(!savedMovies.length);
+  const [loading, setLoading] = useState(!savedMovies.length); // true, если нет фильмов в sessionStorage
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [totalPages, setTotalPages] = useState(savedTotalPages) || 0;
   const [selectedGenre, setSelectedGenre] = useState(''); //Выбранный жанр
@@ -278,7 +279,13 @@ function MovieList() {
                   md={3}
                   lg={3}
                   className="mb-4 px-1 px-lg-2">
-                  <MovieCard movie={movie} />
+                  <LazyLoadWrapper
+                    component={MovieCard}
+                    data={movie}
+                    imageField="poster" // Поле с URL изображения в объекте movie
+                    dataPropName="movie" // Имя пропса, ожидаемого MovieCard
+                    isLoading={loading} // необязательно, так как при loading = true, MovieCard не рендерится вовсе)
+                  />{' '}
                 </Col>
               ))
             )}

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Container, Row, Col, NavDropdown } from 'react-bootstrap';
 import MovieCard from '../MovieCarousel/MovieCard/Moviecard';
+import LazyLoadWrapper from '../LazyLoadWrapper/LazyLoadWrapper';
 import SearchForm from '../SearchForm/SearchForm';
 import ScrollToTopButton from '../../vendor/ScrollToTopButton/ToTopButton';
 import ScrollToEndButton from '../../vendor/ScrollToEndButton/ScrollToEndButton';
@@ -120,15 +121,21 @@ function Bookmarks() {
                 </div>
               </Col>
             ) : bookmarkedMovies.length > 0 ? (
-              bookmarkedMovies.map((movie) => (
+              bookmarkedMovies.map((mediaItem) => (
                 <Col
                   xs={6}
                   sm={4}
                   md={4}
                   lg={3}
                   className="mb-4 px-1 px-sm-2"
-                  key={movie.id}>
-                  <MovieCard movie={movie} isLoading={false} />
+                  key={mediaItem.id}>
+                  <LazyLoadWrapper
+                    component={MovieCard}
+                    data={mediaItem}
+                    imageField="poster" // Указывает поле объекта movie, где хранится URL постера.
+                    dataPropName="movie" // Имя пропса, через которое данные передаются в MovieCard.
+                    isLoading={bookmarksLoading} // Передает состояние загрузки из контекста
+                  />
                 </Col>
               ))
             ) : (
