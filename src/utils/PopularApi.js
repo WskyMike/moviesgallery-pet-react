@@ -5,14 +5,13 @@ export async function popularApi(page = 1, genre = '', carousel = false) {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      Authorization:
-        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzA2NDdhMjQxZTIxNDFiZjFlNjQ4MDc3MWM2MTg5MiIsInN1YiI6IjY2MmUyNTViZDk2YzNjMDEyMjk4YTcyYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.74MnfDTKv4T4gC4Ku91CCZ6mQWLIf0QpR_L9IuRbiM8',
+      Authorization: import.meta.env.VITE_TMDB_API_KEY,
     },
   };
 
   const URL = carousel
     ? // из карусели Popular передал carousel = true
-      'https://try.readme.io/https://api.themoviedb.org/3/trending/movie/week?language=ru-RU'
+      `https://try.readme.io/https://api.themoviedb.org/3/trending/movie/week?language=ru-RU`
     : `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&sort_by=popularity.desc&with_genres=${genre}`;
 
   try {
