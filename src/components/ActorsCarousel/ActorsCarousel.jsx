@@ -104,6 +104,7 @@ function ActorsCarousel() {
                 data={actor}
                 imageField="profile_path"
                 dataPropName="actor"
+                fullHeight={true} // Ставит h-100 для контейнера во WrappedComponent для предотвращения поломки верстки
               />
             ))}
           </Carousel>

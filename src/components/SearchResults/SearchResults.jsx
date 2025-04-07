@@ -1,14 +1,16 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useSearch } from '../../contexts/SearchContext';
-import { Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
+import { Container, Row, Col, ListGroup } from 'react-bootstrap';
 import ScrollToTopButton from '../../vendor/ScrollToTopButton/ToTopButton';
 import ScrollToEndButton from '../../vendor/ScrollToEndButton/ScrollToEndButton';
 import BackwardButton from '../../vendor/BackwardButton/BackwardButton';
 import SearchForm from '../SearchForm/SearchForm';
 import { SearchApi } from '../../utils/SearchApi';
 import { GenresApi } from '../../utils/GenresApi';
+import LazyLoadWrapper from '../LazyLoadWrapper/LazyLoadWrapper';
+import SearchResultCard from './SearchResultCard/SearchResultCard';
+
 import './SearchResult.css';
 
 function SearchResults() {
@@ -18,29 +20,42 @@ function SearchResults() {
   const [filteredResults, setFilteredResults] = useState([]);
   const [movieCount, setMovieCount] = useState(0);
   const [tvCount, setTvCount] = useState(0);
-  const [genres, setGenres] = useState([]); // Список жанров
+  const [searchCache, setSearchCache] = useState({ query: '', results: [] });
+  const [genresCache, setGenresCache] = useState({ movie: [], tv: [] });
 
   // Загружаем жанры
   useEffect(() => {
-    async function fetchGenres() {
+    async function fetchAllGenres() {
       try {
-        const isTvSeries = selectedCategory === 'tv';
-        const data = await GenresApi(isTvSeries);
-
-        // Преобразуем название жанра каждого объекта в массиве в верхний регистр
-        const updatedGenres = data.genres.map((genre) => ({
+        const [movieGenresData, tvGenresData] = await Promise.all([
+          GenresApi(false), // Фильмы
+          GenresApi(true), // Сериалы
+        ]);
+        const movieGenres = movieGenresData.genres.map((genre) => ({
           ...genre,
           name: genre.name.charAt(0).toUpperCase() + genre.name.slice(1),
         }));
-
-        setGenres(updatedGenres);
+        const tvGenres = tvGenresData.genres.map((genre) => ({
+          ...genre,
+          name: genre.name.charAt(0).toUpperCase() + genre.name.slice(1),
+        }));
+        setGenresCache({ movie: movieGenres, tv: tvGenres });
       } catch (error) {
         console.error('Ошибка загрузки жанров:', error);
       }
     }
-    fetchGenres();
-  }, [selectedCategory]);
+    fetchAllGenres();
+  }, []);
 
+  // Преобразование числовых ID жанров в текстовые названия
+  const mapGenresToNames = (item, genresList) => {
+    const genreNames = item.genres
+      .map((genreId) => genresList.find((g) => g.id === genreId)?.name)
+      .filter(Boolean);
+    return { ...item, genreNames }; // Добавляем новое поле genreNames
+  };
+
+  // Обработчик изменения в sessionStorage и кэширование результатов
   const handleStorageChange = async () => {
     const query = sessionStorage.getItem('searchQuery');
     if (!query) {
@@ -49,6 +64,29 @@ function SearchResults() {
       return;
     }
 
+    // Если кэш жанров еще не загружен, ждем его
+    if (genresCache.movie.length === 0 || genresCache.tv.length === 0) {
+      setIsLoading(true);
+      return;
+    }
+
+    // Проверяем, есть ли данные в кэше для текущего запроса
+    if (searchCache.query === query && searchCache.results.length > 0) {
+      const filtered = searchCache.results.filter(
+        (item) => item.media_type?.toLowerCase() === selectedCategory
+      );
+      setFilteredResults(filtered);
+      setMovieCount(
+        searchCache.results.filter((item) => item.media_type === 'movie').length
+      );
+      setTvCount(
+        searchCache.results.filter((item) => item.media_type === 'tv').length
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    // Если данных в кэше нет, делаем запрос к API
     setIsLoading(true);
     try {
       // Запрашиваем только 2 страницы (временно)
@@ -57,12 +95,20 @@ function SearchResults() {
         SearchApi(query, 2),
       ]);
 
-      const combinedResults = [...dataPage1.result, ...dataPage2.result];
+      const combinedResults = [...dataPage1.result, ...dataPage2.result].map(
+        (item) =>
+          mapGenresToNames(
+            item,
+            item.media_type === 'movie' ? genresCache.movie : genresCache.tv
+          )
+      );
 
       const filtered = combinedResults.filter(
         (item) => item.media_type?.toLowerCase() === selectedCategory
       );
 
+      // Обновляем кэш с результатами, включая текстовые жанры
+      setSearchCache({ query, results: combinedResults });
       setFilteredResults(filtered);
       setMovieCount(dataPage1.movieCount + dataPage2.movieCount);
       setTvCount(dataPage1.tvCount + dataPage2.tvCount);
@@ -76,14 +122,7 @@ function SearchResults() {
 
   useEffect(() => {
     handleStorageChange();
-  }, [selectedCategory, searchTrigger]);
-
-  function getMovieGenres(genreIds, genres) {
-    return genreIds
-      .map((genreId) => genres.find((genre) => genre.id === genreId)?.name)
-      .filter(Boolean)
-      .join(', ');
-  }
+  }, [selectedCategory, searchTrigger, genresCache]);
 
   return (
     <Container fluid="xxl">
@@ -131,76 +170,14 @@ function SearchResults() {
               </div>
             ) : filteredResults.length > 0 ? (
               filteredResults.map((item) => (
-                <Link
-                  to={`/${item.media_type}/${item.id}`}
+                <LazyLoadWrapper
                   key={item.id}
-                  className="text-decoration-none text-reset">
-                  <Card className="border-0 text-start search-results__card mb-4 w-100">
-                    <Row>
-                      <Col xs={4} sm={2}>
-                        <div className="search-results__poster-container">
-                          {item?.rating && (
-                            <div className="search-results__movie-rating fw-semibold border-0 d-md-none">
-                              <span>{item.rating}</span>
-                            </div>
-                          )}
-                          <Card.Img
-                            src={item.poster}
-                            alt={`Poster of ${item.title}`}
-                            className="img-fluid"
-                          />
-                        </div>
-                      </Col>
-                      <Col xs={8} sm={10} className="d-flex">
-                        <Card.Body className="d-flex flex-column ps-1 p-0 pt-1 p-md-2">
-                          <Card.Title className="fw-semibold mb-md-0 search-results__card-title">
-                            {item.title}&nbsp;
-                            <span className="mb-4 mb-md-5 fw-light">
-                              {item.release_year || ''}
-                            </span>
-                            <h2 className="text-secondary search-results__card-subtitle">
-                              {item.original_title}
-                            </h2>
-                            <span
-                              className="text-secondary fw-light d-block d-md-none mb-2"
-                              style={{
-                                fontSize: '0.8em',
-                              }}>
-                              {getMovieGenres(item.genres, genres)}
-                            </span>
-                          </Card.Title>
-                          <Card.Text className="mb-2 mb-md-3 d-none d-md-block">
-                            <span
-                              className="badge fw-semibold"
-                              style={{
-                                fontSize: '0.875em',
-                                backgroundColor: '#f05723',
-                              }}>
-                              {item.rating || null}
-                            </span>
-                            &emsp;
-                            <span
-                              className="text-secondary"
-                              style={{
-                                fontSize: '0.8em',
-                                verticalAlign: 'bottom',
-                              }}>
-                              {getMovieGenres(item.genres, genres)}
-                            </span>
-                          </Card.Text>
-                          <Card.Text
-                            className="search-results__text-clamp lh-sm"
-                            style={{
-                              fontSize:
-                                window.innerWidth <= 576 ? '0.8em' : '0.875em',
-                            }}>
-                            {item.overview}
-                          </Card.Text>
-                        </Card.Body>
-                      </Col>
-                    </Row>
-                  </Card>
-                </Link>
+                  component={SearchResultCard} // компонент для рендеринга.
+                  data={item} // данные для передачи в компонент
+                  imageField="poster" // поле с URL изображения.
+                  dataPropName="item" // имя пропса для передачи данных в SearchResultCard
+                  isLoading={isLoading}
+                />
               ))
             ) : (
               <div className="text-muted">

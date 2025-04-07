@@ -10,6 +10,7 @@ function LazyLoadWrapper({
   dataPropName = 'movie', // Имя пропса для передачи данных в WrappedComponent
   isLoading: externalLoading = false, // Внешнее состояние загрузки (если есть)
   onImageError, // Обработчик ошибки загрузки изображения (опционально)
+  fullHeight = false, // Полная высота контейнера для компонентов, где ломается верстка (опционально)
   ...rest // Остальные пропсы для передачи в WrappedComponent
 }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -62,7 +63,7 @@ function LazyLoadWrapper({
   const updatedData = imageField ? { ...data, [imageField]: imageSrc } : data;
 
   return (
-    <div ref={containerRef} className="h-100">
+    <div ref={containerRef} className={fullHeight ? 'h-100' : ''}>
       <WrappedComponent
         {...rest}
         {...{ [dataPropName]: updatedData }} // динамическое имя пропса
