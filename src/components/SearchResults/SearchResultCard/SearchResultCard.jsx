@@ -6,6 +6,7 @@ function SearchResultCard({ item, isLoading }) {
   return (
     <Link
       to={`/${item.media_type}/${item.id}`}
+      target="_blank"
       className="text-decoration-none text-reset">
       <Card className="border-0 text-start search-results__card mb-4 w-100">
         <Row>

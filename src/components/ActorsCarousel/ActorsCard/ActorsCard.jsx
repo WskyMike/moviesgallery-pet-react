@@ -1,10 +1,21 @@
 /* eslint-disable react/prop-types */
 import { Card } from 'react-bootstrap';
+import { useToast } from '../../../contexts/ToastProvider';
 import './ActorsCard.css';
 
 function ActorsCard({ actor }) {
+  const { triggerToast } = useToast();
+
+  // Обработчик клика на карточку
+  const handleCardClick = () => {
+    triggerToast('Страница актера в разработке и скоро будет доступна!');
+  };
+
   return (
-    <Card className="h-100 actor-card mx-1 border-0">
+    <Card
+      className="h-100 actor-card mx-1 border-0"
+      onClick={handleCardClick}
+      style={{ cursor: 'pointer' }}>
       <Card.Img
         variant="top"
         src={actor.profile_path}

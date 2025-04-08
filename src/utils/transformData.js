@@ -109,7 +109,7 @@ export async function transformMovieDetailsData(item) {
       ? `${Math.floor(item.runtime / 60)} час${
           Math.floor(item.runtime / 60) === 1 ? '' : 'а'
         } ${item.runtime % 60} минут`
-      : '-',
+      : '',
     title: item.title,
     original_title:
       item.title !== item.original_title ? item.original_title : null,
@@ -154,7 +154,7 @@ export async function transformMovieDetailsData(item) {
     tagline: item.tagline ? item.tagline.replace(/['"«»„“”]/g, '') : null,
     poster: getPosterPath(item.poster_path),
     // backdrop: `https://movieapiproxy.tw1.ru/t/p/w1280${item.backdrop_path}`,
-    rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : '-',
+    rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : '0',
   };
 }
 
@@ -225,7 +225,7 @@ export async function transformTvDetailsData(item) {
       : '-',
     poster: getPosterPath(item.poster_path),
     // backdrop: `https://movieapiproxy.tw1.ru/t/p/w1280${item.backdrop_path}`,
-    rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : '-',
+    rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : '0',
     creator: item.created_by?.length
       ? item.created_by
           .map((creator) => creator.name || creator.original_name)
