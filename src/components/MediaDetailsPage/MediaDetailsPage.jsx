@@ -20,6 +20,7 @@ const RecommendationsCarousel = lazy(
     )
 );
 import SearchForm from '../SearchForm/SearchForm';
+import { translateText } from '../../utils/translateUtils';
 import useMobileLayout from '../../hooks/useMobileLayout';
 import './MediaDetailsPage.css';
 import {
@@ -49,6 +50,7 @@ function MediaDetailsPage({ type }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showButton, setShowButton] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
 
   // Функция установки title страницы
   function setDocumentTitle(media) {
@@ -98,12 +100,40 @@ function MediaDetailsPage({ type }) {
     };
   }, [media]);
 
+  // Функция перевода описания
+  const translateOverview = async (englishText) => {
+    setIsTranslating(true);
+    try {
+      const translatedText = await translateText(englishText);
+      setMedia((prev) => ({
+        ...prev,
+        overview: translatedText,
+        isTranslated: true,
+      }));
+    } catch (err) {
+      setError(err.message);
+      triggerToast(
+        'Ошибка перевода описания',
+        'danger-subtle',
+        'danger-emphasis'
+      );
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
   // Запрос API в зависимости от типа контента
   const fetchMediaDetails = async () => {
     try {
+      setMovieDetailsLoading(true);
       const data =
         type === 'movie' ? await movieDetailsData(id) : await tvDetailsData(id);
       setMedia(data);
+
+      if (data.needsTranslation && data.englishOverview) {
+        translateOverview(data.englishOverview); // Запускаем перевод асинхронно
+      }
+
       if (type === 'movie') {
         const movieDirectorsData = await creditsMovieData(id);
         setMovieDirector(movieDirectorsData);
@@ -196,9 +226,30 @@ function MediaDetailsPage({ type }) {
       </div>
     );
   }
+
   if (error) {
     return <div className="m-5">Ошибка: {error}</div>;
   }
+  const renderOverview = () => {
+    return (
+      <div className="mediadetails__overview position-relative">
+        <p className="text-start">
+          {isTranslating ? (
+            <span>
+              Идет перевод описания...&nbsp;{' '}
+              <div className="spinner-grow spinner-grow-sm" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </span>
+          ) : media?.overview && media.overview.trim() !== '' ? (
+            <>{media.overview}</>
+          ) : (
+            'Нет описания'
+          )}
+        </p>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -354,8 +405,8 @@ function MediaDetailsPage({ type }) {
                     <p className="text-black text-end">
                       <small>
                         {type === 'movie'
-                          ? media?.release_date || '-'
-                          : media?.first_air_date || '-'}
+                          ? media?.release_date || ''
+                          : media?.first_air_date || ''}
                       </small>
                     </p>
                   </Col>
@@ -432,18 +483,9 @@ function MediaDetailsPage({ type }) {
                 )}
                 <Row className="m-0 d-flex justify-content-center">
                   <hr className="my-4"></hr>
-                  <div className="mediadetails__overview px-0">
-                    {' '}
-                    <small className="text-start p-0">
-                      {media?.overview || (
-                        <p className="text-center pb-5 mb-0">
-                          Нет описания, переведённого на русский язык.
-                        </p>
-                      )}
-                    </small>
-                  </div>
+                  {renderOverview()}
                   {showButton && (
-                    <Row>
+                    <Row className="mt-1">
                       <CustomGradientButton />
                     </Row>
                   )}
@@ -600,7 +642,7 @@ function MediaDetailsPage({ type }) {
                       <small className="fw-light">
                         &nbsp;(
                         {type === 'movie'
-                          ? media?.release_year || '-'
+                          ? media?.release_year || ''
                           : `${media?.first_air_year || null} - ${
                               media?.status === 'Завершился' ||
                               media?.status === 'Отменён'
@@ -669,7 +711,7 @@ function MediaDetailsPage({ type }) {
                         </Col>
                         <Col md={7}>
                           <p className="text-black">
-                            <small>{media?.genres.join(', ') || '-'}</small>
+                            <small>{media?.genres.join(', ') || ''}</small>
                           </p>
                         </Col>
                       </Row>
@@ -843,17 +885,9 @@ function MediaDetailsPage({ type }) {
                   </Row>
                   <Row className="pb-3">
                     <hr className="my-4"></hr>
-                    <div className="mediadetails__overview">
-                      <p className="text-start">
-                        {media?.overview || (
-                          <p className="text-center pb-5 mb-0">
-                            Нет описания, переведённого на русский язык.
-                          </p>
-                        )}
-                      </p>
-                    </div>
+                    {renderOverview()}
                     {showButton && (
-                      <Row>
+                      <Row className="mt-4">
                         <CustomGradientButton />
                       </Row>
                     )}
