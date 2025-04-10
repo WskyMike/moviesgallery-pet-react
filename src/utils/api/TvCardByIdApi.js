@@ -1,6 +1,6 @@
-import { transformSingleMovieData } from './transformData';
+import { transformSingleTvData } from '../transform/transformData';
 
-export async function MovieCardByIdData(movieId) {
+export async function TvCardByIdData(movieId) {
   const options = {
     method: 'GET',
     headers: {
@@ -11,14 +11,14 @@ export async function MovieCardByIdData(movieId) {
 
   try {
     const response = await fetch(
-      `https://try.readme.io/https://api.themoviedb.org/3/movie/${movieId}?language=ru-RU`,
+      `https://try.readme.io/https://api.themoviedb.org/3/tv/${movieId}?language=ru-RU`,
       options
     );
     if (!response.ok) {
       throw new Error(`Ошибка API. Status: ${response.status}`);
     }
 
-    const selectedItems = await transformSingleMovieData(await response.json());
+    const selectedItems = await transformSingleTvData(await response.json());
     // console.log(selectedItems);
     return selectedItems;
   } catch (error) {

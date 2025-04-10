@@ -1,4 +1,4 @@
-import { transformMoviesCreditsData } from './transformCreditsData';
+import { transformMoviesCreditsData } from '../transform/transformCreditsData';
 
 export async function creditsMovieData(movieId) {
   const options = {

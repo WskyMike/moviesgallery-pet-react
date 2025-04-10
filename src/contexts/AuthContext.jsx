@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
 
     const setupAuth = async () => {
       try {
-        const { getAuthInstance } = await import('../utils/firebase');
+        const { getAuthInstance } = await import('../utils/firebase/firebase');
         const auth = await getAuthInstance();
         const { onAuthStateChanged } = await import('firebase/auth');
         unsubscribe = onAuthStateChanged(auth, (currentUser) => {

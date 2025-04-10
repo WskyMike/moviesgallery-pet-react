@@ -1,6 +1,6 @@
-import { transformTvDetailsData } from './transformData';
+import { transformMovieDetailsData } from '../transform/transformData';
 
-export async function tvDetailsData(movieId) {
+export async function movieDetailsData(movieId) {
   const options = {
     method: 'GET',
     headers: {
@@ -11,7 +11,7 @@ export async function tvDetailsData(movieId) {
 
   try {
     const ruResponse = await fetch(
-      `https://try.readme.io/https://api.themoviedb.org/3/tv/${movieId}?language=ru-RU`,
+      `https://try.readme.io/https://api.themoviedb.org/3/movie/${movieId}?language=ru-RU`,
       options
     );
     if (!ruResponse.ok)
@@ -22,7 +22,7 @@ export async function tvDetailsData(movieId) {
 
     if (!data.overview || data.overview.trim() === '') {
       const enResponse = await fetch(
-        `https://try.readme.io/https://api.themoviedb.org/3/tv/${movieId}?language=en-US`,
+        `https://try.readme.io/https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
         options
       );
       if (!enResponse.ok)
@@ -33,7 +33,7 @@ export async function tvDetailsData(movieId) {
       data.overview = englishOverview; // Устанавливаем английский текст для последующего перевода
     }
 
-    const transformedData = await transformTvDetailsData(data);
+    const transformedData = await transformMovieDetailsData(data);
     return {
       ...transformedData,
       needsTranslation: !!englishOverview,
@@ -41,7 +41,7 @@ export async function tvDetailsData(movieId) {
       englishOverview: englishOverview || null,
     };
   } catch (error) {
-    console.error('Ошибка при выполнении запроса tvDetailsData', error);
+    console.error('Ошибка при выполнении запроса movieDetailsData', error);
     throw error;
   }
 }

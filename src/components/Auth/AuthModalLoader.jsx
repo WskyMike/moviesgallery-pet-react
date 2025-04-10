@@ -11,7 +11,7 @@ const LazyAuthModal = lazy(() => import('./AuthModal'));
 function AuthModalLoader({ isOpen, onLoaded, ...props }) {
   // Функция для получения экземпляра аутентификации
   const getAuth = async () => {
-    const { getAuthInstance } = await import('../../utils/firebase');
+    const { getAuthInstance } = await import('../../utils/firebase/firebase');
     return await getAuthInstance(); // возвращаем результат!
   };
 

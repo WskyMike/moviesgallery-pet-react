@@ -11,8 +11,8 @@ import {
 } from '../../vendor/customArrows';
 import { useParams, useLocation } from 'react-router-dom';
 
-import { creditsMovieData } from '../../utils/CreditsMovieApi';
-import { creditsTvData } from '../../utils/CreditsTvApi';
+import { creditsMovieData } from '../../utils/api/CreditsMovieApi';
+import { creditsTvData } from '../../utils/api/CreditsTvApi';
 
 function ActorsCarousel() {
   const { id } = useParams(); // Получаем ID фильма из URL

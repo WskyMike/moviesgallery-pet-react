@@ -1,4 +1,4 @@
-import { transformTvData } from '../utils/transformData';
+import { transformTvData } from '../transform/transformData';
 
 export async function popularTvApi(
   page = 1,

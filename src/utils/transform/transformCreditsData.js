@@ -1,4 +1,4 @@
-import noPhoto from '../images/1299805-9e9e9e.png';
+import noPhoto from '../../images/1299805-9e9e9e.png';
 
 async function fetchImageUrl(profilePath) {
   return `https://movieapiproxy.tw1.ru/t/p/w185${profilePath}`;

@@ -33,6 +33,7 @@ export default [
         IntersectionObserver: 'readonly',
         localStorage: 'readonly',
         URL: 'readonly',
+        navigator: 'readonly',
       },
     },
     settings: {

@@ -9,7 +9,7 @@ import {
   CustomLeftArrowThin,
   CustomRightArrowThin,
 } from '../../../vendor/customArrows';
-import { recommendationsData } from '../../../utils/RecommendationApi';
+import { recommendationsData } from '../../../utils/api/RecommendationApi';
 import adviceСarouselSettings from '../../../vendor/adviceСarouselSettings';
 
 function RecommendationsCarousel() {

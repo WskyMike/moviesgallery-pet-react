@@ -1,4 +1,4 @@
-import { transformMovieData } from '../utils/transformData';
+import { transformMovieData } from '../transform/transformData';
 
 // Диапазон дат показа
 function calculateDateRange() {

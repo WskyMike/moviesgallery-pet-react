@@ -17,7 +17,7 @@ import { AuthProvider } from '../contexts/AuthContext';
 import { ToastProvider } from '../contexts/ToastProvider';
 import { SearchProvider } from '../contexts/SearchContext';
 
-import RouteTracker from '../utils/RouteTracker';
+import RouteTracker from '../utils/other/RouteTracker';
 
 function App() {
   return (

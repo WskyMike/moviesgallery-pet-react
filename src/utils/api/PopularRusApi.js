@@ -1,11 +1,6 @@
-import { transformMovieData } from '../utils/transformData';
+import { transformMovieData } from '../transform/transformData';
 
-export async function topRatedApi(
-  page = 1,
-  genre = '',
-  carousel = false,
-  lang = ''
-) {
+export async function popularRusApi(page = 1, genre = '', carousel = false) {
   const options = {
     method: 'GET',
     headers: {
@@ -15,8 +10,8 @@ export async function topRatedApi(
   };
 
   const URL = carousel
-    ? `https://try.readme.io/https://api.themoviedb.org/3/movie/top_rated?language=ru-RU&page=${page}&region=RU`
-    : `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&region=RU&sort_by=vote_average.desc&vote_count.gte=300&with_genres=${genre}&with_original_language=${lang}`;
+    ? `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&region=RU&sort_by=popularity.desc&with_original_language=ru`
+    : `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&region=RU&sort_by=popularity.desc&with_original_language=ru&with_genres=${genre}`;
 
   try {
     const response = await fetch(URL, options);
@@ -26,7 +21,7 @@ export async function topRatedApi(
     const { movies, totalPages } = await transformMovieData(
       await response.json()
     );
-    // console.debug({ movies, totalPages });
+    // console.log({ movies, totalPages });
     return { movies, totalPages };
   } catch (error) {
     console.error('Ошибка при выполнении запроса popularApi', error);
