@@ -1,4 +1,4 @@
-import { transformResultData } from '../utils/transformSearchData';
+import { transformResultData } from '../transform/transformSearchData';
 
 export async function SearchApi(query, page = 1) {
   const options = {

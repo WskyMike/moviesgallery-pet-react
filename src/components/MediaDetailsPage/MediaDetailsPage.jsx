@@ -6,12 +6,15 @@ import { useEffect, useState, lazy, Suspense } from 'react';
 import { useLoading } from '../../contexts/LoadingContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastProvider';
-import { toggleBookmark, checkBookmarkStatus } from '../../utils/BookmarkUtils';
-import { movieDetailsData } from '../../utils/MovieDetailApi';
-import { creditsMovieData } from '../../utils/CreditsMovieApi';
-import { videosData } from '../../utils/VideosApi';
-import { tvDetailsData } from '../../utils/TvDetailApi';
-import { tvVideosData } from '../../utils/TvVideosApi';
+import {
+  toggleBookmark,
+  checkBookmarkStatus,
+} from '../../utils/firebase/BookmarkUtils';
+import { movieDetailsData } from '../../utils/api/MovieDetailApi';
+import { creditsMovieData } from '../../utils/api/CreditsMovieApi';
+import { videosData } from '../../utils/api/VideosApi';
+import { tvDetailsData } from '../../utils/api/TvDetailApi';
+import { tvVideosData } from '../../utils/api/TvVideosApi';
 const ActorsCarousel = lazy(() => import('../ActorsCarousel/ActorsCarousel'));
 const RecommendationsCarousel = lazy(
   () =>
@@ -20,7 +23,7 @@ const RecommendationsCarousel = lazy(
     )
 );
 import SearchForm from '../SearchForm/SearchForm';
-import { translateText } from '../../utils/translateUtils';
+import { translateText } from '../../utils/other/translateUtils';
 import useMobileLayout from '../../hooks/useMobileLayout';
 import './MediaDetailsPage.css';
 import {

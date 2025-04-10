@@ -1,6 +1,6 @@
-import { transformMovieData } from '../utils/transformData';
+import { transformMovieData } from '../transform/transformData';
 
-export async function popularRusApi(page = 1, genre = '', carousel = false) {
+export async function popularApi(page = 1, genre = '', carousel = false) {
   const options = {
     method: 'GET',
     headers: {
@@ -10,8 +10,9 @@ export async function popularRusApi(page = 1, genre = '', carousel = false) {
   };
 
   const URL = carousel
-    ? `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&region=RU&sort_by=popularity.desc&with_original_language=ru`
-    : `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&region=RU&sort_by=popularity.desc&with_original_language=ru&with_genres=${genre}`;
+    ? // из карусели Popular передал carousel = true
+      `https://try.readme.io/https://api.themoviedb.org/3/trending/movie/week?language=ru-RU`
+    : `https://try.readme.io/https://api.themoviedb.org/3/discover/movie?language=ru-RU&page=${page}&sort_by=popularity.desc&with_genres=${genre}`;
 
   try {
     const response = await fetch(URL, options);
@@ -21,10 +22,12 @@ export async function popularRusApi(page = 1, genre = '', carousel = false) {
     const { movies, totalPages } = await transformMovieData(
       await response.json()
     );
-    // console.log({ movies, totalPages });
     return { movies, totalPages };
   } catch (error) {
     console.error('Ошибка при выполнении запроса popularApi', error);
     return { movies: [], totalPages: 0 };
   }
 }
+
+//
+// https://try.readme.io/https://api.themoviedb.org/3/movie/popular?language=ru-RU&page=${page}

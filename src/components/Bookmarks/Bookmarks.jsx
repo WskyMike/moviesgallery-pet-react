@@ -10,8 +10,8 @@ import BackwardButton from '../../vendor/BackwardButton/BackwardButton';
 
 import { useAuth } from '../../contexts/AuthContext';
 import { useLoading } from '../../contexts/LoadingContext';
-import { MovieCardByIdData } from '../../utils/MovieCardByIdApi';
-import { TvCardByIdData } from '../../utils/TvCardByIdApi';
+import { MovieCardByIdData } from '../../utils/api/MovieCardByIdApi';
+import { TvCardByIdData } from '../../utils/api/TvCardByIdApi';
 
 function Bookmarks() {
   const { user } = useAuth();
@@ -26,7 +26,9 @@ function Bookmarks() {
 
     setBookmarksLoading(true);
     try {
-      const { getFirestoreInstance } = await import('../../utils/firebase'); // динамический импорт экземпляра Firestore
+      const { getFirestoreInstance } = await import(
+        '../../utils/firebase/firebase'
+      ); // динамический импорт экземпляра Firestore
       const db = await getFirestoreInstance();
 
       // Динамический импорт функций firestore

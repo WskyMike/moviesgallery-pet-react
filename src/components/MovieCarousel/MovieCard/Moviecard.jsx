@@ -13,7 +13,7 @@ import { useToast } from '../../../contexts/ToastProvider';
 import {
   toggleBookmark,
   checkBookmarkStatus,
-} from '../../../utils/BookmarkUtils';
+} from '../../../utils/firebase/BookmarkUtils';
 
 const placeholderUrl = '/placeholder-card.webp';
 

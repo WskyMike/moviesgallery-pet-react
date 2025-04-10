@@ -18,12 +18,12 @@ import BackwardButton from '../../vendor/BackwardButton/BackwardButton';
 import './MovieList.css';
 import { useToast } from '../../contexts/ToastProvider';
 
-import { popularApi } from '../../utils/PopularApi';
-import { topRatedApi } from '../../utils/TopRatedApi';
-import { nowPlayingApi } from '../../utils/NowPlayingApi';
-import { popularRusApi } from '../../utils/PopularRusApi';
-import { popularTvApi } from '../../utils/PopularTvApi';
-import { GenresApi } from '../../utils/GenresApi';
+import { popularApi } from '../../utils/api/PopularApi';
+import { topRatedApi } from '../../utils/api/TopRatedApi';
+import { nowPlayingApi } from '../../utils/api/NowPlayingApi';
+import { popularRusApi } from '../../utils/api/PopularRusApi';
+import { popularTvApi } from '../../utils/api/PopularTvApi';
+import { GenresApi } from '../../utils/api/GenresApi';
 
 function MovieList() {
   const { category } = useParams(); // Получаем параметр из URL

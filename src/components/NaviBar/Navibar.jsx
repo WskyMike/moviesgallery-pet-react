@@ -25,7 +25,7 @@ function NaviBar() {
 
   const handleSignOut = async () => {
     try {
-      const { getAuthInstance } = await import('../../utils/firebase'); // динамический импорт экземпляра auth
+      const { getAuthInstance } = await import('../../utils/firebase/firebase'); // динамический импорт экземпляра auth
       const auth = await getAuthInstance();
       await auth.signOut();
       triggerToast('Вы вышли из аккаунта.');

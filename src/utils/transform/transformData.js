@@ -155,6 +155,9 @@ export async function transformMovieDetailsData(item) {
     poster: getPosterPath(item.poster_path),
     // backdrop: `https://movieapiproxy.tw1.ru/t/p/w1280${item.backdrop_path}`,
     rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : '0',
+    // rating: item.vote_average
+    //   ? `${(item.vote_average * 10).toFixed(0)}%`
+    //   : 'n/a',
   };
 }
 

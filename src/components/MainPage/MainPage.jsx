@@ -4,11 +4,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useLoading } from '../../contexts/LoadingContext';
 import SearchForm from '../SearchForm/SearchForm';
 import MovieCarousel from '../MovieCarousel/MovieCarousel';
-import { popularApi } from '../../utils/PopularApi';
-import { topRatedApi } from '../../utils/TopRatedApi';
-import { nowPlayingApi } from '../../utils/NowPlayingApi';
-import { popularRusApi } from '../../utils/PopularRusApi';
-import { popularTvApi } from '../../utils/PopularTvApi';
+import { popularApi } from '../../utils/api/PopularApi';
+import { topRatedApi } from '../../utils/api/TopRatedApi';
+import { nowPlayingApi } from '../../utils/api/NowPlayingApi';
+import { popularRusApi } from '../../utils/api/PopularRusApi';
+import { popularTvApi } from '../../utils/api/PopularTvApi';
 
 function MainPage() {
   const [currentCarousel, setCurrentCarousel] = useState(0);

@@ -1,6 +1,6 @@
-import { transformSingleTvData } from './transformData';
+import { transformTvSeasonsData } from '../transform/transformData';
 
-export async function TvCardByIdData(movieId) {
+export async function tvSeasonsData(movieId) {
   const options = {
     method: 'GET',
     headers: {
@@ -18,11 +18,11 @@ export async function TvCardByIdData(movieId) {
       throw new Error(`Ошибка API. Status: ${response.status}`);
     }
 
-    const selectedItems = await transformSingleTvData(await response.json());
-    // console.log(selectedItems);
+    const selectedItems = transformTvSeasonsData(await response.json());
+    // console.debug(selectedItems);
     return selectedItems;
   } catch (error) {
-    console.error('Ошибка при выполнении запроса transformMovieData', error);
+    console.error('Ошибка при выполнении запроса tvSeasonsData', error);
     throw error;
   }
 }

@@ -1,4 +1,4 @@
-import { transformRecommendationData } from './transformData';
+import { transformRecommendationData } from '../transform/transformData';
 
 export async function recommendationsData(movieId, mediaType) {
   const options = {
@@ -12,6 +12,7 @@ export async function recommendationsData(movieId, mediaType) {
   try {
     const response = await fetch(
       `https://try.readme.io/https://api.themoviedb.org/3/${mediaType}/${movieId}/recommendations?language=ru-RU&page=1`,
+      // `https://try.readme.io/https://api.themoviedb.org/3/${mediaType}/${movieId}/similar?language=ru-RU&page=1`,
       options
     );
     if (!response.ok) {
