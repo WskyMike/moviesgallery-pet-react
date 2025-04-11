@@ -5,7 +5,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { useToast } from '../../contexts/ToastProvider';
 import SearchForm from '../SearchForm/SearchForm';
 import BackwardButton from '../../vendor/BackwardButton/BackwardButton';
-import { tvSeasonsData } from '../../utils/TvSeasonsApi';
+import { tvSeasonsData } from '../../utils/api/TvSeasonsApi';
 import './Seasons.css';
 import ScrollToTopButton from '../../vendor/ScrollToTopButton/ToTopButton';
 import ScrollToEndButton from '../../vendor/ScrollToEndButton/ScrollToEndButton';

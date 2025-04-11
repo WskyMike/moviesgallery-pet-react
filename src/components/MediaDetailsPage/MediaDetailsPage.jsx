@@ -36,6 +36,7 @@ import { ImYoutube2 } from 'react-icons/im';
 import { BsCalendar3, BsCheck2Square } from 'react-icons/bs';
 import NotFoundVideoImg from '../../images/pixeltrue-seo.svg';
 import CustomGradientButton from '../CustomButton/CustomGradientButton';
+import RatingIndicator from '../../utils/other/RatingIndicator.jsx';
 
 function MediaDetailsPage({ type }) {
   const { id } = useParams();
@@ -312,10 +313,7 @@ function MediaDetailsPage({ type }) {
                 <Col xs={6} className="text-center">
                   <div className="text-secondary">Рейтинг TMDB:</div>
                   <div className="fw-bold display-5">
-                    {media?.rating || '0'}{' '}
-                    <span className="fs-5 text-secondary fw-semibold">
-                      / 10
-                    </span>
+                    <RatingIndicator rating={media?.rating} size={85} />
                   </div>
                 </Col>
 
@@ -855,11 +853,8 @@ function MediaDetailsPage({ type }) {
                     </Col>
                     <Col md={4}>
                       <div className="text-secondary">Рейтинг TMDB:</div>
-                      <div className="fw-bold display-5">
-                        {media?.rating || '-'}{' '}
-                        <span className="fs-5 text-secondary fw-semibold">
-                          / 10
-                        </span>
+                      <div className="display-5">
+                        <RatingIndicator rating={media?.rating} size={100} />
                       </div>
                       <button
                         type="button"

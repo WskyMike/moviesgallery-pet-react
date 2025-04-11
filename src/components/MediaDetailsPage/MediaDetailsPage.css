@@ -12,6 +12,14 @@
   opacity: 0.7;
 }
 
+.bookmark-button {
+  transition: transform 0.2s ease-in-out !important;
+}
+
+.bookmark-button:hover {
+  transform: scale(1.05);
+}
+
 .mediadetails-backdrop {
   /* background: linear-gradient(
         to right,

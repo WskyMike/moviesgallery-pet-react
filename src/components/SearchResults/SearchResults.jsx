@@ -6,8 +6,8 @@ import ScrollToTopButton from '../../vendor/ScrollToTopButton/ToTopButton';
 import ScrollToEndButton from '../../vendor/ScrollToEndButton/ScrollToEndButton';
 import BackwardButton from '../../vendor/BackwardButton/BackwardButton';
 import SearchForm from '../SearchForm/SearchForm';
-import { SearchApi } from '../../utils/SearchApi';
-import { GenresApi } from '../../utils/GenresApi';
+import { SearchApi } from '../../utils/api/SearchApi';
+import { GenresApi } from '../../utils/api/GenresApi';
 import LazyLoadWrapper from '../LazyLoadWrapper/LazyLoadWrapper';
 import SearchResultCard from './SearchResultCard/SearchResultCard';
 
