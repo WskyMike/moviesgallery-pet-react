@@ -212,9 +212,9 @@ function MovieList() {
         <BackwardButton />
         <SearchForm />
         <Container fluid="xl">
-          <Row className="pt-2 pb-2 pb-md-0 sticky-header d-flex align-items-center justify-content-between">
+          <Row className="pt-5 pb-2 pb-md-0 sticky-header d-flex align-items-center justify-content-between">
             <Col xs="auto">
-              <h2 className="text-start display-5">{title}</h2>
+              <h2 className="text-start display-5 movielist__title">{title}</h2>
             </Col>
             {(category === 'nowPlaying' ||
               category === 'topRated' ||

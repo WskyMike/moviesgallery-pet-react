@@ -14,3 +14,10 @@
 .movie-list__dropdown-button {
   font-weight: 300;
 }
+
+@media (max-width: 768px) {
+  .display-5 {
+    font-size: 1.425rem !important;
+    margin-bottom: 0 !important;
+  }
+}

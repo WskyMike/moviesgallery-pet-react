@@ -55,7 +55,7 @@ function MainPage() {
   }, [currentCarousel]);
 
   return (
-    <Container fluid>
+    <Container fluid="xxl">
       <SearchForm />
       {carousels.slice(0, currentCarousel + 1).map((carousel, index) => (
         <MovieCarousel

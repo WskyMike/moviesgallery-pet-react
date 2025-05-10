@@ -5,11 +5,22 @@ async function fetchImageUrl(profilePath) {
 }
 
 export async function transformMoviesCreditsData(data) {
-  // Фильтруем и обрабатываем данные режиссеров
+  // Получаем отдельные массивы для режиссеров и сценаристов
   const directors = data.crew
     .filter((person) => person.job === 'Director')
-    .map((director) => director.name)
-    .join(', ');
+    .map((director) => ({
+      id: director.id,
+      name: director.name,
+      job: 'Режиссер',
+    }));
+
+  const screenwriters = data.crew
+    .filter((person) => ['Screenplay', 'Writer', 'Story'].includes(person.job))
+    .map((writer) => ({
+      id: writer.id,
+      name: writer.name,
+      job: 'Сценарист',
+    }));
 
   // Фильтруем и обрабатываем данные актеров
   const actors = await Promise.all(
@@ -27,6 +38,7 @@ export async function transformMoviesCreditsData(data) {
 
   return {
     directors,
+    screenwriters,
     actors,
   };
 }

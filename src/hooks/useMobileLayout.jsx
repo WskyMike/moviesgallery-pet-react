@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 // Отслеживаем ширину экрана для MovieDetails
-const useMobileLayout = (breakpoint = 992) => {
+const useMobileLayout = (breakpoint = 768) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < breakpoint);
 
   useEffect(() => {

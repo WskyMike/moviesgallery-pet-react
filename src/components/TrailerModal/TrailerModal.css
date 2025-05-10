@@ -1,0 +1,54 @@
+@media (max-width: 1024px) {
+  .trailer-modal {
+    max-width: 70vw;
+    margin: 0.5rem auto;
+  }
+}
+.trailer-close-btn {
+  position: absolute;
+  top: -45px;
+  right: -55px;
+  cursor: pointer;
+  z-index: 1050;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 7px;
+  width: 37px;
+  height: 37px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trailer-close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.trailer-modal {
+  position: relative;
+}
+
+@media (max-width: 1024px) {
+  .trailer-close-btn {
+    top: -25px;
+    right: -45px;
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (max-width: 576px) {
+  .trailer-close-btn {
+    top: -45px;
+    right: -20px;
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Добавляем более темный оверлей */
+.modal-backdrop {
+  --bs-backdrop-opacity: 0.8 !important; 
+}

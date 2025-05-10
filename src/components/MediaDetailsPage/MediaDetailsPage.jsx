@@ -1,42 +1,40 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Container, Row, Col, Image, Card } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { Link, useParams } from 'react-router-dom';
-import { useEffect, useState, lazy, Suspense } from 'react';
-import { useLoading } from '../../contexts/LoadingContext';
-import { useAuth } from '../../contexts/AuthContext';
-import { useToast } from '../../contexts/ToastProvider';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState, lazy, Suspense, useCallback } from 'react';
+import { useLoading } from '../../contexts/LoadingContext.jsx';
+import { useAuth } from '../../contexts/AuthContext.jsx';
+import { useToast } from '../../contexts/ToastProvider.jsx';
 import {
   toggleBookmark,
   checkBookmarkStatus,
-} from '../../utils/firebase/BookmarkUtils';
-import { movieDetailsData } from '../../utils/api/MovieDetailApi';
-import { creditsMovieData } from '../../utils/api/CreditsMovieApi';
-import { videosData } from '../../utils/api/VideosApi';
-import { tvDetailsData } from '../../utils/api/TvDetailApi';
-import { tvVideosData } from '../../utils/api/TvVideosApi';
-const ActorsCarousel = lazy(() => import('../ActorsCarousel/ActorsCarousel'));
-const RecommendationsCarousel = lazy(
-  () =>
-    import(
-      '../MediaDetailspage/RecommendationsCarousel/RecommendationsCarousel'
-    )
+} from '../../utils/firebase/BookmarkUtils.js';
+import { movieDetailsData } from '../../utils/api/MovieDetailApi.js';
+import { creditsMovieData } from '../../utils/api/CreditsMovieApi.js';
+import { videosData } from '../../utils/api/VideosApi.js';
+import { tvDetailsData } from '../../utils/api/TvDetailApi.js';
+import { tvVideosData } from '../../utils/api/TvVideosApi.js';
+
+// Ленивая загрузка компонентов
+const MobileMediaDetails = lazy(
+  () => import('./MobileMediaDetails/MobileMediaDetails.jsx')
 );
-import SearchForm from '../SearchForm/SearchForm';
-import { translateText } from '../../utils/other/translateUtils';
-import useMobileLayout from '../../hooks/useMobileLayout';
+const DesktopMediaDetails = lazy(
+  () => import('./DesktopMediaDetails/DesktopMediaDetails.jsx')
+);
+const ActorsCarousel = lazy(
+  () => import('../ActorsCarousel/ActorsCarousel.jsx')
+);
+const RecommendationsCarousel = lazy(
+  () => import('./RecommendationsCarousel/RecommendationsCarousel.jsx')
+);
+const TrailerModal = lazy(() => import('../TrailerModal/TrailerModal.jsx'));
+
+import SearchForm from '../SearchForm/SearchForm.jsx';
+import { translateText } from '../../utils/other/translateUtils.js';
+import useMobileLayout from '../../hooks/useMobileLayout.jsx';
 import './MediaDetailsPage.css';
-import {
-  Bookmark,
-  BookmarkStar,
-  BookmarkStarFill,
-} from 'react-bootstrap-icons';
-import { VscQuote } from 'react-icons/vsc';
-import { ImYoutube2 } from 'react-icons/im';
-import { BsCalendar3, BsCheck2Square } from 'react-icons/bs';
-import NotFoundVideoImg from '../../images/pixeltrue-seo.svg';
-import CustomGradientButton from '../CustomButton/CustomGradientButton';
-import RatingIndicator from '../../utils/other/RatingIndicator.jsx';
+import { Container, Row } from 'react-bootstrap';
 
 function MediaDetailsPage({ type }) {
   const { id } = useParams();
@@ -45,12 +43,14 @@ function MediaDetailsPage({ type }) {
   const isMobile = useMobileLayout();
   const { movieDetailsLoading, setMovieDetailsLoading } = useLoading();
   const [media, setMedia] = useState(null);
-  const [movieDirector, setMovieDirector] = useState({
-    directors: '',
+  const [movieCreators, setMovieCreators] = useState({
+    directors: [],
+    screenwriters: [],
   });
   const [videoKeys, setVideoKeys] = useState([]);
-  const [error, setError] = useState(null);
+  const [showTrailer, setShowTrailer] = useState(false);
   const [loadingTrailer, setLoadingTrailer] = useState(true);
+  const [error, setError] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showButton, setShowButton] = useState(false);
@@ -89,6 +89,10 @@ function MediaDetailsPage({ type }) {
       document.head.appendChild(meta);
     }
   }
+
+  // Обработчики для модального окна трейлера
+  const handleCloseTrailer = () => setShowTrailer(false);
+  const handleShowTrailer = () => setShowTrailer(true);
 
   useEffect(() => {
     setDocumentTitle(media);
@@ -139,8 +143,8 @@ function MediaDetailsPage({ type }) {
       }
 
       if (type === 'movie') {
-        const movieDirectorsData = await creditsMovieData(id);
-        setMovieDirector(movieDirectorsData);
+        const movieCreatorsData = await creditsMovieData(id);
+        setMovieCreators(movieCreatorsData);
       }
     } catch (err) {
       setError(err.message);
@@ -154,7 +158,7 @@ function MediaDetailsPage({ type }) {
     }
   };
 
-  // Заропс видео-трейлера
+  // Запрос видео-трейлера
   const fetchVideos = async () => {
     try {
       const keys =
@@ -223,18 +227,15 @@ function MediaDetailsPage({ type }) {
     }
   }, []);
 
-  if (movieDetailsLoading) {
-    return (
-      <div className="spinner-border text-primary m-5" role="status">
-        <span className="visually-hidden">Загрузка...</span>
-      </div>
-    );
-  }
+  // Обработчик клика по кинокомпании
+  const openSearchInYandex = (companyName) => {
+    const searchQuery = encodeURIComponent(companyName);
+    window.open(`https://yandex.ru/search/?text=${searchQuery}`, '_blank');
+  };
 
-  if (error) {
-    return <div className="m-5">Ошибка: {error}</div>;
-  }
-  const renderOverview = () => {
+  // Функция для рендеринга описания фильма/сериала
+  // Используем useCallback потому что передаем в дочерние компоненты
+  const renderOverview = useCallback(() => {
     return (
       <div className="mediadetails__overview position-relative">
         <p className="text-start">
@@ -253,714 +254,75 @@ function MediaDetailsPage({ type }) {
         </p>
       </div>
     );
-  };
+  }, [isTranslating, media?.overview]);
+
+  if (movieDetailsLoading) {
+    return (
+      <div className="spinner-border text-primary m-5" role="status">
+        <span className="visually-hidden">Загрузка...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="m-5">Ошибка: {error}</div>;
+  }
 
   return (
     <>
       <SearchForm />
-      <section className="mediadetails-backdrop pt-1 pb-5 px-sm-4 px-md-5">
-        <Container fluid="xl">
-          {/* Мобильная версия */}
+      <section className="mediadetails-content-wrapper">
+        {/* Модальное окно с трейлером */}
+        <Suspense fallback={<div></div>}>
+          <TrailerModal
+            videoKeys={videoKeys}
+            title={type === 'movie' ? media?.title : media?.name}
+            show={showTrailer}
+            handleClose={handleCloseTrailer}
+          />
+        </Suspense>
+
+        {/* Рендер в зависимости от типа устройства */}
+        <Suspense fallback={<div></div>}>
           {isMobile ? (
-            <div className="d-flex align-items-center justify-content-center flex-column px-1">
-              <Col xs={8} sm={6} className="mb-4">
-                {media?.poster ? (
-                  <img
-                    src={media.poster}
-                    alt={media.title || media.name}
-                    className="img-fluid rounded-3"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div>Постер не доступен</div>
-                )}
-              </Col>
-              <Row className="mb-2">
-                <h1 className="mb-1 fs-2 text-center fw-bold">
-                  {media?.title || media?.name}
-                </h1>
-                <h2 className="fs-4 text-center fw-light">
-                  <small>{media?.original_title || media?.original_name}</small>
-                </h2>
-              </Row>
-              <Row className="mb-5 mx-2">
-                <div>
-                  <small className="text-secondary">
-                    {type === 'movie'
-                      ? media?.release_year || ''
-                      : `${media?.first_air_year || null} - ${
-                          media?.status === 'Завершился' ||
-                          media?.status === 'Отменён'
-                            ? media?.last_air_year
-                            : 'н.в.'
-                        }`}
-                    &nbsp;
-                    <br />
-                    {media?.genres.join(', ') || ''}
-                  </small>
-                </div>
-                <div>
-                  <small className="text-secondary">
-                    {media?.production_countries}
-                    {(type === 'movie' && media?.runtime) ||
-                    (type === 'tv' && media?.episode_run_time)
-                      ? `, ${media?.runtime || media?.episode_run_time}`
-                      : ''}
-                  </small>
-                </div>
-              </Row>
-              <Row className="mb-5 mt-3 align-items-center w-100">
-                <Col xs={6} className="text-center">
-                  <div className="text-secondary">Рейтинг TMDB:</div>
-                  <div className="fw-bold display-5">
-                    <RatingIndicator rating={media?.rating} size={85} />
-                  </div>
-                </Col>
-
-                <Col xs={6}>
-                  <button
-                    type="button"
-                    className="btn btn-warning text-nowrap bookmark-button"
-                    onClick={handleBookmarkClick}
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}>
-                    {isBookmarked ? (
-                      <BookmarkStarFill
-                        className="me-2"
-                        width="18"
-                        height="18"
-                      />
-                    ) : isHovered ? (
-                      <BookmarkStar className="me-2" width="18" height="18" />
-                    ) : (
-                      <Bookmark className="me-2" width="18" height="18" />
-                    )}
-                    Буду смотреть
-                  </button>
-                </Col>
-              </Row>
-              <Row className="mb-5">
-                <Row className="pe-0">
-                  {media?.tagline && (
-                    <figure className="mb-4">
-                      <VscQuote className="d-flex fs-4" />
-                      <blockquote
-                        className="fst-italic text-start text-secondary blockquote mt-1 ps-4"
-                        style={{ fontSize: '0.9rem' }}>
-                        <p>{media.tagline}</p>
-                      </blockquote>
-                    </figure>
-                  )}
-                </Row>
-                <h3 className="text-start fw-bold fs-5 mb-4">
-                  {type === 'movie' ? 'О фильме' : 'О сериале'}
-                </h3>
-                {type === 'tv' && media?.status && (
-                  <Row className="text-start fs-6 text-secondary pe-0">
-                    <Col xs={6} className="pe-0">
-                      <p>
-                        <small>Статус</small>
-                      </p>
-                    </Col>
-                    <Col xs={6} className="pe-0">
-                      <p className="text-black text-end">
-                        <small
-                          className={`badge fw-normal ${
-                            {
-                              Продолжается: 'text-bg-success',
-                              Завершился: 'text-bg-danger',
-                              'В производстве': 'text-bg-warning',
-                              Запланирован: 'text-bg-info',
-                              Отменён: 'text-bg-secondary',
-                              'Пилотный выпуск': 'text-bg-primary',
-                            }[media?.status] || 'text-bg-secondary'
-                          }`}
-                          style={{ fontSize: '0.875em' }}>
-                          {media?.status || 'Неизвестен'}
-                        </small>
-                      </p>
-                    </Col>
-                  </Row>
-                )}
-                <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6} className="pe-0">
-                    <p>
-                      <small>Оригинальный язык</small>
-                    </p>
-                  </Col>
-                  <Col xs={6} className="pe-0">
-                    <p className="text-black text-end">
-                      <small>{media?.original_language || '-'}</small>
-                    </p>
-                  </Col>
-                </Row>
-                <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6} className="pe-0">
-                    <p>
-                      <small>
-                        {type === 'movie' ? 'Дата выхода' : 'Первый эпизод'}
-                      </small>
-                    </p>
-                  </Col>
-                  <Col xs={6} className="pe-0">
-                    <p className="text-black text-end">
-                      <small>
-                        {type === 'movie'
-                          ? media?.release_date || ''
-                          : media?.first_air_date || ''}
-                      </small>
-                    </p>
-                  </Col>
-                </Row>
-                {type === 'tv' && media?.last_air_date && (
-                  <Row className="text-start fs-6 text-secondary pe-0">
-                    <Col xs={6} className="pe-0">
-                      <p>
-                        <small>Последний эпизод</small>
-                      </p>
-                    </Col>
-                    <Col xs={6} className="pe-0">
-                      <p className="text-black text-end">
-                        <small>{media?.last_air_date || '-'}</small>
-                      </p>
-                    </Col>
-                  </Row>
-                )}
-                <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6} className="pe-0">
-                    <p>
-                      <small>
-                        {type === 'movie' ? 'Режиссер' : 'Создатель'}
-                      </small>
-                    </p>
-                  </Col>
-                  <Col xs={6} className="pe-0">
-                    <p className="text-black text-end">
-                      <small>
-                        {movieDirector?.directors || media?.creator || '-'}
-                      </small>{' '}
-                    </p>
-                  </Col>
-                </Row>
-                <Row className="text-start fs-6 text-secondary pe-0">
-                  <Col xs={6} className="pe-0">
-                    <p>
-                      <small>Кинокомпания</small>
-                    </p>
-                  </Col>
-                  <Col xs={6} className="pe-0">
-                    <p className="text-black text-end">
-                      <small>{media?.production_companies || '-'}</small>
-                    </p>
-                  </Col>
-                </Row>
-                {type === 'movie' && media?.budget && (
-                  <Row className="text-start fs-6 text-secondary pe-0">
-                    <Col xs={6} className="pe-0">
-                      <p>
-                        <small>Бюджет</small>
-                      </p>
-                    </Col>
-                    <Col xs={6} className="pe-0">
-                      <p className="text-black text-end">
-                        <small>{media?.budget}</small>
-                      </p>
-                    </Col>
-                  </Row>
-                )}
-                {type === 'movie' && media?.revenue && (
-                  <Row className="text-start fs-6 text-secondary pe-0">
-                    <Col xs={6} className="pe-0">
-                      <p>
-                        <small>Сборы в мире</small>
-                      </p>
-                    </Col>
-                    <Col xs={6} className="pe-0">
-                      <p className="text-black text-end">
-                        <small>{media?.revenue}</small>
-                      </p>
-                    </Col>
-                  </Row>
-                )}
-                <Row className="m-0 d-flex justify-content-center">
-                  <hr className="my-4"></hr>
-                  {renderOverview()}
-                  {showButton && (
-                    <Row className="mt-1">
-                      <CustomGradientButton />
-                    </Row>
-                  )}
-                </Row>
-                {type === 'tv' && media?.last_production_season && (
-                  <Row className="text-start mx-0 mb-5 mt-2">
-                    <h3 className=" fw-bold fs-5 mb-4 mt-3 px-0">
-                      Текущий сезон
-                    </h3>
-                    <Card className="border-0 bg-light text-start px-0">
-                      <Col className="d-flex">
-                        <Card.Body className="d-flex flex-column justify-content-start">
-                          <Card.Title className="fw-semibold">
-                            {media?.last_production_season.name}{' '}
-                          </Card.Title>
-                          <Card.Text className="mb-2">
-                            {media?.last_production_season.vote_average > 0 && (
-                              <span
-                                className="badge fw-semibold text-bg-secondary"
-                                style={{ fontSize: '0.875em' }}>
-                                {media.last_production_season.vote_average}
-                              </span>
-                            )}
-                            <small className="text-muted">
-                              {' '}
-                              {media?.last_production_season.episode_count}{' '}
-                              эпизодов
-                            </small>
-                          </Card.Text>
-                          <Card.Body className="px-0">
-                            {' '}
-                            <Card.Text style={{ fontSize: '0.875em' }}>
-                              <BsCheck2Square />
-                              &ensp;Последний эпизод сезона вышел&ensp;
-                              <nobr>{media?.last_episode_to_air}</nobr>
-                            </Card.Text>
-                            <Card.Text style={{ fontSize: '0.875em' }}>
-                              <BsCalendar3 />
-                              &ensp;
-                              {media?.next_episode_to_air ? (
-                                <>
-                                  Следующий эпизод планируется{' '}
-                                  <nobr>{media?.next_episode_to_air}</nobr>
-                                </>
-                              ) : (
-                                'Новые эпизоды не планируются.'
-                              )}
-                            </Card.Text>
-                          </Card.Body>
-                          <Card.Text className="fs-5 text-center mt-3 text-primary">
-                            <Link
-                              to={`/tv/${id}/seasons`}
-                              className="text-decoration-none">
-                              Все сезоны
-                            </Link>
-                          </Card.Text>
-                        </Card.Body>
-                      </Col>
-                    </Card>
-                  </Row>
-                )}
-              </Row>
-              <Row className="mb-3 mt-4 w-100">
-                <h3 className="d-flex align-items-center gap-2 fw-bold fs-5 ps-0 mb-3">
-                  Трейлер{' '}
-                  <ImYoutube2 className="display-1 text-secondary" />{' '}
-                </h3>
-                {loadingTrailer ? (
-                  <div className="spinner-border text-dark m-5" role="status">
-                    <span className="visually-hidden">Загрузка...</span>
-                  </div>
-                ) : videoKeys.length > 0 ? (
-                  videoKeys.map((key) => (
-                    <div key={key} className="ratio ratio-16x9 mb-4">
-                      <iframe
-                        src={`https://youtube.com/embed/${key}?rel=0`}
-                        title="Video Trailer"
-                        allowFullScreen
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
-                    </div>
-                  ))
-                ) : (
-                  <>
-                    <div className="ratio ratio-4x3 d-flex justify-content-center align-items-center">
-                      <Image
-                        src={NotFoundVideoImg}
-                        alt="Трейлер не найден"
-                        loading="lazy"
-                        fluid></Image>
-                    </div>
-                    <span className="text-center text-secondary ">
-                      Видео не найдено
-                    </span>
-                  </>
-                )}
-              </Row>
-            </div>
+            <MobileMediaDetails
+              media={media}
+              type={type}
+              id={id}
+              movieCreators={movieCreators}
+              videoKeys={videoKeys}
+              loadingTrailer={loadingTrailer}
+              isHovered={isHovered}
+              isBookmarked={isBookmarked}
+              showButton={showButton}
+              setIsHovered={setIsHovered}
+              handleBookmarkClick={handleBookmarkClick}
+              handleShowTrailer={handleShowTrailer}
+              renderOverview={renderOverview} // Передаем функцию рендеринга описания (render prop pattern)
+            />
           ) : (
-            <div>
-              {/* Десктопная версия */}
-              <Row className="gx-5 pb-4 justify-content-center">
-                <Col lg={4}>
-                  {media?.poster ? (
-                    <img
-                      src={media.poster}
-                      alt={media.title || media.name}
-                      className="img-fluid rounded-3"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div>Постер не доступен</div>
-                  )}
-                  <Row className="text-start mt-3">
-                    <h3 className="d-flex align-items-center gap-2 mt-5 mb-2 px-0 fw-bold fs-5">
-                      Трейлер{' '}
-                      <ImYoutube2 className="display-4 text-secondary" />
-                    </h3>
-                    {loadingTrailer ? (
-                      <div
-                        className="spinner-border text-dark m-5"
-                        role="status">
-                        <span className="visually-hidden">Загрузка...</span>
-                      </div>
-                    ) : videoKeys.length > 0 ? (
-                      videoKeys.map((key) => (
-                        <div key={key} className="ratio ratio-16x9 mb-4">
-                          <iframe
-                            src={`https://youtube.com/embed/${key}?rel=0`}
-                            title="Video Trailer"
-                            allowFullScreen
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
-                        </div>
-                      ))
-                    ) : (
-                      <>
-                        <div className="ratio ratio-4x3 d-flex justify-content-center align-items-center">
-                          <Image
-                            src={NotFoundVideoImg}
-                            loading="lazy"
-                            alt="Трейлер не найден"
-                            fluid></Image>
-                        </div>
-                        <span className="text-center text-secondary ">
-                          Видео не найдено
-                        </span>
-                      </>
-                    )}
-                  </Row>
-                </Col>
-                <Col lg={8} className="px-5 px-lg-4">
-                  <Row className="mb-5">
-                    <h1 className="fs-2 text-md-start text-center fw-bold">
-                      {media?.title || media?.name}
-                      <small className="fw-light">
-                        &nbsp;(
-                        {type === 'movie'
-                          ? media?.release_year || ''
-                          : `${media?.first_air_year || null} - ${
-                              media?.status === 'Завершился' ||
-                              media?.status === 'Отменён'
-                                ? media?.last_air_year
-                                : '...'
-                            }`}
-                        )
-                      </small>
-                    </h1>
-                    <h2 className="fs-5 text-md-start text-center text-secondary">
-                      {media?.original_title || media?.original_name}
-                    </h2>
-                  </Row>
-
-                  <Row>
-                    <Col md={8}>
-                      <Row>
-                        {media?.tagline && (
-                          <figure>
-                            <VscQuote className="d-flex fs-4" />
-                            <blockquote
-                              className="fst-italic text-start text-secondary blockquote mt-1 ps-4"
-                              style={{ fontSize: '0.9rem' }}>
-                              <p>{media.tagline}</p>
-                            </blockquote>
-                          </figure>
-                        )}
-                      </Row>
-                      <h3 className="text-start fw-bold fs-5 mb-4">
-                        {type === 'movie' ? 'О фильме' : 'О сериале'}
-                      </h3>
-                      <Row className="text-start fs-6 text-secondary">
-                        {type === 'tv' && (
-                          <>
-                            <Col md={5}>
-                              <p>
-                                <small>Статус</small>
-                              </p>
-                            </Col>
-                            <Col md={7}>
-                              <p>
-                                <small
-                                  className={`badge fw-normal ${
-                                    {
-                                      Продолжается: 'text-bg-success',
-                                      Завершился: 'text-bg-danger',
-                                      'В производстве': 'text-bg-warning',
-                                      Запланирован: 'text-bg-info',
-                                      Отменён: 'text-bg-secondary',
-                                      'Пилотный выпуск': 'text-bg-primary',
-                                    }[media?.status] || 'text-bg-secondary'
-                                  }`}
-                                  style={{ fontSize: '0.875em' }}>
-                                  {media?.status || 'Неизвестен'}
-                                </small>
-                              </p>
-                            </Col>
-                          </>
-                        )}
-                      </Row>
-                      <Row className="text-start fs-6 text-secondary">
-                        <Col md={5}>
-                          <p>
-                            <small>Жанр</small>
-                          </p>
-                        </Col>
-                        <Col md={7}>
-                          <p className="text-black">
-                            <small>{media?.genres.join(', ') || ''}</small>
-                          </p>
-                        </Col>
-                      </Row>
-                      {(media?.runtime || media?.episode_run_time) && (
-                        <Row className="text-start fs-6 text-secondary">
-                          <Col md={5}>
-                            <p>
-                              <small>Продолжительность</small>
-                            </p>
-                          </Col>
-                          <Col md={7}>
-                            <p className="text-black">
-                              <small>
-                                {media?.runtime || media?.episode_run_time}
-                              </small>
-                            </p>
-                          </Col>
-                        </Row>
-                      )}
-                      <Row className="text-start fs-6 text-secondary">
-                        <Col md={5}>
-                          <p>
-                            <small>Страна</small>
-                          </p>
-                        </Col>
-                        <Col md={7}>
-                          <p className="text-black">
-                            <small>{media?.production_countries || '-'}</small>
-                          </p>
-                        </Col>
-                      </Row>
-                      <Row className="text-start fs-6 text-secondary">
-                        <Col md={5}>
-                          <p>
-                            <small>Оригинальный язык</small>
-                          </p>
-                        </Col>
-                        <Col md={7}>
-                          <p className="text-black">
-                            <small>{media?.original_language || '-'}</small>
-                          </p>
-                        </Col>
-                      </Row>
-                      <Row className="text-start fs-6 text-secondary">
-                        <Col md={5}>
-                          <p>
-                            <small>
-                              {type === 'movie'
-                                ? 'Дата выхода'
-                                : 'Первый эпизод'}
-                            </small>
-                          </p>
-                        </Col>
-                        <Col md={7}>
-                          <p className="text-black">
-                            <small>
-                              {type === 'movie'
-                                ? media?.release_date || '-'
-                                : media?.first_air_date || '-'}
-                            </small>
-                          </p>
-                        </Col>
-                      </Row>
-                      {type === 'tv' && media?.last_air_date && (
-                        <Row className="text-start fs-6 text-secondary">
-                          <Col md={5}>
-                            <p>
-                              <small>Последний эпизод</small>
-                            </p>
-                          </Col>
-                          <Col md={7}>
-                            <p className="text-black">
-                              <small>{media?.last_air_date || '-'}</small>
-                            </p>
-                          </Col>
-                        </Row>
-                      )}
-                      <Row className="text-start fs-6 text-secondary">
-                        <Col md={5}>
-                          <p>
-                            <small>
-                              {type === 'movie' ? 'Режиссер' : 'Создатель'}
-                            </small>
-                          </p>
-                        </Col>
-                        <Col md={7}>
-                          <p className="text-black">
-                            <small>
-                              {movieDirector?.directors ||
-                                media?.creator ||
-                                '-'}
-                            </small>{' '}
-                          </p>
-                        </Col>
-                      </Row>
-
-                      <Row className="text-start fs-6 text-secondary">
-                        <Col md={5}>
-                          <p>
-                            <small>Кинокомпания</small>
-                          </p>
-                        </Col>
-                        <Col md={7}>
-                          <p className="text-black">
-                            <small>{media?.production_companies || '-'}</small>
-                          </p>
-                        </Col>
-                      </Row>
-
-                      {type === 'movie' && media?.budget && (
-                        <Row className="text-start fs-6 text-secondary">
-                          <Col md={5}>
-                            <p>
-                              <small>Бюджет</small>
-                            </p>
-                          </Col>
-                          <Col md={7}>
-                            <p className="text-black">
-                              <small>{media?.budget}</small>
-                            </p>
-                          </Col>
-                        </Row>
-                      )}
-                      {type === 'movie' && media?.revenue && (
-                        <Row className="text-start fs-6 text-secondary">
-                          <Col md={5}>
-                            <p>
-                              <small>Сборы в мире</small>
-                            </p>
-                          </Col>
-                          <Col md={7}>
-                            <p className="text-black">
-                              <small>{media?.revenue}</small>
-                            </p>
-                          </Col>
-                        </Row>
-                      )}
-                    </Col>
-                    <Col md={4}>
-                      <div className="text-secondary">Рейтинг TMDB:</div>
-                      <div className="display-5">
-                        <RatingIndicator rating={media?.rating} size={100} />
-                      </div>
-                      <button
-                        type="button"
-                        className="btn btn-warning my-5 bookmark-button"
-                        onClick={handleBookmarkClick}
-                        onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}>
-                        {isBookmarked ? (
-                          <BookmarkStarFill
-                            className="me-2"
-                            width="26"
-                            height="26"
-                          />
-                        ) : isHovered ? (
-                          <BookmarkStar
-                            className="me-2"
-                            width="26"
-                            height="26"
-                          />
-                        ) : (
-                          <Bookmark className="me-2" width="26" height="26" />
-                        )}
-                        Буду смотреть
-                      </button>
-                    </Col>
-                  </Row>
-                  <Row className="pb-3">
-                    <hr className="my-4"></hr>
-                    {renderOverview()}
-                    {showButton && (
-                      <Row className="mt-4">
-                        <CustomGradientButton />
-                      </Row>
-                    )}
-                  </Row>
-                  {type === 'tv' && media?.last_production_season && (
-                    <>
-                      <h3 className="text-start fw-bold fs-5 mb-4 mt-5">
-                        Текущий сезон
-                      </h3>
-                      <Card className="border-0 text-start">
-                        <Row>
-                          <Col md={3}>
-                            <Card.Img
-                              src={
-                                media?.last_production_season
-                                  ?.season_poster_path || ''
-                              }
-                              alt="Card image"
-                              loading="lazy"
-                              className="img-fluid"
-                            />
-                          </Col>
-                          <Col md={9} className="d-flex">
-                            <Card.Body className="d-flex flex-column justify-content-end rounded bg-body-tertiary ps-5">
-                              <Card.Title className="fw-semibold">
-                                {media?.last_production_season?.name || '-'}
-                              </Card.Title>
-                              <Card.Text className="mb-4">
-                                {media?.last_production_season?.vote_average >
-                                  0 && (
-                                  <span
-                                    className="badge fw-semibold text-bg-secondary"
-                                    style={{ fontSize: '0.875em' }}>
-                                    {
-                                      media?.last_production_season
-                                        ?.vote_average
-                                    }
-                                  </span>
-                                )}
-                                <small className="text-muted">
-                                  {' '}
-                                  {media?.last_production_season
-                                    ?.episode_count || '-'}{' '}
-                                  эпизодов
-                                </small>
-                              </Card.Text>
-                              <Card.Text style={{ fontSize: '0.875rem' }}>
-                                <BsCheck2Square />
-                                &ensp; Последний эпизод сезона вышел{' '}
-                                {media?.last_episode_to_air || '-'}
-                              </Card.Text>
-                              <Card.Text style={{ fontSize: '0.875rem' }}>
-                                <BsCalendar3 /> &ensp;
-                                {media?.next_episode_to_air
-                                  ? `Следующий эпизод планируется ${media?.next_episode_to_air}`
-                                  : 'Новые эпизоды не планируются.'}
-                              </Card.Text>
-                              <Card.Text className="mt-auto fs-5 text-primary">
-                                <Link
-                                  to={`/tv/${id}/seasons`}
-                                  className="text-decoration-none">
-                                  Все сезоны
-                                </Link>
-                              </Card.Text>
-                            </Card.Body>
-                          </Col>
-                        </Row>
-                      </Card>
-                    </>
-                  )}
-                </Col>
-              </Row>
-            </div>
+            <DesktopMediaDetails
+              media={media}
+              type={type}
+              id={id}
+              movieCreators={movieCreators}
+              videoKeys={videoKeys}
+              loadingTrailer={loadingTrailer}
+              isHovered={isHovered}
+              isBookmarked={isBookmarked}
+              showButton={showButton}
+              setIsHovered={setIsHovered}
+              handleBookmarkClick={handleBookmarkClick}
+              handleShowTrailer={handleShowTrailer}
+              renderOverview={renderOverview} // Передаем функцию рендеринга описания (render prop pattern)
+              openSearchInYandex={openSearchInYandex}
+            />
           )}
-          <div className="d-none media-content-loaded"></div>
+        </Suspense>
+
+        <div className="d-none media-content-loaded"></div>
+
+        <Container fluid="lg">
           <Suspense
             fallback={
               <div className="spinner-border text-primary m-5" role="status">

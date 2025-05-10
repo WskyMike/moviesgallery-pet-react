@@ -18,6 +18,48 @@ function getBackdropPath(backdrop_path) {
     : fallbackSrc;
 }
 
+function getBigBackdropPath(backdrop_path) {
+  return backdrop_path
+    ? `https://movieapiproxy.tw1.ru/t/p/w1280${backdrop_path}`
+    : null;
+}
+
+// Функция для форматирования денежных сумм
+function formatCurrencyCompact(amount) {
+  if (amount === undefined || amount <= 0) {
+    return '-';
+  }
+
+  let formattedValue;
+
+  // Для миллиардов (≥ 1 000 000 000)
+  if (amount >= 1000000000) {
+    const billions = amount / 1000000000;
+    formattedValue = `${billions.toFixed(billions % 1 === 0 ? 0 : 1)} млрд $`;
+  }
+  // Для миллионов (≥ 1 000 000)
+  else if (amount >= 1000000) {
+    const millions = amount / 1000000;
+    formattedValue = `${millions.toFixed(millions % 1 === 0 ? 0 : 1)} млн $`;
+  }
+  // Для тысяч (≥ 1 000)
+  else if (amount >= 1000) {
+    const thousands = amount / 1000;
+    formattedValue = `${thousands.toFixed(thousands % 1 === 0 ? 0 : 1)} тыс. $`;
+  }
+  // Для небольших сумм используем стандартное форматирование
+  else {
+    formattedValue = new Intl.NumberFormat('ru-RU', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
+
+  return formattedValue;
+}
+
 export async function transformSingleMovieData(item) {
   return {
     id: item.id,
@@ -130,30 +172,14 @@ export async function transformMovieDetailsData(item) {
     first_air_date: item.first_air_date
       ? new Date(item.first_air_date).getFullYear()
       : '-',
-    budget:
-      item.budget !== undefined && item.budget > 0
-        ? new Intl.NumberFormat('ru-RU', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          }).format(item.budget)
-        : '-',
-    revenue:
-      item.revenue !== undefined && item.revenue > 0
-        ? new Intl.NumberFormat('ru-RU', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          }).format(item.revenue)
-        : '-',
+    budget: formatCurrencyCompact(item.budget),
+    revenue: formatCurrencyCompact(item.revenue),
     production_companies: item.production_companies
-      ? item.production_companies.map((company) => company.name).join(', ')
-      : 'Нет информации',
+      ? item.production_companies.map((company) => company.name)
+      : [],
     tagline: item.tagline ? item.tagline.replace(/['"«»„“”]/g, '') : null,
     poster: getPosterPath(item.poster_path),
-    // backdrop: `https://movieapiproxy.tw1.ru/t/p/w1280${item.backdrop_path}`,
+    backdrop: getBigBackdropPath(item.backdrop_path),
     rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : '0',
     // rating: item.vote_average
     //   ? `${(item.vote_average * 10).toFixed(0)}%`
@@ -176,6 +202,14 @@ export async function transformTvDetailsData(item) {
       (season) => season.air_date && new Date(season.air_date) <= new Date()
     ) // Только сезоны с прошедшей датой выхода
     .at(-1); // Берем последний такой сезон
+
+  // Преобразуем created_by в массив объектов с id, name и job
+  const creators =
+    item.created_by?.map((creator) => ({
+      id: creator.id,
+      name: creator.name || creator.original_name,
+      job: 'Создатель',
+    })) || [];
 
   return {
     name: item.name || null,
@@ -224,16 +258,17 @@ export async function transformTvDetailsData(item) {
       ? new Date(item.last_air_date).getFullYear()
       : null,
     production_companies: item.production_companies
-      ? item.production_companies.map((company) => company.name).join(', ')
-      : '-',
+      ? item.production_companies.map((company) => company.name)
+      : [],
     poster: getPosterPath(item.poster_path),
-    // backdrop: `https://movieapiproxy.tw1.ru/t/p/w1280${item.backdrop_path}`,
+    backdrop: getBigBackdropPath(item.backdrop_path),
     rating: item.vote_average ? parseFloat(item.vote_average.toFixed(1)) : '0',
+    creators: creators, // Массив создателей
     creator: item.created_by?.length
       ? item.created_by
           .map((creator) => creator.name || creator.original_name)
           .join(', ')
-      : '-',
+      : '-', // Строка с именами создателей
     tagline: item.tagline ? item.tagline.replace(/['"«»„“”]/g, '') : null,
     // Последний сезон
     last_production_season: lastProductionSeason
