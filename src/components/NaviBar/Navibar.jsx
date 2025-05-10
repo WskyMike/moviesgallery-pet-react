@@ -55,10 +55,10 @@ function NaviBar() {
     <>
       <Navbar
         expand="sm"
-        className="custom-navibar bg-body-tertiary"
+        className="custom-navibar sticky-top py-0"
         data-bs-theme="light">
-        <Container fluid>
-          <Navbar.Brand href="/" className="fs-2 me-5">
+        <Container fluid="xxl">
+          <Navbar.Brand href="/" className="fs-3 me-5 ms-2 pt-1 pb-0">
             Киногалерея &nbsp;
             <CameraReels className="navibar-icon" />
           </Navbar.Brand>
@@ -106,7 +106,7 @@ function NaviBar() {
 
                 {user ? (
                   <Button
-                    className="mt-4 mt-sm-0"
+                    className="mt-4 mt-sm-0 btn-sm rounded-2"
                     variant="outline-primary"
                     onClick={handleSignOut}>
                     Выйти
@@ -116,7 +116,7 @@ function NaviBar() {
                     <Button
                       type="button"
                       variant="outline-primary"
-                      className="mx-2 reg-button"
+                      className="mx-0 px-0 reg-button btn-sm rounded-2"
                       onClick={() => handleOpenModal('register')}
                       disabled={isLoadingModal}>
                       {isLoadingModal && (
@@ -130,8 +130,8 @@ function NaviBar() {
                       </span>
                     </Button>
                     <Button
-                      variant="primary"
-                      className="ms-1 login-button"
+                      variant="outline-primary"
+                      className="ms-2 login-button btn-sm rounded-2"
                       onClick={() => handleOpenModal('login')}
                       disabled={isLoadingModal}>
                       {isLoadingModal && (

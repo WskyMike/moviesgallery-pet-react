@@ -34,6 +34,7 @@ export default [
         localStorage: 'readonly',
         URL: 'readonly',
         navigator: 'readonly',
+        location: 'readonly',
       },
     },
     settings: {

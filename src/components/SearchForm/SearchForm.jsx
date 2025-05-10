@@ -50,7 +50,7 @@ function SearchForm() {
   return (
     <Row className="mx-0 mx-md-5">
       <Col>
-        <Form className="d-flex gap-2 my-5" onSubmit={handleSearch}>
+        <Form className="d-flex gap-2 mb-5 mt-4" onSubmit={handleSearch}>
           <FormControl
             type="search"
             value={searchQuery}
